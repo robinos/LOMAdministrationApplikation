@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LOMAdministrationApplikation", "LOMAdministrationApplikation\LOMAdministrationApplikation.csproj", "{A46EACA6-51BA-468F-BC4B-C54A63CF7B3D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{120AD05A-9099-4A50-8CB9-1B29D0175F9A}"
+	ProjectSection(SolutionItems) = preProject
+		Changelog.txt = Changelog.txt
+		README.txt = README.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JRINCCustomControls", "JRINCCustomControls\JRINCCustomControls.csproj", "{C8B714BF-091D-4972-AF18-6F6904FD0D8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LOMAdministrationApplikationUnitTestar", "LOMAdministrationApplikationUnitTestar\LOMAdministrationApplikationUnitTestar.csproj", "{FFB1F773-6862-41E3-BB35-69E03E55E062}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A46EACA6-51BA-468F-BC4B-C54A63CF7B3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A46EACA6-51BA-468F-BC4B-C54A63CF7B3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A46EACA6-51BA-468F-BC4B-C54A63CF7B3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A46EACA6-51BA-468F-BC4B-C54A63CF7B3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8B714BF-091D-4972-AF18-6F6904FD0D8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8B714BF-091D-4972-AF18-6F6904FD0D8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8B714BF-091D-4972-AF18-6F6904FD0D8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8B714BF-091D-4972-AF18-6F6904FD0D8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFB1F773-6862-41E3-BB35-69E03E55E062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFB1F773-6862-41E3-BB35-69E03E55E062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFB1F773-6862-41E3-BB35-69E03E55E062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFB1F773-6862-41E3-BB35-69E03E55E062}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
