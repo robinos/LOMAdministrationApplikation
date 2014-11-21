@@ -66,17 +66,18 @@ namespace LOMAdministrationApplikation
 		{
 			//Med produktApplikation undviker man att behöver ha statisk metoder
 			//och kan skickar som referens till ProduktApplikationForm
-			AdministrationApplikation produktApplikation = new AdministrationApplikation();
+			AdministrationApplikation administrationApplikation = new AdministrationApplikation();
 
 			//Läsa in data från databasen. Om det lyckas, körs applikationen
-			if (produktApplikation.LäsaFrånDatabas())
+			if (administrationApplikation.LäsaFrånDatabas())
 			{
 				//Visar Form
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault(false);
 				//ProduktApplikationForm objekten görs i samband med körning
 				//för att man behöver inte i nuläge en referens till den
-				Application.Run(new ProduktForm(produktApplikation));
+				//Application.Run(new ProduktForm(produktApplikation));
+				Application.Run(new HuvudApplikationForm(administrationApplikation));
 			}
 		}
 

@@ -16,5 +16,12 @@ namespace LOMAdministrationApplikation
 		{
 			InitializeComponent();
 		}
+
+		private void AnvändareForm_Load(object sender, EventArgs e)
+		{
+			// TODO: This line of code loads data into the 'lOM_DBDataSet.Anvandare' table. You can move, or remove it, as needed.
+			this.anvandareTableAdapter.Fill(this.lOM_DBDataSet.Anvandare);
+
+		}
 	}
 }
