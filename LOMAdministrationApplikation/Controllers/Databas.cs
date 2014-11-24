@@ -115,6 +115,55 @@ namespace LOMAdministrationApplikation.Controllers
 			}
 		}
 
+		/*
+		 * HämtaDataSetProdukter hämtar datan från databasen till en data
+		 * set mha en adapter.
+		 */
+		public DataSet HämtaDataSetProdukter(string kommando, string tabell)
+		{
+			//DataSet är en behållare/mellansteg för inläst databas-data (kan
+			//innehålla flera tabeller)
+			DataSet dataSet = new DataSet();
+
+			//En ny DataAdapter skapas med ett select sql command redan inbyggt
+			//(DataAdapter används sedan för att fylla en DataSet) 
+			SqlDataAdapter dataAdapter = new SqlDataAdapter(kommando, kopplingen);
+
+			//Fill metoden på DataAdapter används för att faktiskt utföra fyllning
+			//av Datasetet ds från tabellen Produkt
+			dataAdapter.Fill(dataSet, tabell);
+
+			//Fria upp minnet för adapter
+			dataAdapter.Dispose();
+
+			return dataSet;
+		}
+
+		/*
+		 * TestaDataSetKolumn
+		 */
+		public bool TestaDataSetKolumn(DataSet dataSet, string kolumn)
+		{
+			//Om där finns inga tabeller, returnera falsk
+			if (dataSet.Tables.Count == 0)
+				return false;
+
+			//Om där finns inga rader i första tabellen returnera falsk
+			var table = dataSet.Tables[0];
+			if (table.Rows.Count == 0)
+				return false;
+
+			//Om där finns ingen kolumn med namnet returnera falsk
+			if (!table.Columns.Contains(kolumn))
+				return false;
+
+			//Om där finns ingen data i kolumnen returnera falsk
+			var row = dataSet.Tables[0].Rows[0];
+			if (row.IsNull(kolumn))
+				return false;
+
+			return true;
+		}
 
 		/*
 		 * LäsaProdukter är en metod för att läsa in värden från databasen till
@@ -124,40 +173,28 @@ namespace LOMAdministrationApplikation.Controllers
 		 */
 		public bool LäsaProdukter()
 		{
+			bool lyckades = true;
+			string kolumnID = "ID";
+			string kolumnNamn = "Namn";
+			string kommando = "SELECT * FROM Produkt";
+			string kolumn = "Produkt";
+
 			//Öppna databasen
-			bool lyckades = ÖppnaKopplingen();
-
-			//Om man inte kunde öppna databas, sluta och returnera falsk
-			if (!lyckades) return false;
-
-			//DataSet är en behållare/mellansteg för inläst databas-data (kan
-			//innehålla flera tabeller)
-			DataSet dataSet = new DataSet();
-
-			//En ny DataAdapter skapas med ett select sql command redan inbyggt
-			//(DataAdapter används sedan för att fylla en DataSet) 
-			SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Produkt", kopplingen);
-
-			//Fill metoden på DataAdapter används för att faktiskt utföra fyllning
-			//av Datasetet ds från tabellen Produkt
-			dataAdapter.Fill(dataSet, "Produkt");
-
-			//Om där finns inga tabeller, returnera falsk
-			if (dataSet.Tables.Count == 0)
+			//Om man inte kunde öppna databas sluta och returnera falsk
+			if (ÖppnaKopplingen() == false)
 				return false;
 
-			//Om där finns inga rader i första tabellen, returnera falsk
-			var table = dataSet.Tables[0];
-			if (table.Rows.Count == 0)
+			//Hämta dataset för produkter
+			DataSet dataSet = HämtaDataSetProdukter(kommando, kolumn);
+
+			//Testa att ID kolumnen existera
+			//Om något är fel sluta och returnera falsk
+			if (!TestaDataSetKolumn(dataSet, kolumnID))
 				return false;
 
-			//Om där finns ingen ID kolumnen, returnera falsk
-			if (!table.Columns.Contains("ID"))
-				return false;
-
-			//Om där finns ingenting i ID kolumnen, returnera falsk
-			var row = dataSet.Tables[0].Rows[0];
-			if (row.IsNull("ID"))
+			//Testa att Namn kolumnen existera
+			//Om något är fel sluta och returnera falsk
+			if (!TestaDataSetKolumn(dataSet, kolumnNamn))
 				return false;
 
 			//Temporär Produkt variabel
@@ -202,48 +239,32 @@ namespace LOMAdministrationApplikation.Controllers
 		 */
 		public bool LäsaAnvändare()
 		{
+			bool lyckades = true;
+			string kolumnID = "ID";
+			string kolumnNamn = "Anvandarnamn";
+			string kommando = "SELECT * FROM Anvandare";
+			string kolumn = "Anvandare";
+
 			//Öppna databasen
-			bool lyckades = ÖppnaKopplingen();
-
-			//Om man inte kunde öppna databas, sluta och returnera falsk
-			if (!lyckades) return false;
-
-			//DataSet är en behållare/mellansteg för inläst databas-data (kan
-			//innehålla flera tabeller)
-			DataSet dataSet = new DataSet();
-
-			//En ny DataAdapter skapas med ett select sql command redan inbyggt
-			//(DataAdapter används sedan för att fylla en DataSet) 
-			SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Anvandare", kopplingen);
-
-			//Fill metoden på DataAdapter används för att faktiskt utföra fyllning
-			//av Datasetet ds från tabellen Anvandare
-			dataAdapter.Fill(dataSet, "Anvandare");
-
-			//Om där finns inga tabeller, returnera falsk
-			if (dataSet.Tables.Count == 0)
+			//Om man inte kunde öppna databas sluta och returnera falsk
+			if (ÖppnaKopplingen() == false)
 				return false;
 
-			//Om där finns inga rader i första tabellen, returnera falsk
-			var table = dataSet.Tables[0];
-			if (table.Rows.Count == 0)
+			//Hämta dataset för användare
+			DataSet dataSet = HämtaDataSetProdukter(kommando, kolumn);
+
+			//Testa att ID kolumnen existera
+			//Om något är fel sluta och returnera falsk
+			if (!TestaDataSetKolumn(dataSet, kolumnID))
 				return false;
 
-			//Om där finns ingen ID kolumnen, returnera falsk
-			if (!table.Columns.Contains("ID") || !table.Columns.Contains("Anvandare"))
-				return false;
-
-			MessageBox.Show("Got here!");
-
-			//Om där finns ingenting i ID kolumnen, returnera falsk
-			var row = dataSet.Tables[0].Rows[0];
-			if (row.IsNull("ID") || row.IsNull("Anvandare"))
+			//Testa att Namn kolumnen existera
+			//Om något är fel sluta och returnera falsk
+			if (!TestaDataSetKolumn(dataSet, kolumnNamn))
 				return false;
 
 			//Temporär Produkt variabel
 			Användare användareTemp;
-
-			MessageBox.Show("And here!");
 
 			//Loopa genom varje rad i Anvandare tabellen (Tables[0] för att Anvandare
 			//är den enda tabellen i DataSet ds)
@@ -283,7 +304,7 @@ namespace LOMAdministrationApplikation.Controllers
 		 */
 		public bool InsättProdukt(Produkt produkt)
 		{
-			bool success = false;
+			bool lyckades = false;
 
 			//Öppna databasen, om man inte lyckas returnera falsk
 			if (!ÖppnaKopplingen()) return false;
@@ -292,7 +313,7 @@ namespace LOMAdministrationApplikation.Controllers
 			//det, annars gör ingenting (för att undervika en unik id krash)
 			if (!ExisterandeID(produkt.ID))
 			{
-				success = true;
+				lyckades = true;
 				//SqlCommand föredra allt i en lång sträng
 				String sCommandString = "INSERT INTO Produkt (ID, Namn, Pris, Typ, Farg, Bildfilnamn, Ritningsfilnamn, RefID, Beskrivning, Montering) VALUES ('" + produkt.ID + "', '" + produkt.Namn + "', '" + produkt.Pris + "', '" + produkt.Typ + "', '" + produkt.Färg + "', '" + produkt.Bildfilnamn + "', '" + produkt.Ritningsfilnamn + "', '" + produkt.RefID + "', '" + produkt.Beskrivning + "', '" + produkt.Monteringsbeskrivning + "')";
 				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
@@ -304,7 +325,7 @@ namespace LOMAdministrationApplikation.Controllers
 			//Stäng databasen
 			StängKopplingen();
 
-			return success;
+			return lyckades;
 		}
 
 		/* 

@@ -112,9 +112,13 @@ namespace LOMAdministrationApplikation
 
 			//Om ProduktLasare metoden i Databas returnerar sann, lyckades
 			//blir sann
-			if (databas.LäsaProdukter()) //&& databas.LäsaAnvändare())
+			if (databas.LäsaProdukter() && databas.LäsaAnvändare())
 			{
 				lyckades = true;
+			}
+			else
+			{
+				//MessageBox.Show("Det gick inte att läsa från en eller fler databas tabeller!");
 			}
 
 			return lyckades;
