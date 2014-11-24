@@ -349,7 +349,7 @@ namespace LOMAdministrationApplikation.Controllers
 			{
 				success = true;
 				//SqlCommand föredra allt i en lång sträng
-				String sCommandString = "INSERT INTO Anvandare (ID, Användarnamn, LosenordHash, Roll, Raknare, Laste, Ritningsfilnamn) VALUES ('" + användare.ID + "', '" + användare.Användarnamn + "', '" + användare.LösenordHash + "', '" + användare.Roll + "', '" + användare.Räknare + "', '" + användare.Låste + "')";
+				String sCommandString = "INSERT INTO Anvandare (ID, Anvandarnamn, LosenordHash, Roll, Raknare, Laste) VALUES ('" + användare.ID + "', '" + användare.Användarnamn + "', '" + användare.LösenordHash + "', '" + användare.Roll + "', '" + användare.Räknare + "', '" + användare.Låste + "')";
 				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
 				command.ExecuteNonQuery();
 

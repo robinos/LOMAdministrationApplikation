@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LOMAdministrationApplikation.Models;
+using System.Text.RegularExpressions;
 
 namespace LOMAdministrationApplikation.Views
 {
@@ -385,15 +386,33 @@ namespace LOMAdministrationApplikation.Views
 		/*
 		 * Rengör användarinput så det blir ingen situation som
 		 * Farg = "blå;Drop Table Produkter;" när man skickar det till
-		 * databasen."
+		 * databasen." Administratörer kommer att använda programmet så
+		 * det behöver inte vara överdriven, bara nog för att undvika misstag
+		 * och hålla en minimum nivå.
 		 * 
 		 * in - input är en sträng
 		 * ut - strängen skickas tillbaka (och kan ha ändrats för att ta bort ;)
 		 */
 		private string RengörInput(string input)
 		{
-			//.Replace är en sträng metod som ersätter en substräng med en annan
-			return (input.Replace(";", ""));
+			//Tar bort ogiltiga karaktärer 
+			//[^\w\-+*/=£$.,!?:%'½&()#@\\d] matchar vilket karaktär som helst som är
+			//inte en bokstav, ett nummer, ett matematiskt tecken, en pund eller dollar
+			//symbol, en punkt, en comma, en utrops tecken, en frågatecken, en colon,
+			//en procent symbol, en apostrof, en halv symbol, en och symbol, cirkel
+			//parenteser, en # symbol, en @ symbol, eller en \ symbol.
+			//(allt annat blir ogiltig)
+			try
+			{
+				return Regex.Replace(input, @"[^\w\-+*/=£$.,!?:%'½&()#@\\d]", "",
+									 RegexOptions.None, TimeSpan.FromSeconds(1.5));
+			}
+			//Ifall det tar för mycket tid har något gått fel.  Returnera en
+			//tom sträng istället.
+			catch (RegexMatchTimeoutException)
+			{  
+				return String.Empty;
+			}
 		}
 
 	}

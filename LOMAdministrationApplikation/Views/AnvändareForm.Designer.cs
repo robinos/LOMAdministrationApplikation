@@ -81,6 +81,7 @@
 			this.btnSpara.TabIndex = 7;
 			this.btnSpara.Text = "Spara";
 			this.btnSpara.UseVisualStyleBackColor = true;
+			this.btnSpara.Click += new System.EventHandler(this.btnSpara_Click);
 			// 
 			// cboxAnvändareBox
 			// 
@@ -120,6 +121,7 @@
 			this.btnTaBort.TabIndex = 3;
 			this.btnTaBort.Text = "Ta bort";
 			this.btnTaBort.UseVisualStyleBackColor = true;
+			this.btnTaBort.Click += new System.EventHandler(this.btnTaBort_Click);
 			// 
 			// btnNy
 			// 
@@ -133,6 +135,7 @@
 			this.btnNy.TabIndex = 0;
 			this.btnNy.Text = "Ny";
 			this.btnNy.UseVisualStyleBackColor = true;
+			this.btnNy.Click += new System.EventHandler(this.btnNy_Click);
 			// 
 			// panelInmatning
 			// 
@@ -271,6 +274,7 @@
 			this.txtLösenord.AccessibleDescription = "Lösenord";
 			this.txtLösenord.AccessibleName = "Lösenord";
 			this.txtLösenord.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
+			this.txtLösenord.BackColor = System.Drawing.Color.White;
 			this.txtLösenord.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.txtLösenord.Location = new System.Drawing.Point(164, 60);
 			this.txtLösenord.MaxLength = 30;
