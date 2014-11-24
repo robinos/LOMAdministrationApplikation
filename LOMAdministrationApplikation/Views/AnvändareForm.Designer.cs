@@ -1,4 +1,4 @@
-﻿namespace LOMAdministrationApplikation
+﻿namespace LOMAdministrationApplikation.Views
 {
 	partial class AnvändareForm
 	{
@@ -28,18 +28,15 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
 			this.panelFunktion = new System.Windows.Forms.Panel();
 			this.btnSpara = new System.Windows.Forms.Button();
 			this.cboxAnvändareBox = new System.Windows.Forms.ComboBox();
-			this.anvandareBindingSource = new System.Windows.Forms.BindingSource(this.components);
-			this.lOMDBDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
-			this.lOM_DBDataSet = new LOMAdministrationApplikation.LOM_DBDataSet();
 			this.lblIndex = new System.Windows.Forms.Label();
 			this.btnTaBort = new System.Windows.Forms.Button();
 			this.btnNy = new System.Windows.Forms.Button();
-			this.anvandareTableAdapter = new LOMAdministrationApplikation.LOM_DBDataSetTableAdapters.AnvandareTableAdapter();
 			this.panelInmatning = new System.Windows.Forms.Panel();
+			this.rbtnLåste = new System.Windows.Forms.RadioButton();
+			this.rbtnOlåste = new System.Windows.Forms.RadioButton();
 			this.txtRäknare = new System.Windows.Forms.RichTextBox();
 			this.txtAnvändarnamn = new System.Windows.Forms.RichTextBox();
 			this.lblAnvändarnamn = new System.Windows.Forms.Label();
@@ -51,12 +48,7 @@
 			this.lblHash = new System.Windows.Forms.Label();
 			this.lblLösenord = new System.Windows.Forms.Label();
 			this.lblID = new System.Windows.Forms.Label();
-			this.rbtnOlåste = new System.Windows.Forms.RadioButton();
-			this.rbtnLåste = new System.Windows.Forms.RadioButton();
 			this.panelFunktion.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.anvandareBindingSource)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.lOMDBDataSetBindingSource)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.lOM_DBDataSet)).BeginInit();
 			this.panelInmatning.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -95,28 +87,12 @@
 			this.cboxAnvändareBox.AccessibleDescription = "Användare Combobox";
 			this.cboxAnvändareBox.AccessibleName = "Användarlista";
 			this.cboxAnvändareBox.AccessibleRole = System.Windows.Forms.AccessibleRole.ComboBox;
-			this.cboxAnvändareBox.DataSource = this.anvandareBindingSource;
-			this.cboxAnvändareBox.DisplayMember = "Anvandarnamn";
 			this.cboxAnvändareBox.FormattingEnabled = true;
 			this.cboxAnvändareBox.Location = new System.Drawing.Point(238, 2);
 			this.cboxAnvändareBox.Name = "cboxAnvändareBox";
 			this.cboxAnvändareBox.Size = new System.Drawing.Size(159, 21);
 			this.cboxAnvändareBox.TabIndex = 6;
-			// 
-			// anvandareBindingSource
-			// 
-			this.anvandareBindingSource.DataMember = "Anvandare";
-			this.anvandareBindingSource.DataSource = this.lOMDBDataSetBindingSource;
-			// 
-			// lOMDBDataSetBindingSource
-			// 
-			this.lOMDBDataSetBindingSource.DataSource = this.lOM_DBDataSet;
-			this.lOMDBDataSetBindingSource.Position = 0;
-			// 
-			// lOM_DBDataSet
-			// 
-			this.lOM_DBDataSet.DataSetName = "LOM_DBDataSet";
-			this.lOM_DBDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+			this.cboxAnvändareBox.SelectedIndexChanged += new System.EventHandler(this.cboxAnvändareBox_SelectedIndexChanged);
 			// 
 			// lblIndex
 			// 
@@ -124,7 +100,6 @@
 			this.lblIndex.AccessibleName = "Index";
 			this.lblIndex.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
 			this.lblIndex.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.lblIndex.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.anvandareBindingSource, "ID", true, System.Windows.Forms.DataSourceUpdateMode.Never));
 			this.lblIndex.ImeMode = System.Windows.Forms.ImeMode.NoControl;
 			this.lblIndex.Location = new System.Drawing.Point(3, 0);
 			this.lblIndex.Name = "lblIndex";
@@ -159,10 +134,6 @@
 			this.btnNy.Text = "Ny";
 			this.btnNy.UseVisualStyleBackColor = true;
 			// 
-			// anvandareTableAdapter
-			// 
-			this.anvandareTableAdapter.ClearBeforeFill = true;
-			// 
 			// panelInmatning
 			// 
 			this.panelInmatning.AccessibleDescription = "Inmatningspanel";
@@ -186,12 +157,33 @@
 			this.panelInmatning.Size = new System.Drawing.Size(411, 255);
 			this.panelInmatning.TabIndex = 8;
 			// 
+			// rbtnLåste
+			// 
+			this.rbtnLåste.AutoSize = true;
+			this.rbtnLåste.Location = new System.Drawing.Point(267, 187);
+			this.rbtnLåste.Name = "rbtnLåste";
+			this.rbtnLåste.Size = new System.Drawing.Size(51, 17);
+			this.rbtnLåste.TabIndex = 33;
+			this.rbtnLåste.TabStop = true;
+			this.rbtnLåste.Text = "Låste";
+			this.rbtnLåste.UseVisualStyleBackColor = true;
+			// 
+			// rbtnOlåste
+			// 
+			this.rbtnOlåste.AutoSize = true;
+			this.rbtnOlåste.Location = new System.Drawing.Point(176, 188);
+			this.rbtnOlåste.Name = "rbtnOlåste";
+			this.rbtnOlåste.Size = new System.Drawing.Size(55, 17);
+			this.rbtnOlåste.TabIndex = 32;
+			this.rbtnOlåste.TabStop = true;
+			this.rbtnOlåste.Text = "Olåste";
+			this.rbtnOlåste.UseVisualStyleBackColor = true;
+			// 
 			// txtRäknare
 			// 
 			this.txtRäknare.AccessibleDescription = "Misslyckade inloggningar";
 			this.txtRäknare.AccessibleName = "Räknare";
 			this.txtRäknare.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
-			this.txtRäknare.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.anvandareBindingSource, "Raknare", true, System.Windows.Forms.DataSourceUpdateMode.OnValidation, "0", "N0"));
 			this.txtRäknare.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.txtRäknare.Location = new System.Drawing.Point(164, 151);
 			this.txtRäknare.MaxLength = 30;
@@ -205,7 +197,6 @@
 			this.txtAnvändarnamn.AccessibleDescription = "Användarnamn";
 			this.txtAnvändarnamn.AccessibleName = "Användarnamn";
 			this.txtAnvändarnamn.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
-			this.txtAnvändarnamn.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.anvandareBindingSource, "Anvandarnamn", true));
 			this.txtAnvändarnamn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.txtAnvändarnamn.Location = new System.Drawing.Point(164, 30);
 			this.txtAnvändarnamn.MaxLength = 30;
@@ -255,7 +246,6 @@
 			this.txtRoll.AccessibleDescription = "Användare Roll";
 			this.txtRoll.AccessibleName = "Roll";
 			this.txtRoll.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
-			this.txtRoll.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.anvandareBindingSource, "Roll", true));
 			this.txtRoll.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.txtRoll.Location = new System.Drawing.Point(164, 120);
 			this.txtRoll.MaxLength = 30;
@@ -325,28 +315,6 @@
 			this.lblID.Text = "ID:";
 			this.lblID.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// rbtnOlåste
-			// 
-			this.rbtnOlåste.AutoSize = true;
-			this.rbtnOlåste.Location = new System.Drawing.Point(176, 188);
-			this.rbtnOlåste.Name = "rbtnOlåste";
-			this.rbtnOlåste.Size = new System.Drawing.Size(55, 17);
-			this.rbtnOlåste.TabIndex = 32;
-			this.rbtnOlåste.TabStop = true;
-			this.rbtnOlåste.Text = "Olåste";
-			this.rbtnOlåste.UseVisualStyleBackColor = true;
-			// 
-			// rbtnLåste
-			// 
-			this.rbtnLåste.AutoSize = true;
-			this.rbtnLåste.Location = new System.Drawing.Point(267, 187);
-			this.rbtnLåste.Name = "rbtnLåste";
-			this.rbtnLåste.Size = new System.Drawing.Size(51, 17);
-			this.rbtnLåste.TabIndex = 33;
-			this.rbtnLåste.TabStop = true;
-			this.rbtnLåste.Text = "Låste";
-			this.rbtnLåste.UseVisualStyleBackColor = true;
-			// 
 			// AnvändareForm
 			// 
 			this.AccessibleDescription = "Användare redigerare";
@@ -361,9 +329,6 @@
 			this.Text = "Ljus och Miljö AB - Användare Hanterare";
 			this.Load += new System.EventHandler(this.AnvändareForm_Load);
 			this.panelFunktion.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.anvandareBindingSource)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.lOMDBDataSetBindingSource)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.lOM_DBDataSet)).EndInit();
 			this.panelInmatning.ResumeLayout(false);
 			this.panelInmatning.PerformLayout();
 			this.ResumeLayout(false);
@@ -378,10 +343,6 @@
 		private System.Windows.Forms.Label lblIndex;
 		private System.Windows.Forms.Button btnTaBort;
 		private System.Windows.Forms.Button btnNy;
-		private System.Windows.Forms.BindingSource lOMDBDataSetBindingSource;
-		private LOM_DBDataSet lOM_DBDataSet;
-		private System.Windows.Forms.BindingSource anvandareBindingSource;
-		private LOM_DBDataSetTableAdapters.AnvandareTableAdapter anvandareTableAdapter;
 		private System.Windows.Forms.Panel panelInmatning;
 		private System.Windows.Forms.RichTextBox txtAnvändarnamn;
 		private System.Windows.Forms.Label lblAnvändarnamn;

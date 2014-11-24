@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LOMAdministrationApplikation.Controllers;
+using LOMAdministrationApplikation.Models;
+using LOMAdministrationApplikation.Views;
 
 namespace LOMAdministrationApplikation
 {
@@ -26,9 +29,11 @@ namespace LOMAdministrationApplikation
 	{
 		//instansvariabler
 		//Referens till Databas 
-		private Databas produktDatabas = null;
+		private Databas databas = null;
 		//Dictionary av produkter
 		private Dictionary<string, Produkt> produkter;
+		//Dictionary av användare
+		private Dictionary<string, Användare> allaAnvändare;
 
 		/*
 		 * Konstruktör för ProduktApplikation
@@ -36,10 +41,11 @@ namespace LOMAdministrationApplikation
 		public AdministrationApplikation()
 		{
 			//initialisera produktDatabas
-			produktDatabas = new Databas();
+			databas = new Databas();
 			//initialiser Dictionary av produkter (samma referens som
 			//produkter i produktDatabas)
-			produkter = produktDatabas.Produkter;
+			produkter = databas.Produkter;
+			allaAnvändare = databas.AllaAnvändare;
 		}
 
 		//Get/Set till Dictionary produkter
@@ -52,6 +58,19 @@ namespace LOMAdministrationApplikation
 			set
 			{
 				produkter = value;
+			}
+		}
+
+		//Get/Set till Dictionary allaAnvändare
+		public Dictionary<string, Användare> AllaAnvändare
+		{
+			get
+			{
+				return allaAnvändare;
+			}
+			set
+			{
+				allaAnvändare = value;
 			}
 		}
 
@@ -93,7 +112,7 @@ namespace LOMAdministrationApplikation
 
 			//Om ProduktLasare metoden i Databas returnerar sann, lyckades
 			//blir sann
-			if (produktDatabas.LäsaProdukter())
+			if (databas.LäsaProdukter()) //&& databas.LäsaAnvändare())
 			{
 				lyckades = true;
 			}
@@ -110,7 +129,21 @@ namespace LOMAdministrationApplikation
 		public bool LäggTillProdukt(Produkt produkt)
 		{
 			//InsättProdukt metoden i Databas returnerar sann eller falsk
-			bool lyckades = produktDatabas.InsättProdukt(produkt);
+			bool lyckades = databas.InsättProdukt(produkt);
+
+			return lyckades;
+		}
+
+		/*
+		 * LaggTillAnvändare är en metod för att lägga till en användare till databasen.
+		 * 
+		 * in - användaren som ska läggas till databasen 
+		 * ut - sann returneras om det lyckades, annars falsk
+		 */
+		public bool LäggTillAnvändare(Användare användare)
+		{
+			//InsättProdukt metoden i Databas returnerar sann eller falsk
+			bool lyckades = databas.InsättAnvändare(användare);
 
 			return lyckades;
 		}
@@ -125,10 +158,28 @@ namespace LOMAdministrationApplikation
 		public bool TaBortProdukt(string id)
 		{
 			//Delete metoden i Databas returnerar sann eller falsk
-			bool success = produktDatabas.TaBortProdukt(id);
+			bool success = databas.TaBortProdukt(id);
 
 			//Databasen läsas om och Produkt sätts till den nya innehåll
-			produktDatabas.LäsaProdukter();
+			databas.LäsaProdukter();
+
+			return success;
+		}
+
+		/*
+		 * TaBortAnvändare är en metod för att ta bort en produkt från databasen
+		 * och uppdaterar Dictionary produkter.
+		 * 
+		 * in - id(sträng) av användaren som ska tas bort från databasen 
+		 * ut - sann returneras om det lyckades, annars falsk
+		 */
+		public bool TaBortAnvändare(int id, string användarnamn)
+		{
+			//Delete metoden i Databas returnerar sann eller falsk
+			bool success = databas.TaBortAnvändare(id, användarnamn);
+
+			//Databasen läsas om och AllaAnvändare sätts till den nya innehåll
+			databas.LäsaAnvändare();
 
 			return success;
 		}
@@ -142,10 +193,27 @@ namespace LOMAdministrationApplikation
 		public bool UppdateraProdukt(Produkt produkt)
 		{
 			//Update metoden i Databas returnerar sann eller falsk
-			bool success = produktDatabas.UppdateraProdukt(produkt);
+			bool success = databas.UppdateraProdukt(produkt);
 
 			//Databasen läsas om och Produkt sätts till den nya innehåll
-			produktDatabas.LäsaProdukter();
+			databas.LäsaProdukter();
+
+			return success;
+		}
+
+		/*
+		 * UppdateraAnvändare är en metod för att ändra en användare i databasen.
+		 * 
+		 * in - användaren som ska uppdateras i databasen 
+		 * ut - sann returneras om det lyckades, annars falsk
+		 */
+		public bool UppdateraAnvändare(Användare användare)
+		{
+			//Update metoden i Databas returnerar sann eller falsk
+			bool success = databas.UppdateraAnvändare(användare);
+
+			//Databasen läsas om och AllaAnvändare sätts till den nya innehåll
+			databas.LäsaAnvändare();
 
 			return success;
 		}
@@ -160,7 +228,20 @@ namespace LOMAdministrationApplikation
 		 */
 		public bool SammaProdukter()
 		{
-			return(produktDatabas.Produkter.Equals(produkter));
+			return(databas.Produkter.Equals(produkter));
+		}
+
+		/*
+		 * SammaAnvändare testar att Dictionary AllaAnvändare är samma som den
+		 * i Databas klassen.  Används för test.
+		 * Det borde vara en referens till samma objekt så en enklare
+		 * Equals (från objekt) kan användas.
+		 * 
+		 * ut - sann returneras om Dictionary objekten är samma, annars falsk
+		 */
+		public bool SammaAnvändare()
+		{
+			return (databas.AllaAnvändare.Equals(allaAnvändare));
 		}
 	}
 }

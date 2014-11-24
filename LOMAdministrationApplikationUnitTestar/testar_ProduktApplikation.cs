@@ -29,7 +29,7 @@ namespace LOMAdministrationApplikationUnitTestar
 			produkt1.Namn = "Test Namn";
 			produkt1.Pris = 10.00m;
 			produkt1.Typ = "Test Typ";
-			produkt1.Farg = "Test Farg";
+			produkt1.Färg = "Test Farg";
 			produkt1.Bildfilnamn = "Test Bildfilnamn";
 			produkt1.Ritningsfilnamn = "Test Ritningsfilnamn";
 			produkt1.RefID = "20000";
@@ -137,7 +137,7 @@ namespace LOMAdministrationApplikationUnitTestar
 
 			Assert.IsTrue(administrationApplikation.LäggTillProdukt(produkt1));
 
-			produkt1.Farg = "Farg";
+			produkt1.Färg = "Farg";
 			Assert.IsTrue(administrationApplikation.UppdateraProdukt(produkt1));
 			administrationApplikation.LäsaFrånDatabas();
 			Assert.IsTrue(produkt1.Equals(HittaProdukt(produkt1.ID, administrationApplikation.Produkter)));
@@ -155,7 +155,7 @@ namespace LOMAdministrationApplikationUnitTestar
 			initialise();
 
 			//Updatera och testar att uppdatering mislyckades
-			produkt1.Farg = "Farg";
+			produkt1.Färg = "Farg";
 			Assert.IsTrue(!administrationApplikation.UppdateraProdukt(produkt1));
 			administrationApplikation.LäsaFrånDatabas();
 			Assert.IsTrue(!TestaAttIDExistera(produkt1.ID, administrationApplikation.Produkter));

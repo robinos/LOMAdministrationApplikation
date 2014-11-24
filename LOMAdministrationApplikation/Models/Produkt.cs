@@ -18,7 +18,7 @@ using System.Threading.Tasks;
  * 2014-10-27
  * Robin Osborne
  */
-namespace LOMAdministrationApplikation
+namespace LOMAdministrationApplikation.Models
 {
 	public class Produkt
 	{
@@ -27,7 +27,7 @@ namespace LOMAdministrationApplikation
 		private string namn;
 		private decimal pris;
 		private string typ;
-		private string farg;
+		private string färg;
 		private string bildfilnamn;
 		private string ritningsfilnamn;
 		private string refid;
@@ -68,10 +68,10 @@ namespace LOMAdministrationApplikation
 		}
 
 		//30 karaktär max
-		public string Farg
+		public string Färg
 		{
-			get { return farg; }
-			set { farg = value; }
+			get { return färg; }
+			set { färg = value; }
 		}
 
 		//30 karaktär max
@@ -126,7 +126,7 @@ namespace LOMAdministrationApplikation
 			Produkt otherProdukt = (Produkt)obj;
 			return ( (id == otherProdukt.ID) && (namn == otherProdukt.Namn)
 				&& (pris == otherProdukt.Pris) && (typ == otherProdukt.Typ)
-				&& (farg == otherProdukt.Farg) && (bildfilnamn == otherProdukt.Bildfilnamn)
+				&& (färg == otherProdukt.Färg) && (bildfilnamn == otherProdukt.Bildfilnamn)
 				&& (ritningsfilnamn == otherProdukt.Ritningsfilnamn)
 				&& (refid == otherProdukt.RefID) && (monteringsbeskrivning == otherProdukt.Monteringsbeskrivning)
 				&& (beskrivning == otherProdukt.Beskrivning));
@@ -143,7 +143,7 @@ namespace LOMAdministrationApplikation
 		public override int GetHashCode()
 		{
 			return ( id.GetHashCode() ^ namn.GetHashCode() ^ pris.GetHashCode() ^ typ.GetHashCode()
-				^ farg.GetHashCode() ^ bildfilnamn.GetHashCode() ^ ritningsfilnamn.GetHashCode()
+				^ färg.GetHashCode() ^ bildfilnamn.GetHashCode() ^ ritningsfilnamn.GetHashCode()
 				^ refid.GetHashCode() ^ monteringsbeskrivning.GetHashCode()
 				^ beskrivning.GetHashCode() );
 		}		

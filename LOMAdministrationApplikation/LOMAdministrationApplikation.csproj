@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,43 +46,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Databas.cs" />
-    <Compile Include="AnvändareForm.cs">
+    <Compile Include="Controllers\Databas.cs" />
+    <Compile Include="Models\Användare.cs" />
+    <Compile Include="Views\AnvändareForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AnvändareForm.Designer.cs">
+    <Compile Include="Views\AnvändareForm.Designer.cs">
       <DependentUpon>AnvändareForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="HuvudApplikationForm.cs">
+    <Compile Include="Views\HuvudApplikationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HuvudApplikationForm.Designer.cs">
+    <Compile Include="Views\HuvudApplikationForm.Designer.cs">
       <DependentUpon>HuvudApplikationForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LOM_DBDataSet.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LOM_DBDataSet.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="Produkt.cs" />
+    <Compile Include="Models\Produkt.cs" />
     <Compile Include="AdministrationApplikation.cs" />
-    <Compile Include="ProduktForm.cs">
+    <Compile Include="Views\ProduktForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProduktForm.Designer.cs">
+    <Compile Include="Views\ProduktForm.Designer.cs">
       <DependentUpon>ProduktForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AnvändareForm.resx">
+    <EmbeddedResource Include="Views\AnvändareForm.resx">
       <DependentUpon>AnvändareForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AnvändareForm.sv-SE.resx">
+    <EmbeddedResource Include="Views\AnvändareForm.sv-SE.resx">
       <DependentUpon>AnvändareForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HuvudApplikationForm.resx">
+    <EmbeddedResource Include="Views\HuvudApplikationForm.resx">
       <DependentUpon>HuvudApplikationForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProduktForm.resx">
+    <EmbeddedResource Include="Views\ProduktForm.resx">
       <DependentUpon>ProduktForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -93,17 +90,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="LOM_DBDataSet.xsc">
-      <DependentUpon>LOM_DBDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="LOM_DBDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>LOM_DBDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="LOM_DBDataSet.xss">
-      <DependentUpon>LOM_DBDataSet.xsd</DependentUpon>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

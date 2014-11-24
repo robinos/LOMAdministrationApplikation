@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LOMAdministrationApplikation.Models;
 
-namespace LOMAdministrationApplikation
+namespace LOMAdministrationApplikation.Views
 {
 	public partial class HuvudApplikationForm : Form
 	{
@@ -24,7 +25,7 @@ namespace LOMAdministrationApplikation
 
 		private void btnAnvändare_Click(object sender, EventArgs e)
 		{
-			användareForm = new AnvändareForm();
+			användareForm = new AnvändareForm(administrationApplikation);
 			användareForm.Show();
 		}
 

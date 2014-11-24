@@ -1,4 +1,4 @@
-﻿namespace LOMAdministrationApplikation
+﻿namespace LOMAdministrationApplikation.Views
 {
 	partial class ProduktForm
 	{

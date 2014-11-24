@@ -28,7 +28,7 @@ namespace LOMAdministrationApplikationUnitTestar
 			produkt1.Namn = "Test Namn";
 			produkt1.Pris = 10.00m;
 			produkt1.Typ = "Test Typ";
-			produkt1.Farg = "Test Farg";
+			produkt1.Färg = "Test Farg";
 			produkt1.Bildfilnamn = "Test Bildfilnamn";
 			produkt1.Ritningsfilnamn = "Test Ritningsfilnamn";
 			produkt1.RefID = "20000";
@@ -39,7 +39,7 @@ namespace LOMAdministrationApplikationUnitTestar
 			produkt2.Namn = "Test Namn";
 			produkt2.Pris = 10.00m;
 			produkt2.Typ = "Test Typ";
-			produkt2.Farg = "Test Farg";
+			produkt2.Färg = "Test Farg";
 			produkt2.Bildfilnamn = "Test Bildfilnamn";
 			produkt2.Ritningsfilnamn = "Test Ritningsfilnamn";
 			produkt2.RefID = "20000";
@@ -69,7 +69,7 @@ namespace LOMAdministrationApplikationUnitTestar
 			Assert.AreEqual(produkt1.Namn, "Test Namn");
 			Assert.AreEqual(produkt1.Pris, 10.00m);
 			Assert.AreEqual(produkt1.Typ, "Test Typ");
-			Assert.AreEqual(produkt1.Farg, "Test Farg");
+			Assert.AreEqual(produkt1.Färg, "Test Farg");
 			Assert.AreEqual(produkt1.Bildfilnamn, "Test Bildfilnamn");
 			Assert.AreEqual(produkt1.Ritningsfilnamn, "Test Ritningsfilnamn");
 			Assert.AreEqual(produkt1.RefID, "20000");
@@ -127,7 +127,7 @@ namespace LOMAdministrationApplikationUnitTestar
 		public void test_ArProduktOlika_Farg()
 		{
 			initialise();
-			produkt2.Farg = "grön-blå";
+			produkt2.Färg = "grön-blå";
 			Assert.IsTrue(!produkt1.Equals(produkt2));
 		}
 

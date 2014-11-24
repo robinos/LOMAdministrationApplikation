@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms; //för MessageBox
-using LOMAdministrationApplikation; //för Produkt klassen
+using LOMAdministrationApplikation.Models; //för Produkt och Användare klasser
 
-namespace LOMAdministrationApplikation
+namespace LOMAdministrationApplikation.Controllers
 {
 	/*
 	 * (Kontroller)
@@ -24,8 +24,8 @@ namespace LOMAdministrationApplikation
 	 * TaBortProdukt - ändra en produkt från databasen och uppdatera Dictionary produkter
 	 * ExisterandeID - kollar om en ID redan existerar i databasen
 	 * 
-	 * Version: 1.0
-	 * 2014-10-27
+	 * Version: 0.2
+	 * 2014-11-23
 	 * Robin Osborne
 	 */
 	public class Databas
@@ -34,6 +34,7 @@ namespace LOMAdministrationApplikation
 		//private string connectionString = @"Data Source=(LocalDB)\v11.0;" + "AttachDbFilename=" + Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\TestDatabase.mdf;" + "Integrated Security=True;";
 		private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\Eliyat\Documents\Visual Studio 2013\Projects\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";		
 		private Dictionary<string, Produkt> produkter;
+		private Dictionary<string, Användare> allaAnvändare;
 		private SqlConnection kopplingen;
 
 		/*
@@ -44,6 +45,8 @@ namespace LOMAdministrationApplikation
 		{
 			//initialisera Dictionary produkter
 			this.produkter = new Dictionary<string, Produkt>();
+			//initialisera Dictionary användare
+			this.allaAnvändare = new Dictionary<string, Användare>();
 			//initialisera kopplingen till databasen (öppnas inte än)
 			kopplingen = new SqlConnection(connectionString);
 		}
@@ -54,6 +57,14 @@ namespace LOMAdministrationApplikation
 			get
 			{
 				return produkter;
+			}
+		}
+
+		public Dictionary<string, Användare> AllaAnvändare
+		{
+			get
+			{
+				return allaAnvändare;
 			}
 		}
 
@@ -106,7 +117,7 @@ namespace LOMAdministrationApplikation
 
 
 		/*
-		 * ProduktLasare är en metod för att läsa in värden från databasen till
+		 * LäsaProdukter är en metod för att läsa in värden från databasen till
 		 * en bibliotek object.
 		 * 
 		 * Ut - sann eller falsk för om det lyckades eller inte
@@ -128,7 +139,7 @@ namespace LOMAdministrationApplikation
 			SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Produkt", kopplingen);
 
 			//Fill metoden på DataAdapter används för att faktiskt utföra fyllning
-			//av Datasetet ds från tabellen Produkter
+			//av Datasetet ds från tabellen Produkt
 			dataAdapter.Fill(dataSet, "Produkt");
 
 			//Om där finns inga tabeller, returnera falsk
@@ -152,8 +163,8 @@ namespace LOMAdministrationApplikation
 			//Temporär Produkt variabel
 			Produkt produktTemp;
 
-			//Loopa genom varje rad i Produkter tabellen (Tables[0] för att Produkter
-			//är den första tabellen i DataSet ds)
+			//Loopa genom varje rad i Produkt tabellen (Tables[0] för att Produkter
+			//är den enda tabellen i DataSet ds)
 			foreach (DataRow dataRow in dataSet.Tables[0].Rows)
 			{
 				//Läser värdena från en rad till Produkt objektet
@@ -162,7 +173,7 @@ namespace LOMAdministrationApplikation
 				produktTemp.Namn = dataRow["Namn"].ToString();
 				produktTemp.Pris = decimal.Parse(dataRow["Pris"].ToString());
 				produktTemp.Typ = dataRow["Typ"].ToString();
-				produktTemp.Farg = dataRow["Farg"].ToString();
+				produktTemp.Färg = dataRow["Farg"].ToString();
 				produktTemp.Bildfilnamn = dataRow["Bildfilnamn"].ToString();
 				produktTemp.Ritningsfilnamn = dataRow["Ritningsfilnamn"].ToString();
 				produktTemp.RefID = dataRow["RefID"].ToString();
@@ -183,6 +194,84 @@ namespace LOMAdministrationApplikation
 			return lyckades;
 		}
 
+		/*
+		 * LäsaAnvändare är en metod för att läsa in värden från databasen till
+		 * en bibliotek object.
+		 * 
+		 * Ut - sann eller falsk för om det lyckades eller inte
+		 */
+		public bool LäsaAnvändare()
+		{
+			//Öppna databasen
+			bool lyckades = ÖppnaKopplingen();
+
+			//Om man inte kunde öppna databas, sluta och returnera falsk
+			if (!lyckades) return false;
+
+			//DataSet är en behållare/mellansteg för inläst databas-data (kan
+			//innehålla flera tabeller)
+			DataSet dataSet = new DataSet();
+
+			//En ny DataAdapter skapas med ett select sql command redan inbyggt
+			//(DataAdapter används sedan för att fylla en DataSet) 
+			SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Anvandare", kopplingen);
+
+			//Fill metoden på DataAdapter används för att faktiskt utföra fyllning
+			//av Datasetet ds från tabellen Anvandare
+			dataAdapter.Fill(dataSet, "Anvandare");
+
+			//Om där finns inga tabeller, returnera falsk
+			if (dataSet.Tables.Count == 0)
+				return false;
+
+			//Om där finns inga rader i första tabellen, returnera falsk
+			var table = dataSet.Tables[0];
+			if (table.Rows.Count == 0)
+				return false;
+
+			//Om där finns ingen ID kolumnen, returnera falsk
+			if (!table.Columns.Contains("ID") || !table.Columns.Contains("Anvandare"))
+				return false;
+
+			MessageBox.Show("Got here!");
+
+			//Om där finns ingenting i ID kolumnen, returnera falsk
+			var row = dataSet.Tables[0].Rows[0];
+			if (row.IsNull("ID") || row.IsNull("Anvandare"))
+				return false;
+
+			//Temporär Produkt variabel
+			Användare användareTemp;
+
+			MessageBox.Show("And here!");
+
+			//Loopa genom varje rad i Anvandare tabellen (Tables[0] för att Anvandare
+			//är den enda tabellen i DataSet ds)
+			foreach (DataRow dataRow in dataSet.Tables[0].Rows)
+			{
+				//Läser värdena från en rad till Produkt objektet
+				användareTemp = new Användare();
+				användareTemp.ID = int.Parse(dataRow["ID"].ToString());
+				användareTemp.Användarnamn = dataRow["Anvandarnamn"].ToString();
+				användareTemp.LösenordHash = dataRow["LosenordHash"].ToString();
+				användareTemp.Roll = dataRow["Roll"].ToString();
+				användareTemp.Räknare = int.Parse(dataRow["Raknare"].ToString());
+				användareTemp.Låste = bool.Parse(dataRow["Laste"].ToString());
+
+				//Sätt Användare objekt i Dictionary användare med användarnamn
+				//som nyckel (om en användarnamn redan finns i användare, uppdatera
+				//bara värden)
+				if (!allaAnvändare.ContainsKey(användareTemp.Användarnamn))
+					allaAnvändare.Add(användareTemp.Användarnamn, användareTemp);
+				else
+					allaAnvändare[användareTemp.Användarnamn] = användareTemp;
+			}
+
+			//Stäng databasen
+			StängKopplingen();
+
+			return lyckades;
+		}
 
 		/* 
 		 * InsättProdukt är en metod för insättning av värden i databasen.
@@ -205,7 +294,7 @@ namespace LOMAdministrationApplikation
 			{
 				success = true;
 				//SqlCommand föredra allt i en lång sträng
-				String sCommandString = "INSERT INTO Produkt (ID, Namn, Pris, Typ, Farg, Bildfilnamn, Ritningsfilnamn, RefID, Beskrivning, Montering) VALUES ('" + produkt.ID + "', '" + produkt.Namn + "', '" + produkt.Pris + "', '" + produkt.Typ + "', '" + produkt.Farg + "', '" + produkt.Bildfilnamn + "', '" + produkt.Ritningsfilnamn + "', '" + produkt.RefID + "', '" + produkt.Beskrivning + "', '" + produkt.Monteringsbeskrivning + "')";
+				String sCommandString = "INSERT INTO Produkt (ID, Namn, Pris, Typ, Farg, Bildfilnamn, Ritningsfilnamn, RefID, Beskrivning, Montering) VALUES ('" + produkt.ID + "', '" + produkt.Namn + "', '" + produkt.Pris + "', '" + produkt.Typ + "', '" + produkt.Färg + "', '" + produkt.Bildfilnamn + "', '" + produkt.Ritningsfilnamn + "', '" + produkt.RefID + "', '" + produkt.Beskrivning + "', '" + produkt.Monteringsbeskrivning + "')";
 				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
 				command.ExecuteNonQuery();
 
@@ -218,6 +307,39 @@ namespace LOMAdministrationApplikation
 			return success;
 		}
 
+		/* 
+		 * InsättAnvändare är en metod för insättning av värden i databasen.
+		 * Den kollar om id finns redan innan med en insert.  Finns det redan,
+		 * så görs ingenting.
+		 * 
+		 * In - Användare som ska läggas till databasen
+		 * Ut - sann eller falsk för om det lyckades eller inte
+		 */
+		public bool InsättAnvändare(Användare användare)
+		{
+			bool success = false;
+
+			//Öppna databasen, om man inte lyckas returnera falsk
+			if (!ÖppnaKopplingen()) return false;
+
+			//Om test datan med id==tempId är inte redan i tabellen, sätt i
+			//det, annars gör ingenting (för att undervika en unik id krash)
+			if (!ExisterandeAnvändare(användare.ID, användare.Användarnamn))
+			{
+				success = true;
+				//SqlCommand föredra allt i en lång sträng
+				String sCommandString = "INSERT INTO Anvandare (ID, Användarnamn, LosenordHash, Roll, Raknare, Laste, Ritningsfilnamn) VALUES ('" + användare.ID + "', '" + användare.Användarnamn + "', '" + användare.LösenordHash + "', '" + användare.Roll + "', '" + användare.Räknare + "', '" + användare.Låste + "')";
+				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
+				command.ExecuteNonQuery();
+
+				this.allaAnvändare.Add(användare.Användarnamn, användare);
+			}
+
+			//Stäng databasen
+			StängKopplingen();
+
+			return success;
+		}
 
 		/*
 		 * UppdateraProdukt är en metod för updatering av en befintlig värde
@@ -263,7 +385,7 @@ namespace LOMAdministrationApplikation
 				kommando.ExecuteNonQuery();
 
 				//uppdatera farg
-				sCommandString = "UPDATE Produkt SET Farg='" + produkt.Farg + "' WHERE ID='" + produkt.ID + "'";
+				sCommandString = "UPDATE Produkt SET Farg='" + produkt.Färg + "' WHERE ID='" + produkt.ID + "'";
 				kommando = new SqlCommand(sCommandString, kopplingen);
 				kommando.ExecuteNonQuery();
 
@@ -301,6 +423,67 @@ namespace LOMAdministrationApplikation
 			return lyckades;
 		}
 
+		/*
+		 * UppdateraAnvändare är en metod för updatering av en befintlig värde
+		 * i databasen. Den kollar redan att id faktiskt finns innan uppdatering.
+		 * Finns det inte, så görs ingenting. 
+		 * Uppdateringen kunde göras i en stor kommando, men uppbryten är det både
+		 * lättare att läsa och bra om man vill ändra koden för att bara uppdatera
+		 * det fältet som ändrades.
+		 * 
+		 * In - Användare som ska uppdateras i databasen
+		 * Ut - sann eller falsk för om det lyckades eller inte
+		 */
+		public bool UppdateraAnvändare(Användare användare)
+		{
+			bool lyckades = false;
+
+			//Öppna databasen, om man inte lyckas returnera falsk
+			if (!ÖppnaKopplingen()) return false;
+
+			//Om ID==användare.ID är redan i tabellen, uppdatera den,
+			//annars gör ingenting
+			if (ExisterandeAnvändare(användare.ID, användare.Användarnamn))
+			{
+				lyckades = true;
+
+				String sCommandString;
+				//SqlCommand command;
+				SqlCommand kommando;
+
+				//uppdatera användarnamn
+				sCommandString = "UPDATE Anvandare SET Anvandarnamn='" + användare.Användarnamn + "' WHERE ID='" + användare.ID + "'";
+				kommando = new SqlCommand(sCommandString, kopplingen);
+				kommando.ExecuteNonQuery();
+
+				//uppdatera lösenordens hash
+				sCommandString = "UPDATE Anvandare SET LosenordHash='" + användare.LösenordHash + "' WHERE ID='" + användare.ID + "'";
+				kommando = new SqlCommand(sCommandString, kopplingen);
+				kommando.ExecuteNonQuery();
+
+				//uppdatera roll
+				sCommandString = "UPDATE Anvandare SET Roll='" + användare.Roll + "' WHERE ID='" + användare.ID + "'";
+				kommando = new SqlCommand(sCommandString, kopplingen);
+				kommando.ExecuteNonQuery();
+
+				//uppdatera räknare
+				sCommandString = "UPDATE Anvandare SET Raknare='" + användare.Räknare + "' WHERE ID='" + användare.ID + "'";
+				kommando = new SqlCommand(sCommandString, kopplingen);
+				kommando.ExecuteNonQuery();
+
+				//uppdatera låste
+				sCommandString = "UPDATE Anvandare SET Laste='" + användare.Låste + "' WHERE ID='" + användare.ID + "'";
+				kommando = new SqlCommand(sCommandString, kopplingen);
+				kommando.ExecuteNonQuery();
+
+				allaAnvändare[användare.Användarnamn] = användare;
+			}
+
+			//Stäng databasen
+			StängKopplingen();
+
+			return lyckades;
+		}
 
 		/*
 		 * TaBortProdukt är en Metod för att ta bort ett befintligt värde i databasen.
@@ -336,6 +519,39 @@ namespace LOMAdministrationApplikation
 			return lyckades;
 		}
 
+		/*
+		 * TaBortAnvändare är en Metod för att ta bort ett befintligt värde i databasen.
+		 * Den kollar redan att id faktiskt finns innan den tas bort. Finns det inte
+		 * så görs ingenting. 
+		 * 
+		 * In - id (sträng) av användaren som ska tas bort
+		 * Ut - sann eller falsk för om det lyckades eller inte 
+		 */
+		public bool TaBortAnvändare(int id, string användarnamn)
+		{
+			bool lyckades = false;
+
+			//Öppna databasen och om man inte lyckas returnera falsk
+			if (!ÖppnaKopplingen()) return false;
+
+			//Om ID==användare.ID är redan i tabellen, tar bort den,
+			//annars gör ingenting
+			if (ExisterandeAnvändare(id, användarnamn))
+			{
+				lyckades = true;
+				//Tar bort användaren
+				string sCommandString = "DELETE FROM Anvandare WHERE ID='" + id + "'";
+				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
+				command.ExecuteNonQuery();
+
+				allaAnvändare.Remove(användarnamn);
+			}
+
+			//Stäng databasen
+			StängKopplingen();
+
+			return lyckades;
+		}
 
 		/*
 		 * ExisterandeID är en metod som testar om en produkt ID finns redan i
@@ -387,6 +603,65 @@ namespace LOMAdministrationApplikation
 			{
 				//Om field "id" i en DataRow är lika med den nya tempId, så finns den redan 
 				if (dataRow["ID"].ToString() == id)
+					bExisterar = true; //bExisterar true innebär att testId redan finns i tabellen
+			}
+
+			return bExisterar;
+		}
+
+		/*
+		 * ExisterandeAnvändarnamn är en metod som testar om en produkt ID finns redan i
+		 * databasen.
+		 * Man kunde bara kolla i Dictionary produkter istället för att läsa om
+		 * databasen men det förutsätter att LäsaAnvändare har körts innan.
+		 * Som det är nu är det oberoende av det.
+		 * 
+		 * In - id (int) och användarnamn (sträng) av användaren
+		 * Ut - sann eller falsk för om den existerar eller inte
+		 */
+		public bool ExisterandeAnvändare(int id, string användarnamn)
+		{
+			//DataSet är en behållare/mellansteg för inläst databas-data (kan innehålla flera tabeller)
+			DataSet dataSet = new DataSet();
+
+			//En ny DataAdapter skapas med ett select sql command redan inbyggt
+			//(DataAdapter används sedan för att fylla en DataSet) 
+			SqlDataAdapter dataAdapter = new SqlDataAdapter("SELECT * FROM Anvandare", kopplingen);
+
+			//Fill metoden på DataAdapter används för att faktiskt utföra fyllning
+			//av Datasetet ds från tabellen Anvandare
+			dataAdapter.Fill(dataSet, "Anvandare");
+
+			//Om där finns inga tabeller, returnera falsk
+			if (dataSet.Tables.Count == 0)
+				return false;
+
+			//Om där finns inga rader i första tabellen, returnera falsk
+			var table = dataSet.Tables[0];
+			if (table.Rows.Count == 0)
+				return false;
+
+			//Om där finns ingen ID kolumnen, returnera falsk
+			if (!table.Columns.Contains("ID") || !table.Columns.Contains("Anvandarnamn"))
+				return false;
+
+			//Om där finns ingenting i ID kolumnen, returnera falsk
+			var row = dataSet.Tables[0].Rows[0];
+			if (row.IsNull("ID") || row.IsNull("Anvandarnamn"))
+				return false;
+
+			//Bool för att markera att någonting redan existerar i tabellen, från början false 
+			bool bExisterar = false;
+
+			//Loopa genom varje rad i Produkter tabellen (Tables[0] för att Produkter
+			//är den första och enda tabellen i DataSet ds)
+			foreach (DataRow dataRow in dataSet.Tables[0].Rows)
+			{
+				//Om field "id" i en DataRow är lika med den nya tempId, så finns den redan 
+				if (int.Parse(dataRow["ID"].ToString()) == id)
+					bExisterar = true; //bExisterar true innebär att testId redan finns i tabellen
+				//Om field "id" i en DataRow är lika med den nya tempId, så finns den redan 
+				if (dataRow["Anvandarnamn"].ToString() == användarnamn)
 					bExisterar = true; //bExisterar true innebär att testId redan finns i tabellen
 			}
 

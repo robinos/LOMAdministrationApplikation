@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LOMAdministrationApplikation.Models;
 
-namespace LOMAdministrationApplikation
+namespace LOMAdministrationApplikation.Views
 {
 	/*
 	 * (Vy)
@@ -152,7 +153,7 @@ namespace LOMAdministrationApplikation
 			produkt.Namn = Namn;
 			produkt.Pris = decimal.Parse(pris);
 			produkt.Typ = RengörInput(txtTyp.Text);
-			produkt.Farg = RengörInput(txtFarg.Text);
+			produkt.Färg = RengörInput(txtFarg.Text);
 			produkt.Bildfilnamn = RengörInput(txtBildfil.Text);
 			produkt.Ritningsfilnamn = RengörInput(txtRitningsfil.Text);
 			produkt.RefID = RengörInput(txtRefID.Text);
@@ -240,7 +241,7 @@ namespace LOMAdministrationApplikation
 						txtNamn.Text = produkt.Namn;
 						txtPris.Text = pris;
 						txtTyp.Text = produkt.Typ;
-						txtFarg.Text = produkt.Farg;
+						txtFarg.Text = produkt.Färg;
 						txtBildfil.Text = produkt.Bildfilnamn;
 						txtRitningsfil.Text = produkt.Ritningsfilnamn;
 						txtRefID.Text = produkt.RefID.ToString();
@@ -273,7 +274,7 @@ namespace LOMAdministrationApplikation
 					txtNamn.Text = produkt.Namn;
 					txtPris.Text = produkt.Pris.ToString();
 					txtTyp.Text = produkt.Typ;
-					txtFarg.Text = produkt.Farg;
+					txtFarg.Text = produkt.Färg;
 					txtBildfil.Text = produkt.Bildfilnamn;
 					txtRitningsfil.Text = produkt.Ritningsfilnamn;
 					txtRefID.Text = produkt.RefID.ToString();
