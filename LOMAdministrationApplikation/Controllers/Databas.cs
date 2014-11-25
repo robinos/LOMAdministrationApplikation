@@ -32,7 +32,8 @@ namespace LOMAdministrationApplikation.Controllers
 	{
 		//instansvariabler
 		//private string connectionString = @"Data Source=(LocalDB)\v11.0;" + "AttachDbFilename=" + Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\TestDatabase.mdf;" + "Integrated Security=True;";
-        private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\BIlbo\Source\Repos\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";		
+        //private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\BIlbo\Source\Repos\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";		
+		private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\Eliyat\Documents\Visual Studio 2013\Projects\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";	
 		private Dictionary<string, Produkt> produkter;
 		private Dictionary<string, Användare> allaAnvändare;
 		SqlConnection kopplingen;
@@ -479,7 +480,7 @@ namespace LOMAdministrationApplikation.Controllers
 			{
 				lyckades = true;
 				//SqlCommand föredra allt i en lång sträng
-				String sCommandString = "INSERT INTO Produkt (ID, Namn, Pris, Typ, Farg, Bildfilnamn, Ritningsfilnamn, RefID, Beskrivning, Montering) VALUES ('" + produkt.ID + "', '" + produkt.Namn + "', '" + produkt.Pris + "', '" + produkt.Typ + "', '" + produkt.Färg + "', '" + produkt.Bildfilnamn + "', '" + produkt.Ritningsfilnamn + "', '" + produkt.RefID + "', '" + produkt.Beskrivning + "', '" + produkt.Monteringsbeskrivning + "')";
+				String sCommandString = "INSERT INTO Produkt (ID, Namn, Pris, Typ, Farg, Bildfilnamn, Ritningsfilnamn, RefID, Beskrivning, Montering) VALUES ('" + produkt.ID + "', '" + produkt.Namn + "', " + " TRY_PARSE('" + produkt.Pris + "' AS DECIMAL using 'sv-SE'), '" + produkt.Typ + "', '" + produkt.Färg + "', '" + produkt.Bildfilnamn + "', '" + produkt.Ritningsfilnamn + "', '" + produkt.RefID + "', '" + produkt.Beskrivning + "', '" + produkt.Monteringsbeskrivning + "')";
 				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
 				command.ExecuteNonQuery();
 

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using LOMAdministrationApplikation.Models;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace LOMAdministrationApplikation.Views
 {
@@ -143,12 +144,12 @@ namespace LOMAdministrationApplikation.Views
 			//Pris måste tar bort PreFix (kr), byta ',' mot '.', och tar bort tusantalstecknet
 			string pris = txtPris.Text.Replace((txtPris.PreFix != "") ? txtPris.PreFix : " ", String.Empty)
 									  .Replace((txtPris.ThousandsSeparator.ToString() != "") ? txtPris.ThousandsSeparator.ToString() : " ", String.Empty)
-									  .Replace((txtPris.DecimalsSeparator.ToString() != "") ? txtPris.DecimalsSeparator.ToString() : " ", ".").Trim();
+									  .Replace((txtPris.DecimalsSeparator.ToString() != "") ? txtPris.DecimalsSeparator.ToString() : ",", ".").Trim();
 
 			//fyller produkter med informationen (med rengöring för strängar)
 			produkt.ID = ID;
 			produkt.Namn = Namn;
-			produkt.Pris = decimal.Parse(pris);
+			produkt.Pris = Decimal.Parse(pris, CultureInfo.InvariantCulture);
 			produkt.Typ = RengörInput(txtTyp.Text);
 			produkt.Färg = RengörInput(txtFarg.Text);
 			produkt.Bildfilnamn = RengörInput(txtBildfil.Text);

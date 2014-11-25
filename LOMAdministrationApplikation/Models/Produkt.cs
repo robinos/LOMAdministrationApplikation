@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 /*
  * (Modell)
@@ -25,7 +26,7 @@ namespace LOMAdministrationApplikation.Models
 		//instansvariabler
 		private string id;
 		private string namn;
-		private decimal pris;
+		private Decimal pris;
 		private string typ;
 		private string färg;
 		private string bildfilnamn;
@@ -54,7 +55,7 @@ namespace LOMAdministrationApplikation.Models
 		}
 
 		//SQL Decimal(10,2)
-		public decimal Pris
+		public Decimal Pris
 		{
 			get { return pris; }
 			set { pris = value; }
