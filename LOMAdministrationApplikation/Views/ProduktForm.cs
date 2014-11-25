@@ -395,13 +395,13 @@ namespace LOMAdministrationApplikation.Views
 			//Tar bort ogiltiga karaktärer 
 			//[^\w\-+*/=£$.,!?:%'½&()#@\\d] matchar vilket karaktär som helst som är
 			//inte en bokstav, ett nummer, ett matematiskt tecken, en pund eller dollar
-			//symbol, en punkt, en comma, en utrops tecken, en frågatecken, en colon,
+			//symbol, en punkt, en utrops tecken, en frågatecken, en colon,
 			//en procent symbol, en apostrof, en halv symbol, en och symbol, cirkel
-			//parenteser, en # symbol, en @ symbol, eller en \ symbol.
+			//parenteser, en # symbol, en @ symbol, en \ symbol, eller blacksteg.
 			//(allt annat blir ogiltig)
 			try
 			{
-				return Regex.Replace(input, @"[^\w\-+*/=£$.,!?:%'½&()#@\\d]", "",
+				return Regex.Replace(input, @"[^\w\-+*/=£$.!?:%'½&()#@\s+\\d]", "",
 									 RegexOptions.None, TimeSpan.FromSeconds(1.5));
 			}
 			//Ifall det tar för mycket tid har något gått fel.  Returnera en

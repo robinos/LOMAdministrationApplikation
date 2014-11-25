@@ -377,7 +377,7 @@ namespace LOMAdministrationApplikation.Views
 			//(allt annat blir ogiltig)
 			try
 			{
-				return Regex.Replace(input, @"[^\w\-+*/=£$.,!?:%'½&()#@\\d]", "",
+				return Regex.Replace(input, @"[^\w\-+*/=£$.!?:%'½&()#@\s+\\d]", "",
 									 RegexOptions.None, TimeSpan.FromSeconds(1.5));
 			}
 			//Ifall det tar för mycket tid har något gått fel.  Returnera en

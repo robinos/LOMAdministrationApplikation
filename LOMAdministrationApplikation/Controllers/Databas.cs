@@ -781,7 +781,7 @@ namespace LOMAdministrationApplikation.Controllers
 			foreach (DataRow dataRow in dataSet.Tables[0].Rows)
 			{
 				//Om field "id" i en DataRow är lika med den nya tempId, så finns den redan 
-				if (dataRow["ID"].ToString() == id && dataRow["Namn"].ToString().Equals(namn))
+				if (dataRow["ID"].ToString() == id)
 					bExisterar = true; //bExisterar true innebär att testId redan finns i tabellen
 			}
 
