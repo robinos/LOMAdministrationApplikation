@@ -14,8 +14,8 @@ namespace LOMAdministrationApplikation.Views
 {
 	/*
 	 * (Vy)
-	 * ProduktApplikationForm har all kod för att hantera input och skicka
-	 * vidare till ProduktApplikation för hantering.
+	 * ProduktForm har all kod för att hantera input och skicka vidare till
+	 * ProduktApplikation för hantering.
 	 * 
 	 * Comboboxen blir ett problem med stora mängder produkter.  Det kan vara
 	 * bra om istället den bara ta högst 10 värden åt gången och man tillägga
@@ -36,7 +36,7 @@ namespace LOMAdministrationApplikation.Views
 	 *		produkt
 	 * RengörInput - städa input från användaren för säkerhet
 	 * 
-	 * Version: 1.0
+	 * Version: 0.1
 	 * 2014-10-27
 	 * Robin Osborne
 	 */
@@ -44,38 +44,34 @@ namespace LOMAdministrationApplikation.Views
 	{
 		//instansvariabler
 		//Referens till ProduktApplikationen (Kontroller)
-		private AdministrationApplikation produktApplikation;
+		private AdministrationApplikation administrationApplikation;
 		//Behållare för en samling av Produkt värdena (utan nycklar) från en Dictionary
 		private Dictionary<string, Produkt>.ValueCollection produktSamling;
 		//Den produkt som är aktiv i produkt comboboxen
-		private string selectedProduktnamn = "";
+		private string valdProduktnamn = "";
+		private int sida = 1;
 
 		/*
 		 * Constructor som tar en inparameter, som är en referens till
 		 * en ProduktApplikation objekt.
 		 */
-		public ProduktForm(AdministrationApplikation produktApplikation)
+		public ProduktForm(AdministrationApplikation administrationApplikation)
 		{
 			InitializeComponent();
 
 			//Sätt produktApplikation objekt
-			this.produktApplikation = produktApplikation;
+			this.administrationApplikation = administrationApplikation;
 
 			//Sätt samling till värdena av Dictionary Produkter från ProduktApplikation
-			produktSamling = produktApplikation.Produkter.Values;
+			produktSamling = administrationApplikation.Produkter.Values;
 
-			//Lägg till "Ny" för nya produkter
-			cboxProduktBox.Items.Add("Ny");
+			initiatiseraComboBox();
 
-			//För varje produkt som finns i samlingen, lägg till namnet i
-			//produkt comboboxen
-			foreach (Produkt produkt in produktSamling)
+			if (administrationApplikation.TotallaSidorProdukter > 1)
 			{
-				cboxProduktBox.Items.Add(produkt.Namn);
+				btnNästa.Enabled = true;
+				btnTillbaka.Enabled = false;
 			}
-
-			//Sätt default produkten (om startup) till index 0
-			cboxProduktBox.SelectedIndex = 0;
 		}
 
 		/*
@@ -102,15 +98,15 @@ namespace LOMAdministrationApplikation.Views
 		 */
 		private void btnTaBort_Click(object sender, EventArgs e)
 		{
-			string namn = txtNamn.Text;
-			string ID = txtID.Text;
+			string namn = RengörInput(txtNamn.Text);
+			string ID = RengörInput(txtID.Text);
 
 			//Om ID redan existerar
 			if (TestaAttIDExistera(ID))
 			{
 				//Om det lyckas med att ta bort produkten, tar den även
 				//bort från comboxen och tömma fälterna
-				if (produktApplikation.TaBortProdukt(ID))
+				if (administrationApplikation.TaBortProdukt(ID, namn))
 				{
 					cboxProduktBox.Items.Remove(namn);
 					Tömma();
@@ -171,7 +167,7 @@ namespace LOMAdministrationApplikation.Views
 				{
 					//Om namnet inte redan existera, kör tillläggning
 					if (!TestaAttNamnExistera(Namn))
-						lyckades = produktApplikation.LäggTillProdukt(produkt);
+						lyckades = administrationApplikation.LäggTillProdukt(produkt);
 					else
 						MessageBox.Show("Namn existerar redan!");
 				}
@@ -185,7 +181,7 @@ namespace LOMAdministrationApplikation.Views
 				{
 					//Om namnet inte redan existera, kör updatering
 					if (!TestaAttSammaNamnExistera(ID, Namn))
-						lyckades = produktApplikation.UppdateraProdukt(produkt);
+						lyckades = administrationApplikation.UppdateraProdukt(produkt);
 				}
 				else
 					MessageBox.Show("ID finns inte!");
@@ -215,10 +211,10 @@ namespace LOMAdministrationApplikation.Views
 		 */
 		private void cboxProduktBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			selectedProduktnamn = cboxProduktBox.Items[cboxProduktBox.SelectedIndex].ToString();
+			valdProduktnamn = cboxProduktBox.Items[cboxProduktBox.SelectedIndex].ToString();
 
 			//Om comboxen är på "Ny", tömma fältarna
-			if (selectedProduktnamn.Equals("Ny"))
+			if (valdProduktnamn.Equals("Ny"))
 			{
 				Tömma();
 			}
@@ -229,7 +225,7 @@ namespace LOMAdministrationApplikation.Views
 				foreach (Produkt produkt in produktSamling)
 				{
 					//Om namnet i comboBoxen är samma som produkten sätts fälterna
-					if (produkt.Namn.Equals(selectedProduktnamn))
+					if (produkt.Namn.Equals(valdProduktnamn))
 					{
 						//pris ändras från '.' till ',' för svenska priser och
 						//formatteras av currencyTextBox
@@ -283,7 +279,7 @@ namespace LOMAdministrationApplikation.Views
 					txtMontering.Text = produkt.Monteringsbeskrivning;
 
 					//sätt nuvarande produktnamn till produkt namnet
-					selectedProduktnamn = produkt.Namn;
+					valdProduktnamn = produkt.Namn;
 					cboxProduktBox.SelectedIndex = i;
 				}
 			}
@@ -413,6 +409,82 @@ namespace LOMAdministrationApplikation.Views
 			{  
 				return String.Empty;
 			}
+		}
+
+		private void initiatiseraComboBox()
+		{
+			cboxProduktBox.Items.Clear();
+
+			//Lägg till "Ny" för nya produkter
+			cboxProduktBox.Items.Add("Ny");
+
+			//För varje produkt som finns i samlingen, lägg till namnet i
+			//produkt comboboxen
+			foreach (Produkt produkt in produktSamling)
+			{
+				cboxProduktBox.Items.Add(produkt.Namn);
+			}
+
+			//Sätt default produkten (om startup) till index 0
+			cboxProduktBox.SelectedIndex = 0;
+		}
+
+		private void btnFörsta_Click(object sender, EventArgs e)
+		{
+			sida = 1;
+			produktSamling = administrationApplikation.HämtaSidaProdukter(sida).Values;
+			initiatiseraComboBox();
+			if(administrationApplikation.TotallaSidorProdukter > 1)
+			{
+				btnNästa.Enabled = true;
+				btnTillbaka.Enabled = false;
+			}
+		}
+
+		private void btnSista_Click(object sender, EventArgs e)
+		{
+			sida = administrationApplikation.TotallaSidorProdukter;
+			produktSamling = administrationApplikation.HämtaSidaProdukter(sida).Values;
+			initiatiseraComboBox();
+			if (administrationApplikation.TotallaSidorProdukter > 1)
+			{
+				btnNästa.Enabled = false;
+				btnTillbaka.Enabled = true;
+			}
+		}
+
+		private void btnTillbaka_Click(object sender, EventArgs e)
+		{
+			if (sida > 1)
+			{
+				sida--;
+				produktSamling = administrationApplikation.HämtaSidaProdukter(sida).Values;
+			}
+			initiatiseraComboBox();
+			
+			if (sida == 1)
+			{
+				btnNästa.Enabled = true;
+				btnTillbaka.Enabled = false;
+			}
+		}
+
+		private void btnNästa_Click(object sender, EventArgs e)
+		{
+			if (sida < administrationApplikation.TotallaSidorProdukter)
+			{
+				sida++;
+				produktSamling = administrationApplikation.HämtaSidaProdukter(sida).Values;
+			}
+			initiatiseraComboBox();
+
+			if (sida == administrationApplikation.TotallaSidorProdukter)
+			{
+				btnNästa.Enabled = false;
+				btnTillbaka.Enabled = true;
+			}
+
+			MessageBox.Show("Samling: " + produktSamling.Count);
 		}
 
 	}

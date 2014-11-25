@@ -34,6 +34,8 @@ namespace LOMAdministrationApplikation
 		private Dictionary<string, Produkt> produkter;
 		//Dictionary av användare
 		private Dictionary<string, Användare> allaAnvändare;
+		//För olika Produkt sidor
+		private int totallaSidorProdukter = 1;
 
 		/*
 		 * Konstruktör för ProduktApplikation
@@ -71,6 +73,15 @@ namespace LOMAdministrationApplikation
 			set
 			{
 				allaAnvändare = value;
+			}
+		}
+
+		//egenskap för totalla sidor av produkter
+		public int TotallaSidorProdukter
+		{
+			get
+			{
+				return totallaSidorProdukter;
 			}
 		}
 
@@ -114,6 +125,8 @@ namespace LOMAdministrationApplikation
 			//blir sann
 			if (databas.LäsaProdukter() && databas.LäsaAnvändare())
 			{
+				HämtaSidaProdukter(1);
+				totallaSidorProdukter = databas.TotallaSidorProdukter;
 				lyckades = true;
 			}
 			else
@@ -122,6 +135,12 @@ namespace LOMAdministrationApplikation
 			}
 
 			return lyckades;
+		}
+
+		public Dictionary<string, Produkt> HämtaSidaProdukter(int sida)
+		{
+			produkter = databas.HämtaSidaProdukter(sida);
+			return produkter;
 		}
 
 		/*
@@ -159,10 +178,10 @@ namespace LOMAdministrationApplikation
 		 * in - id(sträng) av produkten som ska tas bort från databasen 
 		 * ut - sann returneras om det lyckades, annars falsk
 		 */
-		public bool TaBortProdukt(string id)
+		public bool TaBortProdukt(string id, string namn)
 		{
 			//Delete metoden i Databas returnerar sann eller falsk
-			bool success = databas.TaBortProdukt(id);
+			bool success = databas.TaBortProdukt(id, namn);
 
 			//Databasen läsas om och Produkt sätts till den nya innehåll
 			databas.LäsaProdukter();
