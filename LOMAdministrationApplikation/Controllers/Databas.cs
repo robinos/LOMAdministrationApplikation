@@ -35,16 +35,14 @@ namespace LOMAdministrationApplikation.Controllers
 		private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\Eliyat\Documents\Visual Studio 2013\Projects\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";		
 		private Dictionary<string, Produkt> produkter;
 		private Dictionary<string, Användare> allaAnvändare;
-		private SqlConnection kopplingen;
+		SqlConnection kopplingen;
 
 		//För olika Produkt sidor
 		private int totallaSidorProdukter = 1;
-		private int sidaProdukter = 1;
 		private int produkterPerSida = 5;
 
 		//För olika Användare sidor
 		private int totallaSidorAnvändare = 1;
-		private int sidaAnvändare = 1;
 		private int användarePerSida = 5;
 
 		/*
@@ -134,6 +132,12 @@ namespace LOMAdministrationApplikation.Controllers
 			{
 				//Öppnades inte.  Skickar tillbaka falsk
 				MessageBox.Show("Kan inte koppla till databasen.  Kontakt administratören. " + ex.Message);
+				return false;
+			}
+			catch (InvalidOperationException ex)
+			{
+				//Öppnades inte.  Skickar tillbaka falsk
+				MessageBox.Show("Databasen var redan öppen. " + ex.Message);
 				return false;
 			}
 		}
@@ -246,12 +250,20 @@ namespace LOMAdministrationApplikation.Controllers
 			//Testa att ID kolumnen existera
 			//Om något är fel sluta och returnera falsk
 			if (!TestaDataSetKolumn(dataSet, kolumnID))
+			{
+				//Stäng databasen
+				StängKopplingen();
 				return false;
+			}
 
 			//Testa att Namn kolumnen existera
 			//Om något är fel sluta och returnera falsk
 			if (!TestaDataSetKolumn(dataSet, kolumnNamn))
+			{
+				//Stäng databasen
+				StängKopplingen();
 				return false;
+			}
 
 			//Räknar hur många sidor av produkter det blir totallt
 			totallaSidorProdukter = RäknarTotallaSidor(dataSet, tabellnamn, totallaSidorProdukter, produkterPerSida);
@@ -321,12 +333,20 @@ namespace LOMAdministrationApplikation.Controllers
 			//Testa att ID kolumnen existera
 			//Om något är fel sluta och returnera null
 			if (!TestaDataSetKolumn(dataSet, kolumnID))
+			{
+				//Stäng databasen
+				StängKopplingen();
 				return null;
+			}
 
 			//Testa att Namn kolumnen existera
 			//Om något är fel sluta och returnera null
 			if (!TestaDataSetKolumn(dataSet, kolumnNamn))
+			{
+				//Stäng databasen
+				StängKopplingen();
 				return null;
+			}
 
 			//Temporär Produkt variabel
 			Produkt produktTemp;
@@ -356,6 +376,7 @@ namespace LOMAdministrationApplikation.Controllers
 					tempProdukter[produktTemp.ID] = produktTemp;
 			}
 
+			//Stäng databasen
 			StängKopplingen();
 
 			produkter = tempProdukter;
@@ -388,12 +409,20 @@ namespace LOMAdministrationApplikation.Controllers
 			//Testa att ID kolumnen existera
 			//Om något är fel sluta och returnera falsk
 			if (!TestaDataSetKolumn(dataSet, kolumnID))
+			{
+				//Stäng databasen
+				StängKopplingen();
 				return false;
+			}
 
 			//Testa att Namn kolumnen existera
 			//Om något är fel sluta och returnera falsk
 			if (!TestaDataSetKolumn(dataSet, kolumnNamn))
+			{
+				//Stäng databasen
+				StängKopplingen();
 				return false;
+			}
 
 			//Räknar hur många sidor av användare det blir totallt
 			totallaSidorAnvändare = RäknarTotallaSidor(dataSet, tabellnamn, totallaSidorAnvändare, användarePerSida);
@@ -668,6 +697,10 @@ namespace LOMAdministrationApplikation.Controllers
 
 				produkter.Remove(id);
 			}
+			else
+			{
+				MessageBox.Show("Exiterade inte!");
+			}
 
 			//Stäng databasen
 			StängKopplingen();
@@ -726,11 +759,6 @@ namespace LOMAdministrationApplikation.Controllers
 			string kommando = "SELECT * FROM Produkt";
 			string tabellnamn = "Produkt";
 
-			//Öppna databasen
-			//Om man inte kunde öppna databas sluta och returnera falsk
-			if (ÖppnaKopplingen() == false)
-				return false;
-
 			//Hämta dataset för produkter
 			//DataSet är en behållare/mellansteg för inläst databas-data (kan innehålla flera tabeller)
 			DataSet dataSet = HämtaDataSetProdukter(kommando, tabellnamn);
@@ -738,12 +766,16 @@ namespace LOMAdministrationApplikation.Controllers
 			//Testa att ID kolumnen existera
 			//Om något är fel sluta och returnera falsk
 			if (!TestaDataSetKolumn(dataSet, kolumnID))
+			{
 				return false;
+			}
 
 			//Testa att Namn kolumnen existera
 			//Om något är fel sluta och returnera falsk
 			if (!TestaDataSetKolumn(dataSet, kolumnNamn))
+			{
 				return false;
+			}
 
 			//Bool för att markera att någonting redan existerar i tabellen, från början false 
 			bool bExisterar = false;
@@ -753,10 +785,7 @@ namespace LOMAdministrationApplikation.Controllers
 			foreach (DataRow dataRow in dataSet.Tables[0].Rows)
 			{
 				//Om field "id" i en DataRow är lika med den nya tempId, så finns den redan 
-				if (dataRow["ID"].ToString() == id)
-					bExisterar = true; //bExisterar true innebär att testId redan finns i tabellen
-				//Om field "ID" i en DataRow är lika med användarnamn så finns den redan 
-				if (dataRow["Namn"].ToString() == namn)
+				if (dataRow["ID"].ToString() == id && dataRow["Namn"].ToString().Equals(namn))
 					bExisterar = true; //bExisterar true innebär att testId redan finns i tabellen
 			}
 
@@ -780,11 +809,6 @@ namespace LOMAdministrationApplikation.Controllers
 			string kommando = "SELECT * FROM Anvandare";
 			string tabellnamn = "Anvandare";
 
-			//Öppna databasen
-			//Om man inte kunde öppna databas sluta och returnera falsk
-			if (ÖppnaKopplingen() == false)
-				return false;
-
 			//Hämta dataset för produkter
 			//DataSet är en behållare/mellansteg för inläst databas-data (kan innehålla flera tabeller)
 			DataSet dataSet = HämtaDataSetProdukter(kommando, tabellnamn);
@@ -792,12 +816,16 @@ namespace LOMAdministrationApplikation.Controllers
 			//Testa att ID kolumnen existera
 			//Om något är fel sluta och returnera falsk
 			if (!TestaDataSetKolumn(dataSet, kolumnID))
+			{
 				return false;
+			}
 
 			//Testa att Namn kolumnen existera
 			//Om något är fel sluta och returnera falsk
 			if (!TestaDataSetKolumn(dataSet, kolumnNamn))
+			{
 				return false;
+			}
 
 			//Bool för att markera att någonting redan existerar i tabellen, från början false 
 			bool bExisterar = false;

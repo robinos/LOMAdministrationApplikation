@@ -483,8 +483,6 @@ namespace LOMAdministrationApplikation.Views
 				btnNästa.Enabled = false;
 				btnTillbaka.Enabled = true;
 			}
-
-			MessageBox.Show("Samling: " + produktSamling.Count);
 		}
 
 	}
