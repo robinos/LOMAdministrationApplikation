@@ -31,7 +31,6 @@ namespace LOMAdministrationApplikation.Controllers
 	public class Databas
 	{
 		//instansvariabler
-		//private string connectionString = @"Data Source=(LocalDB)\v11.0;" + "AttachDbFilename=" + Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\TestDatabase.mdf;" + "Integrated Security=True;";
         //private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\BIlbo\Source\Repos\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";		
 		private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\Eliyat\Documents\Visual Studio 2013\Projects\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";	
 		private Dictionary<string, Produkt> produkter;
@@ -280,7 +279,7 @@ namespace LOMAdministrationApplikation.Controllers
 				produktTemp = new Produkt();
 				produktTemp.ID = dataRow["ID"].ToString();
 				produktTemp.Namn = dataRow["Namn"].ToString();
-				produktTemp.Pris = decimal.Parse(dataRow["Pris"].ToString());
+				produktTemp.Pris = Decimal.Parse(dataRow["Pris"].ToString());
 				produktTemp.Typ = dataRow["Typ"].ToString();
 				produktTemp.Färg = dataRow["Farg"].ToString();
 				produktTemp.Bildfilnamn = dataRow["Bildfilnamn"].ToString();
@@ -360,7 +359,7 @@ namespace LOMAdministrationApplikation.Controllers
 				produktTemp = new Produkt();
 				produktTemp.ID = dataRow["ID"].ToString();
 				produktTemp.Namn = dataRow["Namn"].ToString();
-				produktTemp.Pris = decimal.Parse(dataRow["Pris"].ToString());
+				produktTemp.Pris = Decimal.Parse(dataRow["Pris"].ToString());
 				produktTemp.Typ = dataRow["Typ"].ToString();
 				produktTemp.Färg = dataRow["Farg"].ToString();
 				produktTemp.Bildfilnamn = dataRow["Bildfilnamn"].ToString();
@@ -480,7 +479,7 @@ namespace LOMAdministrationApplikation.Controllers
 			{
 				lyckades = true;
 				//SqlCommand föredra allt i en lång sträng
-				String sCommandString = "INSERT INTO Produkt (ID, Namn, Pris, Typ, Farg, Bildfilnamn, Ritningsfilnamn, RefID, Beskrivning, Montering) VALUES ('" + produkt.ID + "', '" + produkt.Namn + "', " + " TRY_PARSE('" + produkt.Pris + "' AS DECIMAL using 'sv-SE'), '" + produkt.Typ + "', '" + produkt.Färg + "', '" + produkt.Bildfilnamn + "', '" + produkt.Ritningsfilnamn + "', '" + produkt.RefID + "', '" + produkt.Beskrivning + "', '" + produkt.Monteringsbeskrivning + "')";
+				String sCommandString = "INSERT INTO Produkt (ID, Namn, Pris, Typ, Farg, Bildfilnamn, Ritningsfilnamn, RefID, Beskrivning, Montering) VALUES ('" + produkt.ID + "', '" + produkt.Namn + "', " + " TRY_PARSE('" + produkt.Pris + "' AS DECIMAL(10, 2) using 'sv-SE'), '" + produkt.Typ + "', '" + produkt.Färg + "', '" + produkt.Bildfilnamn + "', '" + produkt.Ritningsfilnamn + "', '" + produkt.RefID + "', '" + produkt.Beskrivning + "', '" + produkt.Monteringsbeskrivning + "')";
 				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
 				command.ExecuteNonQuery();
 
@@ -561,7 +560,7 @@ namespace LOMAdministrationApplikation.Controllers
 				kommando.ExecuteNonQuery();
 
 				//uppdatera pris
-				sCommandString = "UPDATE Produkt SET Pris='" + produkt.Pris + "' WHERE ID='" + produkt.ID + "'";
+				sCommandString = "UPDATE Produkt SET Pris=" + " TRY_PARSE('" + produkt.Pris + "' AS DECIMAL(10, 2) using 'sv-SE')" + " WHERE ID='" + produkt.ID + "'";
 				kommando = new SqlCommand(sCommandString, kopplingen);
 				kommando.ExecuteNonQuery();
 
