@@ -32,7 +32,7 @@ namespace LOMAdministrationApplikation.Controllers
 	{
 		//instansvariabler
 		//private string connectionString = @"Data Source=(LocalDB)\v11.0;" + "AttachDbFilename=" + Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\TestDatabase.mdf;" + "Integrated Security=True;";
-		private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\Eliyat\Documents\Visual Studio 2013\Projects\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";		
+        private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\BIlbo\Source\Repos\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";		
 		private Dictionary<string, Produkt> produkter;
 		private Dictionary<string, Användare> allaAnvändare;
 		SqlConnection kopplingen;
@@ -139,7 +139,7 @@ namespace LOMAdministrationApplikation.Controllers
 				//Öppnades inte.  Skickar tillbaka falsk
 				MessageBox.Show("Databasen var redan öppen. " + ex.Message);
 				return false;
-			}
+		}
 		}
 
 
@@ -696,10 +696,6 @@ namespace LOMAdministrationApplikation.Controllers
 				command.ExecuteNonQuery();
 
 				produkter.Remove(id);
-			}
-			else
-			{
-				MessageBox.Show("Exiterade inte!");
 			}
 
 			//Stäng databasen
