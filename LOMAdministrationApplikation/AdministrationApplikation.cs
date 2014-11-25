@@ -36,6 +36,8 @@ namespace LOMAdministrationApplikation
 		private Dictionary<string, Användare> allaAnvändare;
 		//För olika Produkt sidor
 		private int totallaSidorProdukter = 1;
+		//För olika Användare sidor
+		private int totallaSidorAnvändare = 1;
 
 		/*
 		 * Konstruktör för ProduktApplikation
@@ -85,6 +87,15 @@ namespace LOMAdministrationApplikation
 			}
 		}
 
+		//egenskap för totalla sidor av användare
+		public int TotallaSidorAnvändare
+		{
+			get
+			{
+				return totallaSidorAnvändare;
+			}
+		}
+
 		/// <summary>
 		/// Main startar och kör huvudprogrammet.  Den initialiserar en instans av
 		/// ProduktApplikation och läser från databasen.  Om det lyckas, startas
@@ -127,6 +138,8 @@ namespace LOMAdministrationApplikation
 			{
 				HämtaSidaProdukter(1);
 				totallaSidorProdukter = databas.TotallaSidorProdukter;
+				HämtaSidaAnvändare(1);
+				totallaSidorAnvändare = databas.TotallaSidorAnvändare;
 				lyckades = true;
 			}
 			else
@@ -137,10 +150,22 @@ namespace LOMAdministrationApplikation
 			return lyckades;
 		}
 
+		/*
+		 * Hämta en sida produkter
+		 */
 		public Dictionary<string, Produkt> HämtaSidaProdukter(int sida)
 		{
 			produkter = databas.HämtaSidaProdukter(sida);
 			return produkter;
+		}
+
+		/*
+		 * Hämta en sida användare
+		 */
+		public Dictionary<string, Användare> HämtaSidaAnvändare(int sida)
+		{
+			allaAnvändare = databas.HämtaSidaAnvändare(sida);
+			return allaAnvändare;
 		}
 
 		/*
@@ -178,10 +203,10 @@ namespace LOMAdministrationApplikation
 		 * in - id(sträng) av produkten som ska tas bort från databasen 
 		 * ut - sann returneras om det lyckades, annars falsk
 		 */
-		public bool TaBortProdukt(string id, string namn)
+		public bool TaBortProdukt(string id)
 		{
 			//Delete metoden i Databas returnerar sann eller falsk
-			bool success = databas.TaBortProdukt(id, namn);
+			bool success = databas.TaBortProdukt(id);
 
 			//Databasen läsas om och Produkt sätts till den nya innehåll
 			databas.LäsaProdukter();
@@ -239,32 +264,6 @@ namespace LOMAdministrationApplikation
 			databas.LäsaAnvändare();
 
 			return success;
-		}
-
-		/*
-		 * SammaProdukter testar att Dictionary Produkter är samma som den
-		 * i Databas klassen.  Används för test.
-		 * Det borde vara en referens till samma objekt så en enklare
-		 * Equals (från objekt) kan användas.
-		 * 
-		 * ut - sann returneras om Dictionary objekten är samma, annars falsk
-		 */
-		public bool SammaProdukter()
-		{
-			return(databas.Produkter.Equals(produkter));
-		}
-
-		/*
-		 * SammaAnvändare testar att Dictionary AllaAnvändare är samma som den
-		 * i Databas klassen.  Används för test.
-		 * Det borde vara en referens till samma objekt så en enklare
-		 * Equals (från objekt) kan användas.
-		 * 
-		 * ut - sann returneras om Dictionary objekten är samma, annars falsk
-		 */
-		public bool SammaAnvändare()
-		{
-			return (databas.AllaAnvändare.Equals(allaAnvändare));
 		}
 	}
 }

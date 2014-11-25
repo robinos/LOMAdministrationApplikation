@@ -3,6 +3,7 @@ using System.Collections.Generic; //Dictionary klass
 using System.Management; //Behövs
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LOMAdministrationApplikation;
+using LOMAdministrationApplikation.Models;
 
 namespace LOMAdministrationApplikationUnitTestar
 {
@@ -73,7 +74,6 @@ namespace LOMAdministrationApplikationUnitTestar
 		{
 			initialise();
 			Assert.IsTrue(administrationApplikation.Produkter.Count > 0);
-			Assert.IsTrue(administrationApplikation.SammaProdukter());
 		}
 
 		/*

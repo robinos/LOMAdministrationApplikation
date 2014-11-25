@@ -107,7 +107,7 @@ namespace LOMAdministrationApplikation.Views
 			{
 				//Om det lyckas med att ta bort produkten, tar den även
 				//bort från comboxen och tömma fälterna
-				if (administrationApplikation.TaBortProdukt(ID, namn))
+				if (administrationApplikation.TaBortProdukt(ID))
 				{
 					cboxProduktBox.Items.Remove(namn);
 					Tömma();

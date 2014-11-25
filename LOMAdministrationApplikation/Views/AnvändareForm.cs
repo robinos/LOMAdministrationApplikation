@@ -24,6 +24,7 @@ namespace LOMAdministrationApplikation.Views
 		//Den produkt som är aktiv i produkt comboboxen
 		private string valdAnvändarnamn = "";
 		private int högstaID = 0;
+		private int sida = 1;
 
 		public AnvändareForm(AdministrationApplikation administrationApplikation)
 		{
@@ -35,20 +36,13 @@ namespace LOMAdministrationApplikation.Views
 			//Sätt samling till värdena av Dictionary Produkter från ProduktApplikation
 			användareSamling = administrationApplikation.AllaAnvändare.Values;
 
-			//Lägg till "Ny" för nya produkter
-			cboxAnvändareBox.Items.Add("Ny");
+			initiatiseraComboBox();
 
-			//För varje produkt som finns i samlingen, lägg till namnet i
-			//produkt comboboxen
-			foreach (Användare användare in användareSamling)
+			if (administrationApplikation.TotallaSidorAnvändare > 1)
 			{
-				cboxAnvändareBox.Items.Add(användare.Användarnamn);
-				if (användare.ID > högstaID)
-					högstaID = användare.ID;
+				btnNästa.Enabled = true;
+				btnTillbaka.Enabled = false;
 			}
-
-			//Sätt default produkten (om startup) till index 0
-			cboxAnvändareBox.SelectedIndex = 0;
 		}
 
 		/*
@@ -404,6 +398,80 @@ namespace LOMAdministrationApplikation.Views
 			byte[] hashValue = mySHA256.ComputeHash(bytes);
 			byte[] inArray = HashAlgorithm.Create("SHA256").ComputeHash(bytes);
 			return Convert.ToBase64String(inArray);
+		}
+
+		private void initiatiseraComboBox()
+		{
+			cboxAnvändareBox.Items.Clear();
+
+			//Lägg till "Ny" för nya produkter
+			cboxAnvändareBox.Items.Add("Ny");
+
+			//För varje produkt som finns i samlingen, lägg till namnet i
+			//produkt comboboxen
+			foreach (Användare användare in användareSamling)
+			{
+				cboxAnvändareBox.Items.Add(användare.Användarnamn);
+			}
+
+			//Sätt default produkten (om startup) till index 0
+			cboxAnvändareBox.SelectedIndex = 0;
+		}
+
+		private void btnFörsta_Click(object sender, EventArgs e)
+		{
+			sida = 1;
+			användareSamling = administrationApplikation.HämtaSidaAnvändare(sida).Values;
+			initiatiseraComboBox();
+			if (administrationApplikation.TotallaSidorAnvändare > 1)
+			{
+				btnNästa.Enabled = true;
+				btnTillbaka.Enabled = false;
+			}
+		}
+
+		private void btnSista_Click(object sender, EventArgs e)
+		{
+			sida = administrationApplikation.TotallaSidorAnvändare;
+			användareSamling = administrationApplikation.HämtaSidaAnvändare(sida).Values;
+			initiatiseraComboBox();
+			if (administrationApplikation.TotallaSidorAnvändare > 1)
+			{
+				btnNästa.Enabled = false;
+				btnTillbaka.Enabled = true;
+			}
+		}
+
+		private void btnTillbaka_Click(object sender, EventArgs e)
+		{
+			if (sida > 1)
+			{
+				sida--;
+				användareSamling = administrationApplikation.HämtaSidaAnvändare(sida).Values;
+			}
+			initiatiseraComboBox();
+
+			if (sida == 1)
+			{
+				btnNästa.Enabled = true;
+				btnTillbaka.Enabled = false;
+			}
+		}
+
+		private void btnNästa_Click(object sender, EventArgs e)
+		{
+			if (sida < administrationApplikation.TotallaSidorAnvändare)
+			{
+				sida++;
+				användareSamling = administrationApplikation.HämtaSidaAnvändare(sida).Values;
+			}
+			initiatiseraComboBox();
+
+			if (sida == administrationApplikation.TotallaSidorAnvändare)
+			{
+				btnNästa.Enabled = false;
+				btnTillbaka.Enabled = true;
+			}
 		}
 		
 	}

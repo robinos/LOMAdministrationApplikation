@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Management; //Behövs
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using LOMAdministrationApplikation;
+using LOMAdministrationApplikation.Models;
 
 namespace LOMAdministrationApplikationUnitTestar
 {

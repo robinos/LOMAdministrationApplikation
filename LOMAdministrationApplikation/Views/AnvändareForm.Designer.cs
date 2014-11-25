@@ -48,6 +48,10 @@
 			this.lblHash = new System.Windows.Forms.Label();
 			this.lblLösenord = new System.Windows.Forms.Label();
 			this.lblID = new System.Windows.Forms.Label();
+			this.btnFörsta = new System.Windows.Forms.Button();
+			this.btnSista = new System.Windows.Forms.Button();
+			this.btnNästa = new System.Windows.Forms.Button();
+			this.btnTillbaka = new System.Windows.Forms.Button();
 			this.panelFunktion.SuspendLayout();
 			this.panelInmatning.SuspendLayout();
 			this.SuspendLayout();
@@ -59,6 +63,10 @@
 			this.panelFunktion.AccessibleRole = System.Windows.Forms.AccessibleRole.Pane;
 			this.panelFunktion.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.panelFunktion.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panelFunktion.Controls.Add(this.btnFörsta);
+			this.panelFunktion.Controls.Add(this.btnSista);
+			this.panelFunktion.Controls.Add(this.btnNästa);
+			this.panelFunktion.Controls.Add(this.btnTillbaka);
 			this.panelFunktion.Controls.Add(this.btnSpara);
 			this.panelFunktion.Controls.Add(this.cboxAnvändareBox);
 			this.panelFunktion.Controls.Add(this.lblIndex);
@@ -66,7 +74,7 @@
 			this.panelFunktion.Controls.Add(this.btnNy);
 			this.panelFunktion.Location = new System.Drawing.Point(37, 30);
 			this.panelFunktion.Name = "panelFunktion";
-			this.panelFunktion.Size = new System.Drawing.Size(404, 27);
+			this.panelFunktion.Size = new System.Drawing.Size(673, 27);
 			this.panelFunktion.TabIndex = 6;
 			// 
 			// btnSpara
@@ -89,7 +97,7 @@
 			this.cboxAnvändareBox.AccessibleName = "Användarlista";
 			this.cboxAnvändareBox.AccessibleRole = System.Windows.Forms.AccessibleRole.ComboBox;
 			this.cboxAnvändareBox.FormattingEnabled = true;
-			this.cboxAnvändareBox.Location = new System.Drawing.Point(238, 2);
+			this.cboxAnvändareBox.Location = new System.Drawing.Point(322, 2);
 			this.cboxAnvändareBox.Name = "cboxAnvändareBox";
 			this.cboxAnvändareBox.Size = new System.Drawing.Size(159, 21);
 			this.cboxAnvändareBox.TabIndex = 6;
@@ -155,7 +163,7 @@
 			this.panelInmatning.Controls.Add(this.lblHash);
 			this.panelInmatning.Controls.Add(this.lblLösenord);
 			this.panelInmatning.Controls.Add(this.lblID);
-			this.panelInmatning.Location = new System.Drawing.Point(37, 99);
+			this.panelInmatning.Location = new System.Drawing.Point(157, 111);
 			this.panelInmatning.Name = "panelInmatning";
 			this.panelInmatning.Size = new System.Drawing.Size(411, 255);
 			this.panelInmatning.TabIndex = 8;
@@ -319,6 +327,48 @@
 			this.lblID.Text = "ID:";
 			this.lblID.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// btnFörsta
+			// 
+			this.btnFörsta.Location = new System.Drawing.Point(248, 1);
+			this.btnFörsta.Name = "btnFörsta";
+			this.btnFörsta.Size = new System.Drawing.Size(31, 23);
+			this.btnFörsta.TabIndex = 15;
+			this.btnFörsta.Text = "|<";
+			this.btnFörsta.UseVisualStyleBackColor = true;
+			this.btnFörsta.Click += new System.EventHandler(this.btnFörsta_Click);
+			// 
+			// btnSista
+			// 
+			this.btnSista.Location = new System.Drawing.Point(285, 1);
+			this.btnSista.Name = "btnSista";
+			this.btnSista.Size = new System.Drawing.Size(31, 23);
+			this.btnSista.TabIndex = 14;
+			this.btnSista.Text = ">|";
+			this.btnSista.UseVisualStyleBackColor = true;
+			this.btnSista.Click += new System.EventHandler(this.btnSista_Click);
+			// 
+			// btnNästa
+			// 
+			this.btnNästa.Enabled = false;
+			this.btnNästa.Location = new System.Drawing.Point(578, 1);
+			this.btnNästa.Name = "btnNästa";
+			this.btnNästa.Size = new System.Drawing.Size(85, 23);
+			this.btnNästa.TabIndex = 13;
+			this.btnNästa.Text = "Nästa 5 >>";
+			this.btnNästa.UseVisualStyleBackColor = true;
+			this.btnNästa.Click += new System.EventHandler(this.btnNästa_Click);
+			// 
+			// btnTillbaka
+			// 
+			this.btnTillbaka.Enabled = false;
+			this.btnTillbaka.Location = new System.Drawing.Point(487, 1);
+			this.btnTillbaka.Name = "btnTillbaka";
+			this.btnTillbaka.Size = new System.Drawing.Size(85, 23);
+			this.btnTillbaka.TabIndex = 12;
+			this.btnTillbaka.Text = "<< Tillbaka 5";
+			this.btnTillbaka.UseVisualStyleBackColor = true;
+			this.btnTillbaka.Click += new System.EventHandler(this.btnTillbaka_Click);
+			// 
 			// AnvändareForm
 			// 
 			this.AccessibleDescription = "Användare redigerare";
@@ -361,6 +411,10 @@
 		private System.Windows.Forms.RichTextBox txtRäknare;
 		private System.Windows.Forms.RadioButton rbtnLåste;
 		private System.Windows.Forms.RadioButton rbtnOlåste;
+		private System.Windows.Forms.Button btnFörsta;
+		private System.Windows.Forms.Button btnSista;
+		private System.Windows.Forms.Button btnNästa;
+		private System.Windows.Forms.Button btnTillbaka;
 
 	}
 }

@@ -12,20 +12,36 @@ namespace LOMAdministrationApplikation.Controllers
 {
 	/*
 	 * (Kontroller)
-	 * Databasklassen hanterar all kontakt med databasen.  Första versionen av
-	 * connectionString (instansvariabel) hittade själv databasmappen, men kunde
-	 * användas bara för läsning.  Den fick inte tillåtelse till ändringar.
-	 * För att ändra databasen krävs det att man ger exakta pathen (som det är nu).
+	 * Databas klassen hanterar allt kontakt med databasen.  Det finns två tabeller
+	 * i databasen.  Produkt tabellen innehåller alla produkter och Användare
+	 * tabellen innehåller alla användare som få tillåtelse att logga in sedan och
+	 * se information om produkter i en ASP.Net mvc applikation.
 	 * 
 	 * ÖppnaKopplingen och StängKopplingen - öppnar/stäng kopplingen till databasen
+	 * HämtaDataSet - hämtar en DataSet med all data i angiven tabell
+	 * TestaDataSetKolumn - Testar en kolumn i en DataSet för att se om den existera och
+	 *		har något data i sig.  Används främst för att testa att tabellen har data i
+	 *		nyckel/unika kolumner.
+	 * RäknarTotallaSidor - Räknor hur många sidor det blir med x antal element per sida
+	 * 
+	 * *För Produkttabellen*
 	 * LäsProdukter - läsar produkter från databasen till Dictionary produkter
+	 * HämtaSidaProdukter - hämtar produkter som ska vara på angiven sida
 	 * InsättProdukt - skriver produkt till databasen och uppdatera Dictionary produkter
 	 * UppdateraProdukt - tar bort en produkt från databasen och uppdatera Dictionary produkter
 	 * TaBortProdukt - ändra en produkt från databasen och uppdatera Dictionary produkter
-	 * ExisterandeID - kollar om en ID redan existerar i databasen
+	 * ExisterandeProdukt - kollar om en ID redan existerar i databasen
+	 * 
+	 * *För Användartabellen*
+	 * LäsAnvändare - läsar användare från databasen till Dictionary produkter
+	 * HämtaSidaAnvändare - hämtar användare som ska vara på angiven sida
+	 * InsättAnvändare - skriver användare till databasen och uppdatera Dictionary produkter
+	 * UppdateraAnvändare - tar bort en användare från databasen och uppdatera Dictionary produkter
+	 * TaBortAnvändare - ändra en användare från databasen och uppdatera Dictionary produkter
+	 * ExisterandeAnvändare - kollar om en ID redan existerar i databasen 
 	 * 
 	 * Version: 0.2
-	 * 2014-11-23
+	 * 2014-11-25
 	 * Robin Osborne
 	 */
 	public class Databas
@@ -38,10 +54,12 @@ namespace LOMAdministrationApplikation.Controllers
 		SqlConnection kopplingen;
 
 		//För olika Produkt sidor
+		private int totallaProdukter = 1;
 		private int totallaSidorProdukter = 1;
 		private int produkterPerSida = 5;
 
 		//För olika Användare sidor
+		private int totallaAnvändare = 1;
 		private int totallaSidorAnvändare = 1;
 		private int användarePerSida = 5;
 
@@ -86,30 +104,12 @@ namespace LOMAdministrationApplikation.Controllers
 			}
 		}
 
-		//egenskap för antal produkter per sida
-		public int ProdukterPerSida
-		{
-			get
-			{
-				return produkterPerSida;
-			}
-		}
-
 		//egenskap för totalla sidor av användare
 		public int TotallaSidorAnvändare
 		{
 			get
 			{
 				return totallaSidorAnvändare;
-			}
-		}
-
-		//egenskap för antal användare per sida
-		public int AnvändarePerSida
-		{
-			get
-			{
-				return användarePerSida;
 			}
 		}
 
@@ -136,10 +136,10 @@ namespace LOMAdministrationApplikation.Controllers
 			}
 			catch (InvalidOperationException ex)
 			{
+				MessageBox.Show("Databasen var redan öppen eller kan inte öppnas av andra skäll. " + ex.Message);
 				//Öppnades inte.  Skickar tillbaka falsk
-				MessageBox.Show("Databasen var redan öppen. " + ex.Message);
 				return false;
-		}
+			}
 		}
 
 
@@ -167,14 +167,14 @@ namespace LOMAdministrationApplikation.Controllers
 		}
 
 		/*
-		 * HämtaDataSetProdukter hämtar datan från databasen till en data
-		 * set mha en adapter.
+		 * HämtaDataSet hämtar datan från databasen till en data set
+		 * mha en adapter.
 		 * 
 		 * in:	kommando: SELECT kommando man ska exekvera som sträng
 		 *		tabell: tabellnamn man tar data ifrån som sträng
 		 * ut: en DataSet enligt kommando på tabellen
 		 */
-		public DataSet HämtaDataSetProdukter(string kommando, string tabell)
+		public DataSet HämtaDataSet(string kommando, string tabell)
 		{
 			//DataSet är en behållare/mellansteg för inläst databas-data (kan
 			//innehålla flera tabeller)
@@ -226,6 +226,28 @@ namespace LOMAdministrationApplikation.Controllers
 		}
 
 		/*
+		 * RäknarTotallaSidor räknar alla element i tabellen och delar det i sidor mha elementPerSida.
+		 * Man får tillbaka hur många sidor det blir totallt.
+		 * 
+		 * in:	dataSet: DataSet man kommer att använda
+		 *		tabellnamn: Tabellen man ska räkna rader (element) i 
+		 *		elementPerSida: Antal element som visas per sida
+		 * ut: en int som representera totall antal sidor
+		 */
+		private int RäknarTotallaSidor(DataSet dataSet, int rowCount, int elementPerSida)
+		{
+			int totallaSidor = rowCount / elementPerSida;
+			// if any row left after calculated pages, add one more page 
+			if (rowCount % elementPerSida > 0)
+				totallaSidor += 1;
+
+			if (rowCount < elementPerSida)
+				elementPerSida = rowCount;
+
+			return totallaSidor;
+		}
+
+		/*
 		 * LäsaProdukter är en metod för att läsa in värden från Produkt
 		 * tabellen till en dictionary object.
 		 * 
@@ -245,7 +267,7 @@ namespace LOMAdministrationApplikation.Controllers
 				return false;
 
 			//Hämta dataset för produkter
-			DataSet dataSet = HämtaDataSetProdukter(kommando, tabellnamn);
+			DataSet dataSet = HämtaDataSet(kommando, tabellnamn);
 
 			//Testa att ID kolumnen existera
 			//Om något är fel sluta och returnera falsk
@@ -265,8 +287,11 @@ namespace LOMAdministrationApplikation.Controllers
 				return false;
 			}
 
+			//Hur många produkter som finns totallt i tabellen
+			totallaProdukter = dataSet.Tables[tabellnamn].Rows.Count;
+
 			//Räknar hur många sidor av produkter det blir totallt
-			totallaSidorProdukter = RäknarTotallaSidor(dataSet, tabellnamn, totallaSidorProdukter, produkterPerSida);
+			totallaSidorProdukter = RäknarTotallaSidor(dataSet, totallaProdukter, produkterPerSida);
 
 			//Temporär Produkt variabel
 			Produkt produktTemp;
@@ -303,7 +328,12 @@ namespace LOMAdministrationApplikation.Controllers
 		}
 
 		/*
+		 * HämtaSidaProdukter hämtar produkter som ska vara på angiven sida (ut av
+		 * alla produktsidor).  Detta kunde ersättas av Linq eller något liknande över
+		 * en inladdad produktlista mot att första inläsning tar ett tag.
 		 * 
+		 * in: sidan ut av alla produktsidor som man ska hämta
+		 * ut: en Dictionary av produkter för den sida (produkter per sidan antal)
 		 */
 		public Dictionary<string, Produkt> HämtaSidaProdukter(int sida)
 		{
@@ -314,21 +344,24 @@ namespace LOMAdministrationApplikation.Controllers
 			string tabellnamn = "Produkt";
 			string kommando;
 
+			//Vill man titta på sida 1 tar man första antal produkter (enligt produkter per sida)
 			if (sida == 1)
 			{
 				kommando = "Select TOP " + produkterPerSida + " * from Produkt ORDER BY ID";
 			}
+			//Annars söker man efter sida 2 eller högre
 			else
 			{
 				int tidigareSidaProdukter = (sida - 1) * produkterPerSida;
 
+				//Titta på topp antal produkter minus de som var på tidigare sidor
 				kommando = "Select TOP " + produkterPerSida + " * from Produkt WHERE ID NOT IN " +
 					"(Select TOP " + tidigareSidaProdukter + " ID from Produkt ORDER BY ID)";
 			}
 
 			ÖppnaKopplingen();
 
-			DataSet dataSet = HämtaDataSetProdukter(kommando, tabellnamn);
+			DataSet dataSet = HämtaDataSet(kommando, tabellnamn);
 
 			//Testa att ID kolumnen existera
 			//Om något är fel sluta och returnera null
@@ -384,80 +417,6 @@ namespace LOMAdministrationApplikation.Controllers
 			return tempProdukter;
 		}
 
-		/*
-		 * LäsaAnvändare är en metod för att läsa in värden från databasen till
-		 * en dictionary object.
-		 * 
-		 * Ut - sann eller falsk för om det lyckades eller inte
-		 */
-		public bool LäsaAnvändare()
-		{
-			bool lyckades = true;
-			string kolumnID = "ID";
-			string kolumnNamn = "Anvandarnamn";
-			string kommando = "SELECT * FROM Anvandare";
-			string tabellnamn = "Anvandare";
-
-			//Öppna databasen
-			//Om man inte kunde öppna databas sluta och returnera falsk
-			if (ÖppnaKopplingen() == false)
-				return false;
-
-			//Hämta dataset för användare
-			DataSet dataSet = HämtaDataSetProdukter(kommando, tabellnamn);
-
-			//Testa att ID kolumnen existera
-			//Om något är fel sluta och returnera falsk
-			if (!TestaDataSetKolumn(dataSet, kolumnID))
-			{
-				//Stäng databasen
-				StängKopplingen();
-				return false;
-			}
-
-			//Testa att Namn kolumnen existera
-			//Om något är fel sluta och returnera falsk
-			if (!TestaDataSetKolumn(dataSet, kolumnNamn))
-			{
-				//Stäng databasen
-				StängKopplingen();
-				return false;
-			}
-
-			//Räknar hur många sidor av användare det blir totallt
-			totallaSidorAnvändare = RäknarTotallaSidor(dataSet, tabellnamn, totallaSidorAnvändare, användarePerSida);
-
-			//Temporär Produkt variabel
-			Användare användareTemp;
-
-			//Loopa genom varje rad i Anvandare tabellen (Tables[0] för att Anvandare
-			//är den enda tabellen i DataSet ds)
-			foreach (DataRow dataRow in dataSet.Tables[0].Rows)
-			{
-				//Läser värdena från en rad till Produkt objektet
-				användareTemp = new Användare();
-				användareTemp.ID = int.Parse(dataRow["ID"].ToString());
-				användareTemp.Användarnamn = dataRow["Anvandarnamn"].ToString();
-				användareTemp.LösenordHash = dataRow["LosenordHash"].ToString();
-				användareTemp.Roll = dataRow["Roll"].ToString();
-				användareTemp.Räknare = int.Parse(dataRow["Raknare"].ToString());
-				användareTemp.Låste = bool.Parse(dataRow["Laste"].ToString());
-
-				//Sätt Användare objekt i Dictionary användare med användarnamn
-				//som nyckel (om en användarnamn redan finns i användare, uppdatera
-				//bara värden)
-				if (!allaAnvändare.ContainsKey(användareTemp.Användarnamn))
-					allaAnvändare.Add(användareTemp.Användarnamn, användareTemp);
-				else
-					allaAnvändare[användareTemp.Användarnamn] = användareTemp;
-			}
-
-			//Stäng databasen
-			StängKopplingen();
-
-			return lyckades;
-		}
-
 		/* 
 		 * InsättProdukt är en metod för insättning av värden i databasen.
 		 * Den kollar om id finns redan innan med en insert.  Finns det redan,
@@ -475,7 +434,7 @@ namespace LOMAdministrationApplikation.Controllers
 
 			//Om test datan med id==tempId är inte redan i tabellen, sätt i
 			//det, annars gör ingenting (för att undervika en unik id krash)
-			if (!ExisterandeProdukt(produkt.ID, produkt.Namn))
+			if (!ExisterandeProdukt(produkt.ID))
 			{
 				lyckades = true;
 				//SqlCommand föredra allt i en lång sträng
@@ -490,40 +449,6 @@ namespace LOMAdministrationApplikation.Controllers
 			StängKopplingen();
 
 			return lyckades;
-		}
-
-		/* 
-		 * InsättAnvändare är en metod för insättning av värden i databasen.
-		 * Den kollar om id finns redan innan med en insert.  Finns det redan,
-		 * så görs ingenting.
-		 * 
-		 * In - Användare som ska läggas till databasen
-		 * Ut - sann eller falsk för om det lyckades eller inte
-		 */
-		public bool InsättAnvändare(Användare användare)
-		{
-			bool success = false;
-
-			//Öppna databasen, om man inte lyckas returnera falsk
-			if (!ÖppnaKopplingen()) return false;
-
-			//Om test datan med id==tempId är inte redan i tabellen, sätt i
-			//det, annars gör ingenting (för att undervika en unik id krash)
-			if (!ExisterandeAnvändare(användare.ID, användare.Användarnamn))
-			{
-				success = true;
-				//SqlCommand föredra allt i en lång sträng
-				String sCommandString = "INSERT INTO Anvandare (ID, Anvandarnamn, LosenordHash, Roll, Raknare, Laste) VALUES ('" + användare.ID + "', '" + användare.Användarnamn + "', '" + användare.LösenordHash + "', '" + användare.Roll + "', '" + användare.Räknare + "', '" + användare.Låste + "')";
-				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
-				command.ExecuteNonQuery();
-
-				this.allaAnvändare.Add(användare.Användarnamn, användare);
-			}
-
-			//Stäng databasen
-			StängKopplingen();
-
-			return success;
 		}
 
 		/*
@@ -546,7 +471,7 @@ namespace LOMAdministrationApplikation.Controllers
 
 			//Om ID==produkt.ID är redan i tabellen, uppdatera den,
 			//annars gör ingenting
-			if (ExisterandeProdukt(produkt.ID, produkt.Namn))
+			if (ExisterandeProdukt(produkt.ID))
 			{
 				lyckades = true;
 
@@ -609,6 +534,250 @@ namespace LOMAdministrationApplikation.Controllers
 		}
 
 		/*
+		 * TaBortProdukt är en Metod för att ta bort ett befintligt värde i databasen.
+		 * Den kollar redan att id faktiskt finns innan den tas bort. Finns det inte
+		 * så görs ingenting. 
+		 * 
+		 * In - id (sträng) av produkten som ska tas bort
+		 * Ut - sann eller falsk för om det lyckades eller inte 
+		 */
+		public bool TaBortProdukt(string id)
+		{
+			bool lyckades = false;
+
+			//Öppna databasen och om man inte lyckas returnera falsk
+			if (!ÖppnaKopplingen()) return false;
+
+			//Om ID==produkt.ID är redan i tabellen, tar bort den,
+			//annars gör ingenting
+			if (ExisterandeProdukt(id))
+			{
+				lyckades = true;
+				//Tar bort produkten
+				string sCommandString = "DELETE FROM Produkt WHERE ID='" + id + "'";
+				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
+				command.ExecuteNonQuery();
+
+				produkter.Remove(id);
+			}
+
+			//Stäng databasen
+			StängKopplingen();
+
+			return lyckades;
+		}
+
+		/*
+		 * ExisterandeID är en metod som testar om en produkt ID finns redan i
+		 * databasen.
+		 * Man kunde bara kolla i Dictionary produkter istället för att läsa om
+		 * databasen men det förutsätter att LäsaProdukter har körts innan.
+		 * Som det är nu är det oberoende av det.
+		 * 
+		 * In - id (sträng) av produkten
+		 * Ut - sann eller falsk för om den existerar eller inte
+		 */
+		public bool ExisterandeProdukt(string id)
+		{
+			string kommando = "SELECT * FROM Produkt";
+			string tabellnamn = "Produkt";
+
+			//Hämta dataset för produkter
+			//DataSet är en behållare/mellansteg för inläst databas-data (kan innehålla flera tabeller)
+			DataSet dataSet = HämtaDataSet(kommando, tabellnamn);
+
+			//Bool för att markera att någonting redan existerar i tabellen, från början false 
+			bool bExisterar = false;
+
+			//Loopa genom varje rad i Produkter tabellen (Tables[0] för att Produkter
+			//är den första och enda tabellen i DataSet ds)
+			foreach (DataRow dataRow in dataSet.Tables[0].Rows)
+			{
+				//Om field "id" i en DataRow är lika med den nya tempId, så finns den redan 
+				if (dataRow["ID"].ToString() == id)
+					bExisterar = true; //bExisterar true innebär att testId redan finns i tabellen
+			}
+
+			return bExisterar;
+		}
+
+		/*
+		 * LäsaAnvändare är en metod för att läsa in värden från databasen till
+		 * en dictionary object.
+		 * 
+		 * Ut - sann eller falsk för om det lyckades eller inte
+		 */
+		public bool LäsaAnvändare()
+		{
+			bool lyckades = true;
+			string kolumnID = "ID";
+			string kolumnNamn = "Anvandarnamn";
+			string kommando = "SELECT * FROM Anvandare";
+			string tabellnamn = "Anvandare";
+
+			//Öppna databasen
+			//Om man inte kunde öppna databas sluta och returnera falsk
+			if (ÖppnaKopplingen() == false)
+				return false;
+
+			//Hämta dataset för användare
+			DataSet dataSet = HämtaDataSet(kommando, tabellnamn);
+
+			//Testa att ID kolumnen existera
+			//Om något är fel sluta och returnera falsk
+			if (!TestaDataSetKolumn(dataSet, kolumnID))
+			{
+				//Stäng databasen
+				StängKopplingen();
+				return false;
+			}
+
+			//Testa att Namn kolumnen existera
+			//Om något är fel sluta och returnera falsk
+			if (!TestaDataSetKolumn(dataSet, kolumnNamn))
+			{
+				//Stäng databasen
+				StängKopplingen();
+				return false;
+			}
+
+			//Hur många användare som finns totallt i tabellen
+			totallaAnvändare = dataSet.Tables[tabellnamn].Rows.Count;
+
+			//Räknar hur många sidor av användare det blir totallt
+			totallaSidorAnvändare = RäknarTotallaSidor(dataSet, totallaAnvändare, användarePerSida);
+
+			//Temporär Produkt variabel
+			Användare användareTemp;
+
+			//Loopa genom varje rad i Anvandare tabellen (Tables[0] för att Anvandare
+			//är den enda tabellen i DataSet ds)
+			foreach (DataRow dataRow in dataSet.Tables[0].Rows)
+			{
+				//Läser värdena från en rad till Produkt objektet
+				användareTemp = new Användare();
+				användareTemp.ID = int.Parse(dataRow["ID"].ToString());
+				användareTemp.Användarnamn = dataRow["Anvandarnamn"].ToString();
+				användareTemp.LösenordHash = dataRow["LosenordHash"].ToString();
+				användareTemp.Roll = dataRow["Roll"].ToString();
+				användareTemp.Räknare = int.Parse(dataRow["Raknare"].ToString());
+				användareTemp.Låste = bool.Parse(dataRow["Laste"].ToString());
+
+				//Sätt Användare objekt i Dictionary användare med användarnamn
+				//som nyckel (om en användarnamn redan finns i användare, uppdatera
+				//bara värden)
+				if (!allaAnvändare.ContainsKey(användareTemp.Användarnamn))
+					allaAnvändare.Add(användareTemp.Användarnamn, användareTemp);
+				else
+					allaAnvändare[användareTemp.Användarnamn] = användareTemp;
+			}
+
+			//Stäng databasen
+			StängKopplingen();
+
+			return lyckades;
+		}
+
+		/*
+		 * HämtaSidaAnvändare hämtar produkter som ska vara på angiven sida (ut av
+		 * alla användarsidor).  Detta kunde ersättas av Linq eller något liknande över
+		 * en inladdad användarlista mot att första inläsning tar ett tag.
+		 * 
+		 * in: sidan ut av alla användarsidor som man ska hämta
+		 * ut: en Dictionary av produkter för den sida (användare per sidan antal)
+		 */
+		public Dictionary<string, Användare> HämtaSidaAnvändare(int sida)
+		{
+			Dictionary<string, Användare> tempAnvändare = new Dictionary<string, Användare>();
+			string tabellnamn = "Anvandare";
+			string kommando;
+
+			//Vill man titta på sida 1 tar man första antal produkter (enligt produkter per sida)
+			if (sida == 1)
+			{
+				kommando = "Select TOP " + användarePerSida + " * from Anvandare ORDER BY ID";
+			}
+			//Annars söker man efter sida 2 eller högre
+			else
+			{
+				int tidigareSidaAnvändare = (sida - 1) * användarePerSida;
+
+				//Titta på topp antal produkter minus de som var på tidigare sidor
+				kommando = "Select TOP " + användarePerSida + " * from Anvandare WHERE ID NOT IN " +
+					"(Select TOP " + tidigareSidaAnvändare + " ID from Anvandare ORDER BY ID)";
+			}
+
+			ÖppnaKopplingen();
+
+			DataSet dataSet = HämtaDataSet(kommando, tabellnamn);
+
+			//Temporär Produkt variabel
+			Användare användareTemp;
+
+			//Loopa genom varje rad i Anvandare tabellen (Tables[0] för att Anvandare
+			//är den enda tabellen i DataSet ds)
+			foreach (DataRow dataRow in dataSet.Tables[0].Rows)
+			{
+				//Läser värdena från en rad till Produkt objektet
+				användareTemp = new Användare();
+				användareTemp.ID = int.Parse(dataRow["ID"].ToString());
+				användareTemp.Användarnamn = dataRow["Anvandarnamn"].ToString();
+				användareTemp.LösenordHash = dataRow["LosenordHash"].ToString();
+				användareTemp.Roll = dataRow["Roll"].ToString();
+				användareTemp.Räknare = int.Parse(dataRow["Raknare"].ToString());
+				användareTemp.Låste = bool.Parse(dataRow["Laste"].ToString());
+
+				//Sätt Användare objekt i Dictionary användare med användarnamn
+				//som nyckel (om en användarnamn redan finns i användare, uppdatera
+				//bara värden)
+				if (!tempAnvändare.ContainsKey(användareTemp.Användarnamn))
+					tempAnvändare.Add(användareTemp.Användarnamn, användareTemp);
+				else
+					tempAnvändare[användareTemp.Användarnamn] = användareTemp;
+			}
+
+			//Stäng databasen
+			StängKopplingen();
+
+			return tempAnvändare;
+		}
+
+
+		/* 
+		 * InsättAnvändare är en metod för insättning av värden i databasen.
+		 * Den kollar om id finns redan innan med en insert.  Finns det redan,
+		 * så görs ingenting.
+		 * 
+		 * In - Användare som ska läggas till databasen
+		 * Ut - sann eller falsk för om det lyckades eller inte
+		 */
+		public bool InsättAnvändare(Användare användare)
+		{
+			bool success = false;
+
+			//Öppna databasen, om man inte lyckas returnera falsk
+			if (!ÖppnaKopplingen()) return false;
+
+			//Om test datan med id==tempId är inte redan i tabellen, sätt i
+			//det, annars gör ingenting (för att undervika en unik id krash)
+			if (!ExisterandeAnvändare(användare.ID))
+			{
+				success = true;
+				//SqlCommand föredra allt i en lång sträng
+				String sCommandString = "INSERT INTO Anvandare (ID, Anvandarnamn, LosenordHash, Roll, Raknare, Laste) VALUES ('" + användare.ID + "', '" + användare.Användarnamn + "', '" + användare.LösenordHash + "', '" + användare.Roll + "', '" + användare.Räknare + "', '" + användare.Låste + "')";
+				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
+				command.ExecuteNonQuery();
+
+				this.allaAnvändare.Add(användare.Användarnamn, användare);
+			}
+
+			//Stäng databasen
+			StängKopplingen();
+
+			return success;
+		}
+
+		/*
 		 * UppdateraAnvändare är en metod för updatering av en befintlig värde
 		 * i databasen. Den kollar redan att id faktiskt finns innan uppdatering.
 		 * Finns det inte, så görs ingenting. 
@@ -628,7 +797,7 @@ namespace LOMAdministrationApplikation.Controllers
 
 			//Om ID==användare.ID är redan i tabellen, uppdatera den,
 			//annars gör ingenting
-			if (ExisterandeAnvändare(användare.ID, användare.Användarnamn))
+			if (ExisterandeAnvändare(användare.ID))
 			{
 				lyckades = true;
 
@@ -671,40 +840,6 @@ namespace LOMAdministrationApplikation.Controllers
 		}
 
 		/*
-		 * TaBortProdukt är en Metod för att ta bort ett befintligt värde i databasen.
-		 * Den kollar redan att id faktiskt finns innan den tas bort. Finns det inte
-		 * så görs ingenting. 
-		 * 
-		 * In - id (sträng) av produkten som ska tas bort
-		 * Ut - sann eller falsk för om det lyckades eller inte 
-		 */
-		public bool TaBortProdukt(string id, string namn)
-		{
-			bool lyckades = false;
-
-			//Öppna databasen och om man inte lyckas returnera falsk
-			if (!ÖppnaKopplingen()) return false;
-
-			//Om ID==produkt.ID är redan i tabellen, tar bort den,
-			//annars gör ingenting
-			if (ExisterandeProdukt(id, namn))
-			{
-				lyckades = true;
-				//Tar bort produkten
-				string sCommandString = "DELETE FROM Produkt WHERE ID='" + id + "'";
-				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
-				command.ExecuteNonQuery();
-
-				produkter.Remove(id);
-			}
-
-			//Stäng databasen
-			StängKopplingen();
-
-			return lyckades;
-		}
-
-		/*
 		 * TaBortAnvändare är en Metod för att ta bort ett befintligt värde i databasen.
 		 * Den kollar redan att id faktiskt finns innan den tas bort. Finns det inte
 		 * så görs ingenting. 
@@ -721,7 +856,7 @@ namespace LOMAdministrationApplikation.Controllers
 
 			//Om ID==användare.ID är redan i tabellen, tar bort den,
 			//annars gör ingenting
-			if (ExisterandeAnvändare(id, användarnamn))
+			if (ExisterandeAnvändare(id))
 			{
 				lyckades = true;
 				//Tar bort användaren
@@ -739,89 +874,23 @@ namespace LOMAdministrationApplikation.Controllers
 		}
 
 		/*
-		 * ExisterandeID är en metod som testar om en produkt ID finns redan i
-		 * databasen.
-		 * Man kunde bara kolla i Dictionary produkter istället för att läsa om
-		 * databasen men det förutsätter att LäsaProdukter har körts innan.
-		 * Som det är nu är det oberoende av det.
-		 * 
-		 * In - id (sträng) av produkten
-		 * Ut - sann eller falsk för om den existerar eller inte
-		 */
-		public bool ExisterandeProdukt(string id, string namn)
-		{
-			string kolumnID = "ID";
-			string kolumnNamn = "Namn";
-			string kommando = "SELECT * FROM Produkt";
-			string tabellnamn = "Produkt";
-
-			//Hämta dataset för produkter
-			//DataSet är en behållare/mellansteg för inläst databas-data (kan innehålla flera tabeller)
-			DataSet dataSet = HämtaDataSetProdukter(kommando, tabellnamn);
-
-			//Testa att ID kolumnen existera
-			//Om något är fel sluta och returnera falsk
-			if (!TestaDataSetKolumn(dataSet, kolumnID))
-			{
-				return false;
-			}
-
-			//Testa att Namn kolumnen existera
-			//Om något är fel sluta och returnera falsk
-			if (!TestaDataSetKolumn(dataSet, kolumnNamn))
-			{
-				return false;
-			}
-
-			//Bool för att markera att någonting redan existerar i tabellen, från början false 
-			bool bExisterar = false;
-
-			//Loopa genom varje rad i Produkter tabellen (Tables[0] för att Produkter
-			//är den första och enda tabellen i DataSet ds)
-			foreach (DataRow dataRow in dataSet.Tables[0].Rows)
-			{
-				//Om field "id" i en DataRow är lika med den nya tempId, så finns den redan 
-				if (dataRow["ID"].ToString() == id)
-					bExisterar = true; //bExisterar true innebär att testId redan finns i tabellen
-			}
-
-			return bExisterar;
-		}
-
-		/*
 		 * ExisterandeAnvändarnamn är en metod som testar om en produkt ID finns redan i
 		 * databasen.
 		 * Man kunde bara kolla i Dictionary produkter istället för att läsa om
 		 * databasen men det förutsätter att LäsaAnvändare har körts innan.
 		 * Som det är nu är det oberoende av det.
 		 * 
-		 * In - id (int) och användarnamn (sträng) av användaren
+		 * In - id (int)
 		 * Ut - sann eller falsk för om den existerar eller inte
 		 */
-		public bool ExisterandeAnvändare(int id, string användarnamn)
+		public bool ExisterandeAnvändare(int id)
 		{
-			string kolumnID = "ID";
-			string kolumnNamn = "Anvandarnamn";
 			string kommando = "SELECT * FROM Anvandare";
 			string tabellnamn = "Anvandare";
 
 			//Hämta dataset för produkter
 			//DataSet är en behållare/mellansteg för inläst databas-data (kan innehålla flera tabeller)
-			DataSet dataSet = HämtaDataSetProdukter(kommando, tabellnamn);
-
-			//Testa att ID kolumnen existera
-			//Om något är fel sluta och returnera falsk
-			if (!TestaDataSetKolumn(dataSet, kolumnID))
-			{
-				return false;
-			}
-
-			//Testa att Namn kolumnen existera
-			//Om något är fel sluta och returnera falsk
-			if (!TestaDataSetKolumn(dataSet, kolumnNamn))
-			{
-				return false;
-			}
+			DataSet dataSet = HämtaDataSet(kommando, tabellnamn);
 
 			//Bool för att markera att någonting redan existerar i tabellen, från början false 
 			bool bExisterar = false;
@@ -833,25 +902,9 @@ namespace LOMAdministrationApplikation.Controllers
 				//Om field "ID" i en DataRow är lika med id så finns den redan 
 				if (int.Parse(dataRow["ID"].ToString()) == id)
 					bExisterar = true; //bExisterar true innebär att testId redan finns i tabellen
-				//Om field "ID" i en DataRow är lika med användarnamn så finns den redan 
-				if (dataRow["Anvandarnamn"].ToString() == användarnamn)
-					bExisterar = true; //bExisterar true innebär att testId redan finns i tabellen
 			}
 
 			return bExisterar;
-		}
-
-		/*
-		 * 
-		 */
-		private int RäknarTotallaSidor(DataSet dataSet, string tabellnamn, int totallaSidor, int elementPerSida)
-		{
-			int rowCount = dataSet.Tables[tabellnamn].Rows.Count;
-			totallaSidor = rowCount / elementPerSida;
-			// if any row left after calculated pages, add one more page 
-			if (rowCount % elementPerSida > 0)
-				totallaSidor += 1;
-			return totallaSidor;
 		}
 	}
 }
