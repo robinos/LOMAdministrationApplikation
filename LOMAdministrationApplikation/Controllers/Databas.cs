@@ -63,6 +63,9 @@ namespace LOMAdministrationApplikation.Controllers
 		private int totallaSidorAnvändare = 1;
 		private int användarePerSida = 5;
 
+		//Används för att sätta nya ID med användare form
+		private int högstaID = 0;
+
 		/*
 		 * Konstruktör för Databasklassen.
 		 * En tom Dictionary av produkter, med en index av en id-sträng, skapas.
@@ -110,6 +113,15 @@ namespace LOMAdministrationApplikation.Controllers
 			get
 			{
 				return totallaSidorAnvändare;
+			}
+		}
+
+		//egenskap för högsta ID av en användare
+		public int HögstaID
+		{
+			get
+			{
+				return högstaID;
 			}
 		}
 
@@ -670,6 +682,9 @@ namespace LOMAdministrationApplikation.Controllers
 					allaAnvändare.Add(användareTemp.Användarnamn, användareTemp);
 				else
 					allaAnvändare[användareTemp.Användarnamn] = användareTemp;
+
+				if (användareTemp.ID >= högstaID)
+					högstaID = användareTemp.ID;
 			}
 
 			//Stäng databasen

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using LOMAdministrationApplikation.Models;
 using System.Text.RegularExpressions;
 using System.Web.Helpers;
-using System.Security.Cryptography;
+//using System.Security.Cryptography;
 
 namespace LOMAdministrationApplikation.Views
 {
@@ -35,6 +35,7 @@ namespace LOMAdministrationApplikation.Views
 
 			//Sätt samling till värdena av Dictionary Produkter från ProduktApplikation
 			användareSamling = administrationApplikation.AllaAnvändare.Values;
+			högstaID = administrationApplikation.HögstaID;
 
 			initiatiseraComboBox();
 
@@ -124,7 +125,6 @@ namespace LOMAdministrationApplikation.Views
 			användare.Användarnamn = användarnamn;
 			användare.Roll = RengörInput(txtRoll.Text);
 			användare.Räknare = int.Parse(txtRäknare.Text);
-			användare.LösenordHash = Crypto.HashPassword(RengörInput(txtLösenord.Text));
 			if (rbtnLåste.Checked)
 				användare.Låste = true;
 			else
@@ -133,8 +133,11 @@ namespace LOMAdministrationApplikation.Views
 			//Lyckades är om operationen lyckades, och fås från Produkt Applikation sedan
 			bool lyckades = false;
 
-			if (cboxAnvändareBox.SelectedIndex == 0) //Ny produkt
+			//Ny användare
+			if (cboxAnvändareBox.SelectedIndex == 0) 
 			{
+				användare.LösenordHash = Crypto.HashPassword(RengörInput(txtLösenord.Text));
+
 				//Om id inte redan existerar
 				if (!TestaAttIDExistera(användare.ID))
 				{
@@ -149,8 +152,16 @@ namespace LOMAdministrationApplikation.Views
 				else
 					MessageBox.Show("ID existerar redan!");
 			}
-			else //Befintlig produkt
+			//Befintlig användare
+			else 
 			{
+				//Om ny lösenord är inbockade, använde det nya lösenordet
+				if(checkNyLösenord.Checked)
+					användare.LösenordHash = Crypto.HashPassword(RengörInput(txtLösenord.Text));
+				//Annars använd förre detta lösenordet
+				else 					
+					användare.LösenordHash = administrationApplikation.AllaAnvändare[användare.Användarnamn].LösenordHash;
+
 				//Om id redan existerar
 				if (TestaAttIDExistera(ID))
 				{
@@ -164,9 +175,11 @@ namespace LOMAdministrationApplikation.Views
 					MessageBox.Show("ID finns inte!");
 			}
 
-			//Om det lyckades (sann tillbaka från Produkt Applikation)
+			//Om det lyckades (sann tillbaka från Administration Applikation)
 			if (lyckades)
 			{
+				//hämta värden för sidan
+				användareSamling = administrationApplikation.HämtaSidaAnvändare(sida).Values;
 				//Ifall namnet har ändrats, tas den bort och läggs till igen
 				cboxAnvändareBox.Items.Remove(användare.Användarnamn);
 				cboxAnvändareBox.Items.Add(användare.Användarnamn);
@@ -200,6 +213,7 @@ namespace LOMAdministrationApplikation.Views
 			if (valdAnvändarnamn.Equals("Ny"))
 			{
 				Tömma();
+				checkNyLösenord.Enabled = false;
 			}
 			else
 			{
@@ -223,6 +237,9 @@ namespace LOMAdministrationApplikation.Views
 						txtLösenord.Text = "";
 						txtLösenord.BackColor = Color.Gray;
 						txtLösenord.Enabled = false;
+
+						checkNyLösenord.Enabled = true;
+						checkNyLösenord.Checked = false;
 					}
 				}
 			}
@@ -254,6 +271,7 @@ namespace LOMAdministrationApplikation.Views
 					else
 						rbtnOlåste.Checked = true;
 
+					checkNyLösenord.Enabled = true;
 					txtLösenord.Text = "";
 					txtLösenord.BackColor = Color.Gray;
 					txtLösenord.Enabled = false;
@@ -382,6 +400,9 @@ namespace LOMAdministrationApplikation.Views
 			}
 		}
 
+		//Encode och Decode används inte.  Det är bara ett annat sätt vi kunde göra det
+		//och undvik att ha lagt till System.Web.Helpers till projektet.
+		/*
 		public string EncodePassword(string password)
 		{
 			SHA256 mySHA256 = SHA256Managed.Create();
@@ -398,8 +419,11 @@ namespace LOMAdministrationApplikation.Views
 			byte[] hashValue = mySHA256.ComputeHash(bytes);
 			byte[] inArray = HashAlgorithm.Create("SHA256").ComputeHash(bytes);
 			return Convert.ToBase64String(inArray);
-		}
+		}*/
 
+		/*
+		 * initiatiseraComboBox initialiser comboboxen med innehåller för en sida
+		 */
 		private void initiatiseraComboBox()
 		{
 			cboxAnvändareBox.Items.Clear();
@@ -418,6 +442,9 @@ namespace LOMAdministrationApplikation.Views
 			cboxAnvändareBox.SelectedIndex = 0;
 		}
 
+		/*
+		 * btnFörsta tar en till första sidan (första 5 i comboboxen)
+		 */
 		private void btnFörsta_Click(object sender, EventArgs e)
 		{
 			sida = 1;
@@ -430,6 +457,9 @@ namespace LOMAdministrationApplikation.Views
 			}
 		}
 
+		/*
+		 * btnSista tar en till sista sidan (sista 5 eller färre i comboboxen)
+		 */
 		private void btnSista_Click(object sender, EventArgs e)
 		{
 			sida = administrationApplikation.TotallaSidorAnvändare;
@@ -442,6 +472,9 @@ namespace LOMAdministrationApplikation.Views
 			}
 		}
 
+		/*
+		 * btnTillbaka tar en tillbaka en sida (förre 5 i comboboxen)
+		 */
 		private void btnTillbaka_Click(object sender, EventArgs e)
 		{
 			if (sida > 1)
@@ -458,6 +491,9 @@ namespace LOMAdministrationApplikation.Views
 			}
 		}
 
+		/*
+		 * btnNästa tar en till nästa sida (nästa 5 i comboboxen)
+		 */
 		private void btnNästa_Click(object sender, EventArgs e)
 		{
 			if (sida < administrationApplikation.TotallaSidorAnvändare)
@@ -471,6 +507,25 @@ namespace LOMAdministrationApplikation.Views
 			{
 				btnNästa.Enabled = false;
 				btnTillbaka.Enabled = true;
+			}
+		}
+
+		/*
+		 * Aktivera lösenordsfältet för ändringar
+		 */
+		private void checkNyLösenord_CheckedChanged(object sender, EventArgs e)
+		{
+			if (checkNyLösenord.Checked)
+			{
+				txtLösenord.Text = "";
+				txtLösenord.BackColor = Color.White;
+				txtLösenord.Enabled = true;
+			}
+			else
+			{
+				txtLösenord.Text = "";
+				txtLösenord.BackColor = Color.Gray;
+				txtLösenord.Enabled = false;
 			}
 		}
 		

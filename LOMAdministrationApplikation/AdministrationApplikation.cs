@@ -38,6 +38,8 @@ namespace LOMAdministrationApplikation
 		private int totallaSidorProdukter = 1;
 		//För olika Användare sidor
 		private int totallaSidorAnvändare = 1;
+		//För att skapa nya användare ID
+		private int högstaID = 0;
 
 		/*
 		 * Konstruktör för ProduktApplikation
@@ -96,6 +98,15 @@ namespace LOMAdministrationApplikation
 			}
 		}
 
+		//egenskap för högsta ID av en användare
+		public int HögstaID
+		{
+			get
+			{
+				return högstaID;
+			}
+		}
+
 		/// <summary>
 		/// Main startar och kör huvudprogrammet.  Den initialiserar en instans av
 		/// ProduktApplikation och läser från databasen.  Om det lyckas, startas
@@ -140,6 +151,7 @@ namespace LOMAdministrationApplikation
 				totallaSidorProdukter = databas.TotallaSidorProdukter;
 				HämtaSidaAnvändare(1);
 				totallaSidorAnvändare = databas.TotallaSidorAnvändare;
+				högstaID = databas.HögstaID;
 				lyckades = true;
 			}
 			else

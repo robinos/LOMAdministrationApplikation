@@ -29,6 +29,10 @@
 		private void InitializeComponent()
 		{
 			this.panelFunktion = new System.Windows.Forms.Panel();
+			this.btnFörsta = new System.Windows.Forms.Button();
+			this.btnSista = new System.Windows.Forms.Button();
+			this.btnNästa = new System.Windows.Forms.Button();
+			this.btnTillbaka = new System.Windows.Forms.Button();
 			this.btnSpara = new System.Windows.Forms.Button();
 			this.cboxAnvändareBox = new System.Windows.Forms.ComboBox();
 			this.lblIndex = new System.Windows.Forms.Label();
@@ -48,10 +52,7 @@
 			this.lblHash = new System.Windows.Forms.Label();
 			this.lblLösenord = new System.Windows.Forms.Label();
 			this.lblID = new System.Windows.Forms.Label();
-			this.btnFörsta = new System.Windows.Forms.Button();
-			this.btnSista = new System.Windows.Forms.Button();
-			this.btnNästa = new System.Windows.Forms.Button();
-			this.btnTillbaka = new System.Windows.Forms.Button();
+			this.checkNyLösenord = new System.Windows.Forms.CheckBox();
 			this.panelFunktion.SuspendLayout();
 			this.panelInmatning.SuspendLayout();
 			this.SuspendLayout();
@@ -76,6 +77,48 @@
 			this.panelFunktion.Name = "panelFunktion";
 			this.panelFunktion.Size = new System.Drawing.Size(673, 27);
 			this.panelFunktion.TabIndex = 6;
+			// 
+			// btnFörsta
+			// 
+			this.btnFörsta.Location = new System.Drawing.Point(248, 1);
+			this.btnFörsta.Name = "btnFörsta";
+			this.btnFörsta.Size = new System.Drawing.Size(31, 23);
+			this.btnFörsta.TabIndex = 15;
+			this.btnFörsta.Text = "|<";
+			this.btnFörsta.UseVisualStyleBackColor = true;
+			this.btnFörsta.Click += new System.EventHandler(this.btnFörsta_Click);
+			// 
+			// btnSista
+			// 
+			this.btnSista.Location = new System.Drawing.Point(285, 1);
+			this.btnSista.Name = "btnSista";
+			this.btnSista.Size = new System.Drawing.Size(31, 23);
+			this.btnSista.TabIndex = 14;
+			this.btnSista.Text = ">|";
+			this.btnSista.UseVisualStyleBackColor = true;
+			this.btnSista.Click += new System.EventHandler(this.btnSista_Click);
+			// 
+			// btnNästa
+			// 
+			this.btnNästa.Enabled = false;
+			this.btnNästa.Location = new System.Drawing.Point(578, 1);
+			this.btnNästa.Name = "btnNästa";
+			this.btnNästa.Size = new System.Drawing.Size(85, 23);
+			this.btnNästa.TabIndex = 13;
+			this.btnNästa.Text = "Nästa 5 >>";
+			this.btnNästa.UseVisualStyleBackColor = true;
+			this.btnNästa.Click += new System.EventHandler(this.btnNästa_Click);
+			// 
+			// btnTillbaka
+			// 
+			this.btnTillbaka.Enabled = false;
+			this.btnTillbaka.Location = new System.Drawing.Point(487, 1);
+			this.btnTillbaka.Name = "btnTillbaka";
+			this.btnTillbaka.Size = new System.Drawing.Size(85, 23);
+			this.btnTillbaka.TabIndex = 12;
+			this.btnTillbaka.Text = "<< Tillbaka 5";
+			this.btnTillbaka.UseVisualStyleBackColor = true;
+			this.btnTillbaka.Click += new System.EventHandler(this.btnTillbaka_Click);
 			// 
 			// btnSpara
 			// 
@@ -150,6 +193,7 @@
 			this.panelInmatning.AccessibleDescription = "Inmatningspanel";
 			this.panelInmatning.AccessibleName = "Inmatning";
 			this.panelInmatning.AccessibleRole = System.Windows.Forms.AccessibleRole.Pane;
+			this.panelInmatning.Controls.Add(this.checkNyLösenord);
 			this.panelInmatning.Controls.Add(this.rbtnLåste);
 			this.panelInmatning.Controls.Add(this.rbtnOlåste);
 			this.panelInmatning.Controls.Add(this.txtRäknare);
@@ -163,9 +207,9 @@
 			this.panelInmatning.Controls.Add(this.lblHash);
 			this.panelInmatning.Controls.Add(this.lblLösenord);
 			this.panelInmatning.Controls.Add(this.lblID);
-			this.panelInmatning.Location = new System.Drawing.Point(157, 111);
+			this.panelInmatning.Location = new System.Drawing.Point(109, 111);
 			this.panelInmatning.Name = "panelInmatning";
-			this.panelInmatning.Size = new System.Drawing.Size(411, 255);
+			this.panelInmatning.Size = new System.Drawing.Size(502, 255);
 			this.panelInmatning.TabIndex = 8;
 			// 
 			// rbtnLåste
@@ -327,47 +371,17 @@
 			this.lblID.Text = "ID:";
 			this.lblID.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// btnFörsta
+			// checkNyLösenord
 			// 
-			this.btnFörsta.Location = new System.Drawing.Point(248, 1);
-			this.btnFörsta.Name = "btnFörsta";
-			this.btnFörsta.Size = new System.Drawing.Size(31, 23);
-			this.btnFörsta.TabIndex = 15;
-			this.btnFörsta.Text = "|<";
-			this.btnFörsta.UseVisualStyleBackColor = true;
-			this.btnFörsta.Click += new System.EventHandler(this.btnFörsta_Click);
-			// 
-			// btnSista
-			// 
-			this.btnSista.Location = new System.Drawing.Point(285, 1);
-			this.btnSista.Name = "btnSista";
-			this.btnSista.Size = new System.Drawing.Size(31, 23);
-			this.btnSista.TabIndex = 14;
-			this.btnSista.Text = ">|";
-			this.btnSista.UseVisualStyleBackColor = true;
-			this.btnSista.Click += new System.EventHandler(this.btnSista_Click);
-			// 
-			// btnNästa
-			// 
-			this.btnNästa.Enabled = false;
-			this.btnNästa.Location = new System.Drawing.Point(578, 1);
-			this.btnNästa.Name = "btnNästa";
-			this.btnNästa.Size = new System.Drawing.Size(85, 23);
-			this.btnNästa.TabIndex = 13;
-			this.btnNästa.Text = "Nästa 5 >>";
-			this.btnNästa.UseVisualStyleBackColor = true;
-			this.btnNästa.Click += new System.EventHandler(this.btnNästa_Click);
-			// 
-			// btnTillbaka
-			// 
-			this.btnTillbaka.Enabled = false;
-			this.btnTillbaka.Location = new System.Drawing.Point(487, 1);
-			this.btnTillbaka.Name = "btnTillbaka";
-			this.btnTillbaka.Size = new System.Drawing.Size(85, 23);
-			this.btnTillbaka.TabIndex = 12;
-			this.btnTillbaka.Text = "<< Tillbaka 5";
-			this.btnTillbaka.UseVisualStyleBackColor = true;
-			this.btnTillbaka.Click += new System.EventHandler(this.btnTillbaka_Click);
+			this.checkNyLösenord.AutoSize = true;
+			this.checkNyLösenord.Enabled = false;
+			this.checkNyLösenord.Location = new System.Drawing.Point(364, 68);
+			this.checkNyLösenord.Name = "checkNyLösenord";
+			this.checkNyLösenord.Size = new System.Drawing.Size(39, 17);
+			this.checkNyLösenord.TabIndex = 34;
+			this.checkNyLösenord.Text = "Ny";
+			this.checkNyLösenord.UseVisualStyleBackColor = true;
+			this.checkNyLösenord.CheckedChanged += new System.EventHandler(this.checkNyLösenord_CheckedChanged);
 			// 
 			// AnvändareForm
 			// 
@@ -415,6 +429,7 @@
 		private System.Windows.Forms.Button btnSista;
 		private System.Windows.Forms.Button btnNästa;
 		private System.Windows.Forms.Button btnTillbaka;
+		private System.Windows.Forms.CheckBox checkNyLösenord;
 
 	}
 }
