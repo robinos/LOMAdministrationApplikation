@@ -35,7 +35,7 @@ namespace LOMAdministrationApplikation.Views
 
 			//Sätt samling till värdena av Dictionary Produkter från ProduktApplikation
 			användareSamling = administrationApplikation.AllaAnvändare.Values;
-			högstaID = administrationApplikation.HögstaID;
+			högstaID = administrationApplikation.HögstaAnvändareID;
 
 			initiatiseraComboBox();
 
