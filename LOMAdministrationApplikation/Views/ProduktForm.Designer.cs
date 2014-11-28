@@ -489,7 +489,6 @@
             this.Controls.Add(this.panelFunktion);
             this.Name = "ProduktForm";
             this.Text = "Ljus och Miljö AB - Produkt Hanteraren";
-            this.Load += new System.EventHandler(this.ProduktApplikationForm_Load);
             this.panelFunktion.ResumeLayout(false);
             this.panelInmatning.ResumeLayout(false);
             this.panelInmatning.PerformLayout();

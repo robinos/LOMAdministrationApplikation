@@ -1,3 +1,24 @@
-LOMAdministrationApplikation - Version 0.1 - 2014-11-19
+LOMAdministrationApplikation - Version 0.3 - 2014-11-28
+- Några stavningsfel rättades
+- En bugg i AnvändareForm har fixats så lösenordet inte skrivs över vid uppdatering
+	om man inte vill sätta ett nytt lösenord (checkNyLösenord check box används för
+	att markera att man vill ändra lösenordet)
+- HuvudApplikationForm nu kan ändras i storlek utan problem
+- HuvudApplikationForm autentisera användaren (måste vara inloggad som Windows
+	användare) och annars kommer man inte vidare för knapparna är inte Enabled
+- Ändrade till List objekt istället för Dictionary objekt så det är lättare att
+	använda linq för datahantering. Mindre kontakt med databasen behövs nu.
+- AdminisationApplikation.cs nu tar hand om sidor för comboboxen (det var Databas
+	klassen förut) och det görs nu med linq på listan istället för SQL på databasen
+- Kommentar har uppdaterats
+- README har uppdaterats
 
-Ser README.
+LOMAdministrationApplikation - Version 0.2 - 2014-11-26
+- HuvudApplikationForm.cs nu tillåter åkomst till AnvändareForm eller
+	ProduktForm
+- AnvändareForm fungerar för att lägga till / uppdatera / ta bort användare
+- Pris är inte längre ett problem för ProduktForm i svensk Windows versioner
+
+LOMAdministrationApplikation - Version 0.1 - 2014-11-19
+- ProduktForm fungerar för att lägga till / uppdatera / ta bort produkter
+Se README.

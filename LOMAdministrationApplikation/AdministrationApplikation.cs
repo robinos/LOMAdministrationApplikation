@@ -16,30 +16,34 @@ namespace LOMAdministrationApplikation
 	/// AdministrationApplikation har hand om all kommunikation mellan Databas
 	/// och formerna HuvudApplikationForm, AnvändareForm och ProduktForm.
 	/// 
+	/// -Egenskaper-
+	/// ProduktLista - get - lista av alla produkter i databasen
+	/// AnvändarLista - get - lista av alla användare i databasen
+	/// TotallaSidorProdukter - get - antal sidor av element för produkter
+	/// TotallaSidorAnvändare - get - antal sidor av element för användare
+	/// HögstaAnvändareID - get - högsta id för alla användare i databasen/listan
 	/// 
-	/// -Instansvariabler-
-	/// databas - referens till Databas objekten
-	/// produkter - referens till en Dictionary av alla produkter med ID som
-	///		nyckel
-	/// allaAnvändare - referens till en Dictionary av alla användare med
-	///		Användarnamn som nyckel
-	///	totallaSidorProdukter - totalla sidor av produkter (med x element per
-	///		sida)
-	/// totallaSidorAnvändare - totalla sidor av användare (med x element per
-	///		sida)
-	/// högstaAnvändareID -högsta användare ID för skapning av nya användare
-	/// 
+	/// -Konstruktör-
+	/// AdministrationApplikation - tilldelar databas objektet och initialisera
+	/// produkt och användare listor
 	/// 
 	/// -Metoder-
 	/// Main - Kör programmet (startar HuvudApplikationForm)
+	/// RäknarTotallaSidor - räknar totalla sidor (totall element / element per
+	///		sida)
 	/// LäsaFrånDatabas - läser in data från databasen (använder Databas
 	///		klassen)
+	///	HämtaSidaProdukter - Hämtar en angiven sida av produkter (produkterPerSida
+	///		element)
 	/// LäggTillProdukt - lägger till en produkt i databasen (använder
 	///		Databas klassen)
 	/// TaBortProdukt - ta bort en produkt från databasen (använder Databas
 	///		klassen)
 	/// UppdateraProdukt - uppdatera en produkt i databasen (använder Databas
 	///		klassen)
+	///	HämtaAnvändareMedID - hämtar en användare från användarLista med angiven id	
+	///	HämtaSidaAnvändare - Hämtar en angiven sida av användare (användarePerSida
+	///		element)
 	/// LäggTillAnvändare - lägger till en användare i databasen (använder
 	///		Databas klassen)
 	/// TaBortAnvändare - ta bort en användare från databasen (använder
@@ -54,7 +58,7 @@ namespace LOMAdministrationApplikation
 	/// 
 	/// 
 	/// Version: 0.3
-	/// 2014-11-27
+	/// 2014-11-28
 	/// Grupp 2
 	/// </summary>
 	public class AdministrationApplikation
@@ -62,60 +66,32 @@ namespace LOMAdministrationApplikation
 		//instansvariabler
 		//Referens till Databas 
 		private Databas databas = null;
-		//Dictionary av produkter
-		private Dictionary<string, Produkt> produkter;
-		//Dictionary av användare
-		private Dictionary<string, Användare> allaAnvändare;
-		//För olika Produkt sidor
+		//Referens till produkt och användare listor
+		private List<Produkt> produktLista;
+		private List<Användare> användarLista;
+		//antal produkter per sida och totalla sidor
+		private int produkterPerSida = 5;
 		private int totallaSidorProdukter = 1;
-		//För olika Användare sidor
+		//antal användare per sida och totalla sidor
+		private int användarePerSida = 5;
 		private int totallaSidorAnvändare = 1;
-		//För att skapa nya användare ID
+		//Högsta nuvarande användare ID att skapa nya användare
 		private int högstaAnvändareID = 0;
 
 		/// <summary>
-		/// Konstruktören för AdministrationApplikation tilldelar databas
-		/// objektet och initialisera produkter och allaAnvändare att vara
-		/// samma referens som de i databas klassen.
+		/// Get egenskap för listan av alla produkter i databasen
 		/// </summary>
-		public AdministrationApplikation()
+		public List<Produkt> ProduktLista
 		{
-			//initialisera produktDatabas
-			databas = new Databas();
-			//initialiser Dictionary av produkter (samma referens som
-			//produkter i produktDatabas)
-			produkter = databas.Produkter;
-			allaAnvändare = databas.AllaAnvändare;
+			get { return produktLista; }
 		}
 
 		/// <summary>
-		/// Get och Set egenskap till Dictionary produkter
+		/// Get egenskap för listan av alla ánvändare i databasen
 		/// </summary>
-		public Dictionary<string, Produkt> Produkter
+		public List<Användare> AnvändarLista
 		{
-			get
-			{
-				return produkter;
-			}
-			set
-			{
-				produkter = value;
-			}
-		}
-
-		/// <summary>
-		/// Get och Set egenskap till Dictionary allaAnvändare
-		/// </summary>
-		public Dictionary<string, Användare> AllaAnvändare
-		{
-			get
-			{
-				return allaAnvändare;
-			}
-			set
-			{
-				allaAnvändare = value;
-			}
+			get { return användarLista; }
 		}
 
 		/// <summary>
@@ -123,10 +99,7 @@ namespace LOMAdministrationApplikation
 		/// </summary>
 		public int TotallaSidorProdukter
 		{
-			get
-			{
-				return totallaSidorProdukter;
-			}
+			get { return totallaSidorProdukter; }
 		}
 
 		/// <summary>
@@ -134,10 +107,7 @@ namespace LOMAdministrationApplikation
 		/// </summary>
 		public int TotallaSidorAnvändare
 		{
-			get
-			{
-				return totallaSidorAnvändare;
-			}
+			get { return totallaSidorAnvändare; }
 		}
 
 		/// <summary>
@@ -145,10 +115,20 @@ namespace LOMAdministrationApplikation
 		/// </summary>
 		public int HögstaAnvändareID
 		{
-			get
-			{
-				return högstaAnvändareID;
-			}
+			get { return högstaAnvändareID; }
+		}
+
+		/// <summary>
+		/// Konstruktör för AdministrationApplikation tilldelar databas
+		/// objektet och initialisera produkt och användare listor till att
+		/// vara samma referens som de i databas klassen.
+		/// </summary>
+		public AdministrationApplikation()
+		{
+			//koppla referenser för databas och listor
+			databas = new Databas();
+			produktLista = databas.ProduktLista;
+			användarLista = databas.AnvändarLista;
 		}
 
 		/// <summary>
@@ -156,19 +136,19 @@ namespace LOMAdministrationApplikation
 		/// av AdministrationApplikation och läser från databasen.  Om det lyckas
 		/// startas HuvudApplikationForm (UI Menyn) med instansen av
 		/// AdministrationApplikation som parameter och programmet börjar för
-		/// användaren och annars stängs det ner.
+		/// användaren.  Vid misslyckade läsning från databas stängs programmet ner.
 		/// </summary>
 		[STAThread]
 		static void Main()
 		{
-			//Med administrationApplikation undviker man att behöver ha statisk
-			//metoder och kan skickar det som referens till HuvudApplikationForm
+			//AdministrationApplikation objekt för att skickar som referens till
+			//HuvudApplikationForm
 			AdministrationApplikation administrationApplikation = new AdministrationApplikation();
 
-			//Läsa in data från databasen. Om det lyckas körs applikationen
+			//Läsa in data från databasen. Om det lyckas kör applikationen.
 			if (administrationApplikation.LäsaFrånDatabas())
 			{
-				//Visar Form
+				//Visar HuvudApplikationForm
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault(false);
 				//AdministrationApplikation skickas med för kontakt med metoder så
@@ -179,9 +159,33 @@ namespace LOMAdministrationApplikation
 		}
 
 		/// <summary>
-		/// LäsaFrånDatabas läser in data från databasen med hjälp av Databas
-		///		objektet och sätter Dictionary produkter och allaAnvändare
-		///		till alla datan som läsas in.
+		/// RäknarTotallaSidor räknar totalla sidor genom att dela totall antal
+		/// element med element per sida.  Om det finns rester läggs de till
+		/// en sida till.  
+		/// </summary>
+		/// <param name="totallAntalElement">Totall antal element</param>
+		/// <param name="elementPerSida">Element som borde finnas per sida</param> 
+		/// <returns>integer värdet för totalla sidor</returns>
+		private int RäknarTotallaSidor(int totallAntalElement, int elementPerSida)
+		{
+			int totallaSidor = totallAntalElement / elementPerSida;
+
+			//Om där finns rester lägg till en sida
+			if (totallAntalElement % elementPerSida > 0)
+				totallaSidor += 1;
+
+			//if (totallAntalElement < elementPerSida)
+			//	elementPerSida = totallAntalElement;
+
+			return totallaSidor;
+		}
+
+		/// <summary>
+		/// LäsaFrånDatabas läser in data från både tabeller (Produkt och Anvandare)
+		/// med hjälp av Databas objektet.  Om det lyckas räknar den ut totalla sidor
+		/// för visningen av produkter och användare.  Högsta användare ID också sätts
+		/// och lyckades returneras.  Om läsning från databasen inte lyckades visas
+		/// en varning i en Message Box och falsk returneras.
 		/// </summary>
 		/// <returns>Sann om läsningen av både tabeller i databasen lyckades
 		///		och annars falsk</returns>
@@ -193,11 +197,12 @@ namespace LOMAdministrationApplikation
 			//blir sann
 			if (databas.LäsaProdukter() && databas.LäsaAnvändare())
 			{
-				HämtaSidaProdukter(1);
-				totallaSidorProdukter = databas.TotallaSidorProdukter;
-				HämtaSidaAnvändare(1);
-				totallaSidorAnvändare = databas.TotallaSidorAnvändare;
-				högstaAnvändareID = databas.HögstaID;
+				//Räknar hur många sidor av produkter det blir totallt
+				totallaSidorProdukter = RäknarTotallaSidor(produktLista.Count, produkterPerSida);
+				//Räknar hur många sidor av användare det blir totallt
+				totallaSidorAnvändare = RäknarTotallaSidor(användarLista.Count, användarePerSida);
+				//Få fram den högsta nuvarande användare ID
+				högstaAnvändareID = databas.HögstaAnvändareID;
 				lyckades = true;
 			}
 			else
@@ -209,31 +214,33 @@ namespace LOMAdministrationApplikation
 		}
 
 		/// <summary>
-		/// HämtaSidaProdukter hämtar en sida av produkter (x element) för
-		/// angiven sida. 
-		/// *Jag vill ändra det som returneras till en lista
+		/// HämtaSidaProdukter hämtar en sida av produkter (produkterPerSida
+		/// element) för angiven sidan. 
 		/// </summary>
 		/// <param name="sida">Sidan man ska hämta produkter för</param>
-		/// <returns>En Dictionary objekt med produkter med nyckel ID
-		///		som sträng</returns>
-		public Dictionary<string, Produkt> HämtaSidaProdukter(int sida)
+		/// <returns>En Lista av Produkt objekt för en sida</returns>
+		public List<Produkt> HämtaSidaProdukter(int sida)
 		{
-			produkter = databas.HämtaSidaProdukter(sida);
-			return produkter;
-		}
+			List<Produkt> tempProduktLista;
 
-		/// <summary>
-		/// HämtaSidaAnvändare hämtar en sida av användare (x element) för
-		/// angiven sida. 
-		/// *Jag vill ändra det som returneras till en lista
-		/// </summary>
-		/// <param name="sida">Sidan man ska hämta användare för</param>
-		/// <returns>En Dictionary objekt med användare med nyckel
-		///		användarnamn som sträng</returns>
-		public Dictionary<string, Användare> HämtaSidaAnvändare(int sida)
-		{
-			allaAnvändare = databas.HämtaSidaAnvändare(sida);
-			return allaAnvändare;
+			//Vill man titta på sida 1 tar man första antal produkter (enligt produkter per sida)
+			if (sida == 1)
+			{
+				tempProduktLista = new List<Produkt>((from m in produktLista select m).Take(produkterPerSida));
+				tempProduktLista.OrderBy(n => n.Namn);
+			}
+			//Annars söker man efter sida 2 eller högre
+			else
+			{
+				int tidigareSidorProdukter = (sida - 1) * produkterPerSida;
+
+				//Titta på topp antal produkter minus de som var på tidigare sidor
+				List<Produkt> excludeLista = new List<Produkt>((from z in produktLista select z).Take(tidigareSidorProdukter));
+				tempProduktLista = new List<Produkt>((produktLista.Except(excludeLista).Take(produkterPerSida)));
+				tempProduktLista.OrderBy(n => n.Namn);
+			}
+
+			return tempProduktLista;
 		}
 
 		/// <summary>
@@ -254,14 +261,14 @@ namespace LOMAdministrationApplikation
 		/// TaBortProdukt tar bort en produkt från databasen med hjälp av
 		/// Databas objekten.
 		/// </summary>
-		/// <param name="produkt">Produkt objektet som ska tas bort</param>
+		/// <param name="id">id av produkt objektet som ska tas bort</param>
 		/// <returns>Sann om produkten har tagits bort och annars falsk</returns>
 		public bool TaBortProdukt(string id)
 		{
 			//Delete metoden i Databas returnerar sann eller falsk
-			bool success = databas.TaBortProdukt(id);
+			bool lyckades = databas.TaBortProdukt(id);
 
-			return success;
+			return lyckades;
 		}
 
 		/// <summary>
@@ -273,12 +280,60 @@ namespace LOMAdministrationApplikation
 		public bool UppdateraProdukt(Produkt produkt)
 		{
 			//Update metoden i Databas returnerar sann eller falsk
-			bool success = databas.UppdateraProdukt(produkt);
+			bool lyckades = databas.UppdateraProdukt(produkt);
 
-			//Databasen läsas om och Produkt sätts till den nya innehåll
-			databas.LäsaProdukter();
+			return lyckades;
+		}
 
-			return success;
+		/// <summary>
+		/// HämtaAnvändareMedID hämtar en användare från användarLista som
+		/// har samma id som angiven eller null vid ingen träff.
+		/// </summary>
+		/// <param name="id">id av användaren man ska hämta</param>
+		/// <returns>Användare objektet som hade samma id eller null</returns>
+		public Användare HämtaAnvändareMedID(int id)
+		{
+			Användare tempAnvändare = null;
+
+			//för varje användare i listan jämför dens id med angiven id
+			foreach (Användare användare in användarLista)
+			{
+				if (användare.ID.Equals(id))
+					tempAnvändare = användare;
+			}
+
+			return tempAnvändare;
+		}
+
+		/// <summary>
+		/// HämtaSidaAnvändare hämtar en sida av användare (användarePerSida
+		/// element) för angiven sidan. 
+		/// </summary>
+		/// <param name="sida">Sidan man ska hämta användare för</param>
+		/// <returns>En Lista av Användare objekt för en sida</returns>
+		public List<Användare> HämtaSidaAnvändare(int sida)
+		{
+			List<Användare> tempAnvändarLista;
+
+			//Vill man titta på sida 1 tar man första antal användare
+			//(enligt användare per sida)
+			if (sida == 1)
+			{
+				tempAnvändarLista = new List<Användare>((from m in användarLista select m).Take(användarePerSida));
+				tempAnvändarLista.OrderBy(n => n.Användarnamn);
+			}
+			//Annars söker man efter sida 2 eller högre
+			else
+			{
+				int tidigareSidorAnvändare = (sida - 1) * användarePerSida;
+
+				//Titta på topp antal användare minus de som var på tidigare sidor
+				List<Användare> excludeLista = new List<Användare>((from z in användarLista select z).Take(tidigareSidorAnvändare));
+				tempAnvändarLista = new List<Användare>((användarLista.Except(excludeLista).Take(användarePerSida)));
+				tempAnvändarLista.OrderBy(n => n.Användarnamn);
+			}
+
+			return tempAnvändarLista;
 		}
 
 		/// LaggTillAnvändare lägger till en användare till databasen med
@@ -298,34 +353,28 @@ namespace LOMAdministrationApplikation
 		/// TaBortAnvändare tar bort en användare från databasen med hjälp av
 		/// Databas objekten.
 		/// </summary>
-		/// <param name="produkt">Användare objektet som ska tas bort</param>
+		/// <param name="id">id av användaren som ska tas bort</param>
 		/// <returns>Sann om användaren har tagits bort och annars falsk</returns>
-		public bool TaBortAnvändare(int id, string användarnamn)
+		public bool TaBortAnvändare(int id)
 		{
 			//Delete metoden i Databas returnerar sann eller falsk
-			bool success = databas.TaBortAnvändare(id, användarnamn);
+			bool lyckades = databas.TaBortAnvändare(id);
 
-			//Databasen läsas om och AllaAnvändare sätts till den nya innehåll
-			databas.LäsaAnvändare();
-
-			return success;
+			return lyckades;
 		}
 
 		/// <summary>
 		/// UppdateraAnvändare ändrar om en användare i databasen med hjälp av
 		/// Databas objekten.
 		/// </summary>
-		/// <param name="produkt">Användare objektet som ska ändras</param>
+		/// <param name="användare">Användare objektet som ska ändras</param>
 		/// <returns>Sann om användaren ändrades och annars falsk</returns>
 		public bool UppdateraAnvändare(Användare användare)
 		{
 			//Update metoden i Databas returnerar sann eller falsk
-			bool success = databas.UppdateraAnvändare(användare);
+			bool lyckades = databas.UppdateraAnvändare(användare);
 
-			//Databasen läsas om och AllaAnvändare sätts till den nya innehåll
-			databas.LäsaAnvändare();
-
-			return success;
+			return lyckades;
 		}
 
 		/// <summary>

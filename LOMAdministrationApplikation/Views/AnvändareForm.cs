@@ -9,36 +9,84 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using LOMAdministrationApplikation.Models;
 using System.Text.RegularExpressions;
-using System.Web.Helpers;
-//using System.Security.Cryptography;
+using System.Web.Helpers; //För Crypto.HashPassword
 
 namespace LOMAdministrationApplikation.Views
 {
+	/// <summary>
+	/// (Vy)
+	/// 
+	/// AnvändareForm har all kod för att hantera användare input och skicka vidare
+	/// till AdministrationApplikation för hantering.
+	/// 
+	/// -Konstruktör-
+	/// AnvändareForm - sätter referensen till AdministrationApplikation kontrollern
+	///		och fyller comboboxen med datan för första sidan
+	/// 
+	/// -Metoder-
+	/// btnNy_Click - "Ny" knappen tömmer fälterna och sätter användaren till "Ny"
+	/// btnTaBort_Click - "TaBort" knappen används för att ta bort en befintlig
+	///		användare från databasen
+	///	btnSpara_Click - "Spara" knappen används antingen för att lägga till en
+	///		ny användare eller för att ändra en benfintlig	
+	/// cboxProduktBox_SelectedIndexChanged - Vid ändring i användre comboboxen
+	///		ändras även fälterna för att visa information om användaren
+	/// SättProdukt - Hjälpmetod för att sätta fälterna till en viss användares
+	///		information
+	/// Tömma - Tömmer alla fälterna (eller sätter till default värden) 
+	/// TestaAttIDExistera - Testar om en ID redan existerar i listan över alla
+	///		användare / databas
+	/// TestaAttNamnExistera - Testar om ett namn redan existerar i listan över
+	///		alla användare / databas
+	/// TestaAttSammaNamnExistera - Testar om samma namn redan existerar för någon
+	///		annan användare i listan över alla användare / databas
+	///	RengörInput - städa input från användaren för lite säkerhet
+	/// initiatiseraComboBox - initialisera comboboxen för att visa nuvarande sidan
+	/// btnFörsta_Click - Visar första sidan (x antal användare) i comboboxen
+	/// btnSista_Click - Visar sista sidan (x antal användare) i comboboxen
+	/// btnTillbaka_Click - Visar föregående sida (x antal användare) i comboboxen
+	/// btnNästa_Click - Visar nästa sida (x antal användare) i comboboxen
+	/// 
+	/// Version: 0.3
+	/// 2014-11-28
+	/// Grupp 2
+	/// </summary> 
 	public partial class AnvändareForm : Form
 	{
 		//instansvariabler
 		//Referens till ProduktApplikationen (Kontroller)
 		private AdministrationApplikation administrationApplikation;
 		//Behållare för en samling av Produkt värdena (utan nycklar) från en Dictionary
-		private Dictionary<string, Användare>.ValueCollection användareSamling;
+		private List<Användare> användarSidaLista;
 		//Den produkt som är aktiv i produkt comboboxen
 		private string valdAnvändarnamn = "";
 		private int högstaID = 0;
 		private int sida = 1;
 
+		/// <summary>
+		/// Konstruktör AnvändareForm tar emot en referens till
+		/// AdministrationApplikation kontrollern, hämtar första combobox sidan
+		/// av användare och initialisera comboboxen.  Om där finns fler än en
+		/// sida aktiveras nästa knappen.
+		/// </summary>
+		/// <param name="administrationApplikation">referensen till
+		///		AdministrationApplikation kontrollern</param>
 		public AnvändareForm(AdministrationApplikation administrationApplikation)
 		{
+			//Initialisera formen
 			InitializeComponent();
 
-			//Sätt produktApplikation objekt
+			//Sätt referensen till AdministrationApplikation objektet
 			this.administrationApplikation = administrationApplikation;
 
-			//Sätt samling till värdena av Dictionary Produkter från ProduktApplikation
-			användareSamling = administrationApplikation.AllaAnvändare.Values;
+			//hämta första sidan och sätt högsta användare ID för ID skapelse sedan
+			användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
 			högstaID = administrationApplikation.HögstaAnvändareID;
 
+			//initialiser innehållet i comboboxen
 			initiatiseraComboBox();
 
+			//Om där finns fler än en sida aktiveras nästa knappen
 			if (administrationApplikation.TotallaSidorAnvändare > 1)
 			{
 				btnNästa.Enabled = true;
@@ -46,28 +94,25 @@ namespace LOMAdministrationApplikation.Views
 			}
 		}
 
-		/*
-		 * Nyknappen bara tömmer alla fält.
-		 * 
-		 * in - sender innehåller objektreferens till knappen,
-		 *		e inehåller argument för event knapptryckningen
-		 */
+		/// <summary>
+		/// btnNy_Click bara anroper tömma för att tömmer alla fält och
+		/// sätt det till en "Ny" användare i comboboxen.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (btnTaBort)</param>
+		/// <param name="e">argumenten till eventet</param>
 		private void btnNy_Click(object sender, EventArgs e)
 		{
 			Tömma();
 		}
 
-		/*
-		 * Tabortknappen används för att ta bort en befintlig produkt.
-		 * Metoden testar att produkten redan existerar innan TaBortProdukt
-		 * kallas i Produkt Applikation.  Om det lyckas, tas bort namnen
-		 * från produkt comboboxen och fälten töms.
-		 * 
-		 * Vid existerande ID, meddelas användaren och ingenting händer.
-		 * 
-		 * in - sender innehåller objektreferens till knappen,
-		 *		e inehåller argument för event knapptryckningen
-		 */
+		/// <summary>
+		/// btnTaBort_Click används för att ta bort en befintlig användare.
+		/// Metoden testar att användaren redan existerar innan borttagning.
+		/// Om det lyckas tas bort namnet och fälten töms då sidan laddas om.
+		/// Vid existerande ID meddelas användaren och ingenting händer.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (btnTaBort)</param>
+		/// <param name="e">argumenten till eventet</param>
 		private void btnTaBort_Click(object sender, EventArgs e)
 		{
 			string namn = txtAnvändarnamn.Text;
@@ -76,11 +121,12 @@ namespace LOMAdministrationApplikation.Views
 			//Om ID redan existerar
 			if (TestaAttIDExistera(ID))
 			{
-				//Om det lyckas med att ta bort produkten, tar den även
+				//Om det lyckas med att ta bort användaren, tar den även
 				//bort från comboxen och tömma fälterna
-				if (administrationApplikation.TaBortAnvändare(ID, namn))
+				if (administrationApplikation.TaBortAnvändare(ID))
 				{
-					cboxAnvändareBox.Items.Remove(namn);
+					användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
+					initiatiseraComboBox();
 					Tömma();
 				}
 				//annars något gick snett
@@ -101,14 +147,24 @@ namespace LOMAdministrationApplikation.Views
 		 * in - sender innehåller objektreferens till knappen,
 		 *		e inehåller argument för event knapptryckningen
 		 */
+		/// <summary>
+		/// btnSpara_Click används för att ändra en befintlig användare ELLER
+		/// för att lägga till en användare vid "Ny".
+		/// Metoden testar att användaren redan existerar vid ändring eller
+		/// att den inte redan existerar vid ny insättning.
+		/// Om en ID inte existerar vid ändring eller existerar vid tilläggning
+		/// meddelas användaren och ingening händer.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (btnSpara)</param>
+		/// <param name="e">argumenten till eventet</param>
 		private void btnSpara_Click(object sender, EventArgs e)
 		{
 			//Skapa en ny produkt att fylla från fälterna
 			Användare användare = new Användare();
 
 			//ID och Namn kommer att användas för flera testar
-			//RengörInput används för att ta bort kod som kan vara skadlig
-			//vid insättning till databasen
+			
+			//Skapar ny ID vid insättning
 			int ID;
 			if(lblIndex.Text.Equals("*"))
 			{
@@ -118,19 +174,22 @@ namespace LOMAdministrationApplikation.Views
 			else
 				ID = int.Parse(lblIndex.Text);
 
+			//RengörInput används för att ta bort kod som kan vara skadlig
+			//vid insättning till databasen
 			string användarnamn = RengörInput(txtAnvändarnamn.Text);
 
-			//fyller produkter med informationen (med rengöring för strängar)
+			//fyller användare med informationen (med rengöring för strängar)
 			användare.ID = ID;
 			användare.Användarnamn = användarnamn;
 			användare.Roll = RengörInput(txtRoll.Text);
 			användare.Räknare = int.Parse(txtRäknare.Text);
-			if (rbtnLåste.Checked)
-				användare.Låste = true;
+			if (rbtnLåst.Checked)
+				användare.Låst = true;
 			else
-				användare.Låste = false;
+				användare.Låst = false;
 
-			//Lyckades är om operationen lyckades, och fås från Produkt Applikation sedan
+			//Lyckades är om operationen lyckades, och fås från Administration
+			//Applikation sedan
 			bool lyckades = false;
 
 			//Ny användare
@@ -160,7 +219,7 @@ namespace LOMAdministrationApplikation.Views
 					användare.LösenordHash = Crypto.HashPassword(RengörInput(txtLösenord.Text));
 				//Annars använd förre detta lösenordet
 				else 					
-					användare.LösenordHash = administrationApplikation.AllaAnvändare[användare.Användarnamn].LösenordHash;
+					användare.LösenordHash = administrationApplikation.HämtaAnvändareMedID(användare.ID).LösenordHash;
 
 				//Om id redan existerar
 				if (TestaAttIDExistera(ID))
@@ -179,20 +238,13 @@ namespace LOMAdministrationApplikation.Views
 			if (lyckades)
 			{
 				//hämta värden för sidan
-				användareSamling = administrationApplikation.HämtaSidaAnvändare(sida).Values;
-				//Ifall namnet har ändrats, tas den bort och läggs till igen
-				cboxAnvändareBox.Items.Remove(användare.Användarnamn);
-				cboxAnvändareBox.Items.Add(användare.Användarnamn);
+				användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
+				//gör om innehållet i comboboxen
+				initiatiseraComboBox();
 				//Fälterna ändras vid behov
 				SättAnvändare(användare);
 			}
 			//annars något gick snett
-		}
-
-		private void AnvändareForm_Load(object sender, EventArgs e)
-		{
-			// TODO: This line of code loads data into the 'lOM_DBDataSet.Anvandare' table. You can move, or remove it, as needed.
-
 		}
 
 		/*
@@ -205,6 +257,13 @@ namespace LOMAdministrationApplikation.Views
 		 * in - sender innehåller objektreferens till produkt comboboxen,
 		 *		e inehåller argument för event combobox index ändring
 		 */
+		/// <summary>
+		/// cboxAnvändareBox_SelectedIndexChanged händer när comboboxen sätts
+		/// till ett nytt värde. Det blir antigen "Ny" där alla fält tömms
+		/// eller en befintlig användare där fälten fylls från användaren.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (cboxProduktBox)</param>
+		/// <param name="e">argumenten till eventet</param> 
 		private void cboxAnvändareBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			valdAnvändarnamn = cboxAnvändareBox.Items[cboxAnvändareBox.SelectedIndex].ToString();
@@ -217,9 +276,9 @@ namespace LOMAdministrationApplikation.Views
 			}
 			else
 			{
-				//Söker efter namnet från comboboxen i produktsamlingen.  Detta gör att
+				//Söker efter namnet från comboboxen i användarlistan.  Detta gör att
 				//namn måste vara unik.
-				foreach (Användare användare in användareSamling)
+				foreach (Användare användare in användarSidaLista)
 				{
 					//Om namnet i comboBoxen är samma som produkten sätts fälterna
 					if (användare.Användarnamn.Equals(valdAnvändarnamn))
@@ -229,10 +288,10 @@ namespace LOMAdministrationApplikation.Views
 						txtAnvändarnamn.Text = användare.Användarnamn;
 						txtRoll.Text = användare.Roll;
 						txtRäknare.Text = användare.Räknare.ToString();
-						if (användare.Låste == true)
-							rbtnLåste.Checked = true;
+						if (användare.Låst == true)
+							rbtnLåst.Checked = true;
 						else
-							rbtnOlåste.Checked = true;
+							rbtnUpplåst.Checked = true;
 
 						txtLösenord.Text = "";
 						txtLösenord.BackColor = Color.Gray;
@@ -245,13 +304,11 @@ namespace LOMAdministrationApplikation.Views
 			}
 		}
 
-		/*
-		 * SättAnvändare sätter fälterna till användarens värden.  Den även gör den
-		 * till den användaren som visas just nu (och sätter användare comboboxen till
-		 * användaren).
-		 * 
-		 * in - användaren som innehåller information som ska visas
-		 */
+		/// <summary>
+		/// SättAnvändare sätter fälterna till användarens värden. Den även
+		/// gör den till den användare som visas just nu i comboboxen. 
+		/// </summary>
+		/// <param name="användare">användare som ska visas</param>
 		private void SättAnvändare(Användare användare)
 		{
 			//Söker efter namnet från produkten.  Detta gör att namn måste
@@ -266,11 +323,12 @@ namespace LOMAdministrationApplikation.Views
 					txtAnvändarnamn.Text = användare.Användarnamn;
 					txtRoll.Text = användare.Roll;
 					txtRäknare.Text = användare.Räknare.ToString();
-					if(användare.Låste == true)
-						rbtnLåste.Checked = true;
+					if(användare.Låst == true)
+						rbtnLåst.Checked = true;
 					else
-						rbtnOlåste.Checked = true;
+						rbtnUpplåst.Checked = true;
 
+					//stäng ändring av lösenord igen till det blir vald
 					checkNyLösenord.Enabled = true;
 					txtLösenord.Text = "";
 					txtLösenord.BackColor = Color.Gray;
@@ -283,10 +341,11 @@ namespace LOMAdministrationApplikation.Views
 			}
 		}
 
-		/*
-		 * Fälterna tömms eller sätts till en default värde.  Index blir *
-		 * istället för någon ID värde och "Ny" visas i produkt comboboxen.
-		 */
+		/// <summary>
+		/// Tömma tömmer alla fält / sätter de till ett default värde. Index
+		/// blir * istället för någon ID värde och "Ny" visas i produkt
+		/// comboboxen.
+		/// </summary>
 		private void Tömma()
 		{
 			lblIndex.Text = "*";
@@ -297,21 +356,20 @@ namespace LOMAdministrationApplikation.Views
 			txtLösenord.Text = "";
 			txtLösenord.BackColor = Color.White;
 			txtLösenord.Enabled = true;
-			rbtnOlåste.Checked = true;
+			rbtnUpplåst.Checked = true;
 		}
 
-		/*
-		 * Testar att en ID existera i användarsamlingen.
-		 * 
-		 * in - id(sträng) av användaren som man vill testa om den redan existera
-		 * ut - sann om den existera, annars falsk
-		 */
+		/// <summary>
+		/// TestaAttIDExistera testar om någon användare har angiven id.
+		/// </summary>
+		/// <param name="id">id av en användare</param>
+		/// <returns>sann om id existerar och annars falsk</returns>
 		private bool TestaAttIDExistera(int id)
 		{
 			bool existera = false;
 
-			//Letar genom alla produkter i samlingen
-			foreach (Användare användare in användareSamling)
+			//Letar genom alla användare i användarlistan över alla användare
+			foreach (Användare användare in administrationApplikation.AnvändarLista)
 			{
 				//Om id redan finns, sätts existera till sann
 				if (id == användare.ID) existera = true;
@@ -320,18 +378,17 @@ namespace LOMAdministrationApplikation.Views
 			return existera;
 		}
 
-		/*
-		 * Testar att en namn existera i användaresamlingen.
-		 * 
-		 * in - namn(sträng) av användaren som man vill testa om den redan existera
-		 * ut - sann om den existera, annars falsk
-		 */
+		/// <summary>
+		/// TestaAttNamnExistera testar om någon användare har angiven namn.
+		/// </summary>
+		/// <param name="namn">namn av en användare</param>
+		/// <returns>sann om namnet existerar och annars falsk</returns>
 		private bool TestaOmNamnExistera(string namn)
 		{
 			bool existera = false;
 
-			//Letar genom alla produkter i samlingen
-			foreach (Användare användare in användareSamling)
+			//Letar genom alla användare i användarlistan över alla användare
+			foreach (Användare användare in administrationApplikation.AnvändarLista)
 			{
 				//Om namnet redan finns, sätts existera till sann
 				if (namn.Equals(användare.Användarnamn)) existera = true;
@@ -340,25 +397,24 @@ namespace LOMAdministrationApplikation.Views
 			return existera;
 		}
 
-
-		/*
-		 * Testar om en annan produkt (annan id) har samma namn.
-		 * 
-		 * in - id(sträng) av användaren som man vill testa, namn(sträng) som
-		 *		man vill testa om en annan användare också har den
-		 * ut - sann om en annan användare har samma namn, annars falsk
-		 */
+		/// <summary>
+		/// TestaOmSammaNamnExistera testar om en annan användare har samma
+		/// namn då alla namn ska vara unikt.
+		/// </summary>
+		/// <param name="id">id av en användare</param>
+		/// <param name="namn">namn av en användare</param>
+		/// <returns>sann om samma namn existerar och annars falsk</returns>
 		private bool TestaOmSammaNamnExistera(int id, string namn)
 		{
 			bool existera = false;
 
-			//Letar genom alla produkter i samlingen
-			foreach (Användare användare in användareSamling)
+			//Letar genom alla användare i användarlistan över alla användare
+			foreach (Användare användare in administrationApplikation.AnvändarLista)
 			{
 				//Om namnet hittas
 				if (namn.Equals(användare.Användarnamn))
 				{
-					//Om namnet är inte till första produkten, finns det en
+					//Om namnet är inte till första användare, finns det en
 					//annan som också har namnet.  Existera sätts till sann
 					if (!id.Equals(användare.ID))
 						existera = true;
@@ -368,24 +424,26 @@ namespace LOMAdministrationApplikation.Views
 			return existera;
 		}
 
-		/*
-		 * Rengör användarinput så det blir ingen situation som
-		 * Farg = "blå;Drop Table Produkter;" när man skickar det till
-		 * databasen."  Administratörer kommer att använda programmet så
-		 * det behöver inte vara överdriven, bara nog för att undvika misstag
-		 * och hålla en minimum nivå.
-		 * 
-		 * in - input är en sträng
-		 * ut - strängen skickas tillbaka (och kan ha ändrats för att ta bort ;)
-		 */
+		/// <summary>
+		/// RengörInput tar bort oönskade karaktärer från inmatningen så man inte
+		/// får en situation som Farg = "blå;Drop Table Produkter;" när man skickar
+		/// till databasen.  Inloggade anställda kommer att använda programmet så
+		/// säkerheten i administationsprogrammet behöver inte vara äverdriven men
+		/// det här är bara för minimal säkerhet.
+		/// *Ett bättre sätt skulle vara att encode datan innan det skrivs till
+		/// databasen. Om tiden tillåter skulle det vara en bra idé men skulle
+		/// kräver ändringar i webbsidan också.
+		/// </summary>
+		/// <param name="input">angiven sträng som ska rensas</param>
+		/// <returns>en rensad sträng</returns>
 		private string RengörInput(string input)
 		{
 			//Tar bort ogiltiga karaktärer 
 			//[^\w\-+*/=£$.,!?:%'½&()#@\\d] matchar vilket karaktär som helst som är
 			//inte en bokstav, ett nummer, ett matematiskt tecken, en pund eller dollar
-			//symbol, en punkt, en comma, en utrops tecken, en frågatecken, en colon,
+			//symbol, en punkt, en utrops tecken, en frågatecken, en colon,
 			//en procent symbol, en apostrof, en halv symbol, en och symbol, cirkel
-			//parenteser, en # symbol, en @ symbol, eller en \ symbol.
+			//parenteser, en # symbol, en @ symbol, en \ symbol, eller blanksteg.
 			//(allt annat blir ogiltig)
 			try
 			{
@@ -421,9 +479,10 @@ namespace LOMAdministrationApplikation.Views
 			return Convert.ToBase64String(inArray);
 		}*/
 
-		/*
-		 * initiatiseraComboBox initialiser comboboxen med innehåller för en sida
-		 */
+		/// <summary>
+		/// initiatiseraComboBox initialisera comboboxen för att visa 
+		/// nuvarande sidan. Från början sätt det till index 1 (inte ny).
+		/// </summary>
 		private void initiatiseraComboBox()
 		{
 			cboxAnvändareBox.Items.Clear();
@@ -431,25 +490,33 @@ namespace LOMAdministrationApplikation.Views
 			//Lägg till "Ny" för nya produkter
 			cboxAnvändareBox.Items.Add("Ny");
 
-			//För varje produkt som finns i samlingen, lägg till namnet i
-			//produkt comboboxen
-			foreach (Användare användare in användareSamling)
+			//För varje användare som finns i användarlistan för sidan
+			//lägg till namnet i användare comboboxen
+			foreach (Användare användare in användarSidaLista)
 			{
 				cboxAnvändareBox.Items.Add(användare.Användarnamn);
 			}
 
-			//Sätt default produkten (om startup) till index 0
-			cboxAnvändareBox.SelectedIndex = 0;
+			//Sätt default användare (vid laddning) till index 0
+			cboxAnvändareBox.SelectedIndex = 1;
 		}
 
-		/*
-		 * btnFörsta tar en till första sidan (första 5 i comboboxen)
-		 */
+		/// <summary>
+		/// btnFörsta_Click visar första sidan (x antal användare) i comboboxen.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (btnFörsta)</param>
+		/// <param name="e">argumenten till eventet</param>
 		private void btnFörsta_Click(object sender, EventArgs e)
 		{
+			//Sätt sidan till första sidan och hämtar användare för den
 			sida = 1;
-			användareSamling = administrationApplikation.HämtaSidaAnvändare(sida).Values;
+			användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
+
+			//sätt comboboxen till det nya innehåll
 			initiatiseraComboBox();
+
+			//Om det finns fler än 1 sida stäng av tillbaka knappen och sätt på
+			//nästa knappen
 			if (administrationApplikation.TotallaSidorAnvändare > 1)
 			{
 				btnNästa.Enabled = true;
@@ -457,14 +524,22 @@ namespace LOMAdministrationApplikation.Views
 			}
 		}
 
-		/*
-		 * btnSista tar en till sista sidan (sista 5 eller färre i comboboxen)
-		 */
+		/// <summary>
+		/// btnSista_Click visar sista sidan (x antal användare) i comboboxen.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (btnSista)</param>
+		/// <param name="e">argumenten till eventet</param> 
 		private void btnSista_Click(object sender, EventArgs e)
 		{
+			//Sätt sidan till sista sidan och hämtar produkter för den
 			sida = administrationApplikation.TotallaSidorAnvändare;
-			användareSamling = administrationApplikation.HämtaSidaAnvändare(sida).Values;
+			användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
+
+			//sätt comboboxen till det nya innehåll
 			initiatiseraComboBox();
+
+			//Om det finns fler än 1 sida stäng av nästa knappen och sätt på
+			//tillbaka knappen
 			if (administrationApplikation.TotallaSidorAnvändare > 1)
 			{
 				btnNästa.Enabled = false;
@@ -472,37 +547,50 @@ namespace LOMAdministrationApplikation.Views
 			}
 		}
 
-		/*
-		 * btnTillbaka tar en tillbaka en sida (förre 5 i comboboxen)
-		 */
+		/// <summary>
+		/// btnTillbaka_Click visar förre sidan (x antal användare) i comboboxen.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (btnTillbaka)</param>
+		/// <param name="e">argumenten till eventet</param> 
 		private void btnTillbaka_Click(object sender, EventArgs e)
 		{
+			//Om det är inte första sidan ta bort en från sida och hämta
+			//användare för den nya sidan.  Nästa knappen kan användas nu.
 			if (sida > 1)
 			{
 				sida--;
-				användareSamling = administrationApplikation.HämtaSidaAnvändare(sida).Values;
+				användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
 			}
+
+			//sätt comboboxen till det nya innehåll
 			initiatiseraComboBox();
 
+			//Om det är nu första sidan stäng av tillbaka knappen
 			if (sida == 1)
 			{
-				btnNästa.Enabled = true;
 				btnTillbaka.Enabled = false;
 			}
 		}
 
-		/*
-		 * btnNästa tar en till nästa sida (nästa 5 i comboboxen)
-		 */
+		/// <summary>
+		/// btnNästa_Click visar nästa sida (x antal användare) i comboboxen.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (btnNästa)</param>
+		/// <param name="e">argumenten till eventet</param>
 		private void btnNästa_Click(object sender, EventArgs e)
 		{
+			//Om det är inte sista sidan öka sida med en och hämta produkter
+			//för den nya sian. Tillbaka knappen kan användas nu.
 			if (sida < administrationApplikation.TotallaSidorAnvändare)
 			{
 				sida++;
-				användareSamling = administrationApplikation.HämtaSidaAnvändare(sida).Values;
+				användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
 			}
+
+			//sätt comboboxen till det nya innehåll
 			initiatiseraComboBox();
 
+			//Om det är nu sista sidan stäng av nästa knappen
 			if (sida == administrationApplikation.TotallaSidorAnvändare)
 			{
 				btnNästa.Enabled = false;
@@ -510,17 +598,22 @@ namespace LOMAdministrationApplikation.Views
 			}
 		}
 
-		/*
-		 * Aktivera lösenordsfältet för ändringar
-		 */
+		/// <summary>
+		/// checkNyLösenord_CheckedChanged aktivera lösenordsfältet för
+		/// ändringar
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (checkNyLösenord)</param>
+		/// <param name="e">argumenten till eventet</param>
 		private void checkNyLösenord_CheckedChanged(object sender, EventArgs e)
 		{
+			//Aktivera om inbokade
 			if (checkNyLösenord.Checked)
 			{
 				txtLösenord.Text = "";
 				txtLösenord.BackColor = Color.White;
 				txtLösenord.Enabled = true;
 			}
+			//Annars stäng av det
 			else
 			{
 				txtLösenord.Text = "";

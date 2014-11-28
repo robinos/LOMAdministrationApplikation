@@ -39,8 +39,9 @@
 			this.btnTaBort = new System.Windows.Forms.Button();
 			this.btnNy = new System.Windows.Forms.Button();
 			this.panelInmatning = new System.Windows.Forms.Panel();
-			this.rbtnLåste = new System.Windows.Forms.RadioButton();
-			this.rbtnOlåste = new System.Windows.Forms.RadioButton();
+			this.checkNyLösenord = new System.Windows.Forms.CheckBox();
+			this.rbtnLåst = new System.Windows.Forms.RadioButton();
+			this.rbtnUpplåst = new System.Windows.Forms.RadioButton();
 			this.txtRäknare = new System.Windows.Forms.RichTextBox();
 			this.txtAnvändarnamn = new System.Windows.Forms.RichTextBox();
 			this.lblAnvändarnamn = new System.Windows.Forms.Label();
@@ -52,7 +53,6 @@
 			this.lblHash = new System.Windows.Forms.Label();
 			this.lblLösenord = new System.Windows.Forms.Label();
 			this.lblID = new System.Windows.Forms.Label();
-			this.checkNyLösenord = new System.Windows.Forms.CheckBox();
 			this.panelFunktion.SuspendLayout();
 			this.panelInmatning.SuspendLayout();
 			this.SuspendLayout();
@@ -194,8 +194,8 @@
 			this.panelInmatning.AccessibleName = "Inmatning";
 			this.panelInmatning.AccessibleRole = System.Windows.Forms.AccessibleRole.Pane;
 			this.panelInmatning.Controls.Add(this.checkNyLösenord);
-			this.panelInmatning.Controls.Add(this.rbtnLåste);
-			this.panelInmatning.Controls.Add(this.rbtnOlåste);
+			this.panelInmatning.Controls.Add(this.rbtnLåst);
+			this.panelInmatning.Controls.Add(this.rbtnUpplåst);
 			this.panelInmatning.Controls.Add(this.txtRäknare);
 			this.panelInmatning.Controls.Add(this.txtAnvändarnamn);
 			this.panelInmatning.Controls.Add(this.lblAnvändarnamn);
@@ -212,27 +212,39 @@
 			this.panelInmatning.Size = new System.Drawing.Size(502, 255);
 			this.panelInmatning.TabIndex = 8;
 			// 
-			// rbtnLåste
+			// checkNyLösenord
 			// 
-			this.rbtnLåste.AutoSize = true;
-			this.rbtnLåste.Location = new System.Drawing.Point(267, 187);
-			this.rbtnLåste.Name = "rbtnLåste";
-			this.rbtnLåste.Size = new System.Drawing.Size(51, 17);
-			this.rbtnLåste.TabIndex = 33;
-			this.rbtnLåste.TabStop = true;
-			this.rbtnLåste.Text = "Låste";
-			this.rbtnLåste.UseVisualStyleBackColor = true;
+			this.checkNyLösenord.AutoSize = true;
+			this.checkNyLösenord.Enabled = false;
+			this.checkNyLösenord.Location = new System.Drawing.Point(364, 68);
+			this.checkNyLösenord.Name = "checkNyLösenord";
+			this.checkNyLösenord.Size = new System.Drawing.Size(39, 17);
+			this.checkNyLösenord.TabIndex = 34;
+			this.checkNyLösenord.Text = "Ny";
+			this.checkNyLösenord.UseVisualStyleBackColor = true;
+			this.checkNyLösenord.CheckedChanged += new System.EventHandler(this.checkNyLösenord_CheckedChanged);
 			// 
-			// rbtnOlåste
+			// rbtnLåst
 			// 
-			this.rbtnOlåste.AutoSize = true;
-			this.rbtnOlåste.Location = new System.Drawing.Point(176, 188);
-			this.rbtnOlåste.Name = "rbtnOlåste";
-			this.rbtnOlåste.Size = new System.Drawing.Size(55, 17);
-			this.rbtnOlåste.TabIndex = 32;
-			this.rbtnOlåste.TabStop = true;
-			this.rbtnOlåste.Text = "Olåste";
-			this.rbtnOlåste.UseVisualStyleBackColor = true;
+			this.rbtnLåst.AutoSize = true;
+			this.rbtnLåst.Location = new System.Drawing.Point(267, 187);
+			this.rbtnLåst.Name = "rbtnLåst";
+			this.rbtnLåst.Size = new System.Drawing.Size(45, 17);
+			this.rbtnLåst.TabIndex = 33;
+			this.rbtnLåst.TabStop = true;
+			this.rbtnLåst.Text = "Låst";
+			this.rbtnLåst.UseVisualStyleBackColor = true;
+			// 
+			// rbtnUpplåst
+			// 
+			this.rbtnUpplåst.AutoSize = true;
+			this.rbtnUpplåst.Location = new System.Drawing.Point(176, 188);
+			this.rbtnUpplåst.Name = "rbtnUpplåst";
+			this.rbtnUpplåst.Size = new System.Drawing.Size(61, 17);
+			this.rbtnUpplåst.TabIndex = 32;
+			this.rbtnUpplåst.TabStop = true;
+			this.rbtnUpplåst.Text = "Upplåst";
+			this.rbtnUpplåst.UseVisualStyleBackColor = true;
 			// 
 			// txtRäknare
 			// 
@@ -371,18 +383,6 @@
 			this.lblID.Text = "ID:";
 			this.lblID.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// checkNyLösenord
-			// 
-			this.checkNyLösenord.AutoSize = true;
-			this.checkNyLösenord.Enabled = false;
-			this.checkNyLösenord.Location = new System.Drawing.Point(364, 68);
-			this.checkNyLösenord.Name = "checkNyLösenord";
-			this.checkNyLösenord.Size = new System.Drawing.Size(39, 17);
-			this.checkNyLösenord.TabIndex = 34;
-			this.checkNyLösenord.Text = "Ny";
-			this.checkNyLösenord.UseVisualStyleBackColor = true;
-			this.checkNyLösenord.CheckedChanged += new System.EventHandler(this.checkNyLösenord_CheckedChanged);
-			// 
 			// AnvändareForm
 			// 
 			this.AccessibleDescription = "Användare redigerare";
@@ -395,7 +395,6 @@
 			this.Controls.Add(this.panelFunktion);
 			this.Name = "AnvändareForm";
 			this.Text = "Ljus och Miljö AB - Användare Hanterare";
-			this.Load += new System.EventHandler(this.AnvändareForm_Load);
 			this.panelFunktion.ResumeLayout(false);
 			this.panelInmatning.ResumeLayout(false);
 			this.panelInmatning.PerformLayout();
@@ -423,8 +422,8 @@
 		private System.Windows.Forms.Label lblLösenord;
 		private System.Windows.Forms.Label lblID;
 		private System.Windows.Forms.RichTextBox txtRäknare;
-		private System.Windows.Forms.RadioButton rbtnLåste;
-		private System.Windows.Forms.RadioButton rbtnOlåste;
+		private System.Windows.Forms.RadioButton rbtnLåst;
+		private System.Windows.Forms.RadioButton rbtnUpplåst;
 		private System.Windows.Forms.Button btnFörsta;
 		private System.Windows.Forms.Button btnSista;
 		private System.Windows.Forms.Button btnNästa;
