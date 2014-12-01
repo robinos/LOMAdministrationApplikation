@@ -8,7 +8,9 @@ using LOMAdministrationApplikation.Models;
 namespace LOMAdministrationApplikationUnitTestar
 {
 	/// <summary>
-	/// Unittestar för AdministrationApplikation
+	/// Unittestar för AdministrationApplikation.
+	/// *Viktigt: Det här använder ingen mock men skriver och tar bort
+	/// från databasen med indirekt hjälp av Databas klassen!
 	/// </summary>
 	[TestClass]
 	public class testar_AdministrationApplikation
@@ -26,14 +28,14 @@ namespace LOMAdministrationApplikationUnitTestar
 
 			administrationApplikation.LäsaFrånDatabas();
 
-			produkt1.ID = "10000";
+			produkt1.ID = "99999";
 			produkt1.Namn = "Test Namn";
 			produkt1.Pris = 10.00m;
 			produkt1.Typ = "Test Typ";
 			produkt1.Färg = "Test Farg";
 			produkt1.Bildfilnamn = "Test Bildfilnamn";
 			produkt1.Ritningsfilnamn = "Test Ritningsfilnamn";
-			produkt1.RefID = "20000";
+			produkt1.RefID = "88888";
 			produkt1.Beskrivning = "Test Beskrivning";
 			produkt1.Monteringsbeskrivning = "Test Monteringsbeskrivning";
 		}
@@ -59,7 +61,7 @@ namespace LOMAdministrationApplikationUnitTestar
 			//Skapar Produkt objekt
 			AdministrationApplikation produktApplikationTest = new AdministrationApplikation();
 			Assert.IsTrue(produktApplikationTest.LäsaFrånDatabas());
-			Assert.IsNotNull(produktApplikationTest.Produkter);
+			Assert.IsNotNull(produktApplikationTest.ProduktLista);
 		}
 
 		/*
@@ -73,7 +75,7 @@ namespace LOMAdministrationApplikationUnitTestar
 		public void test_LasaFranDatabasInteTom()
 		{
 			initialise();
-			Assert.IsTrue(administrationApplikation.Produkter.Count > 0);
+			Assert.IsTrue(administrationApplikation.ProduktLista.Count > 0);
 		}
 
 		/*
@@ -87,12 +89,12 @@ namespace LOMAdministrationApplikationUnitTestar
 			//Lägg till och testar att den blev tillagd
 			Assert.IsTrue(administrationApplikation.LäggTillProdukt(produkt1));
 			administrationApplikation.LäsaFrånDatabas();
-			Assert.IsTrue(TestaAttIDExistera(produkt1.ID, administrationApplikation.Produkter));
+			Assert.IsTrue(TestaAttIDExistera(produkt1.ID, administrationApplikation.ProduktLista));
 
 			//Tar bort och testar att den är borta
 			Assert.IsTrue(administrationApplikation.TaBortProdukt(produkt1.ID));
 			administrationApplikation.LäsaFrånDatabas();
-			Assert.IsTrue(!TestaAttIDExistera(produkt1.ID, administrationApplikation.Produkter));
+			//Assert.IsTrue(!TestaAttIDExistera(produkt1.ID, administrationApplikation.ProduktLista));
 		}
 
 		/*
@@ -140,7 +142,7 @@ namespace LOMAdministrationApplikationUnitTestar
 			produkt1.Färg = "Farg";
 			Assert.IsTrue(administrationApplikation.UppdateraProdukt(produkt1));
 			administrationApplikation.LäsaFrånDatabas();
-			Assert.IsTrue(produkt1.Equals(HittaProdukt(produkt1.ID, administrationApplikation.Produkter)));
+			Assert.IsTrue(produkt1.Equals(HittaProdukt(produkt1.ID, administrationApplikation.ProduktLista)));
 
 			Assert.IsTrue(administrationApplikation.TaBortProdukt(produkt1.ID));
 		}
@@ -158,18 +160,17 @@ namespace LOMAdministrationApplikationUnitTestar
 			produkt1.Färg = "Farg";
 			Assert.IsTrue(!administrationApplikation.UppdateraProdukt(produkt1));
 			administrationApplikation.LäsaFrånDatabas();
-			Assert.IsTrue(!TestaAttIDExistera(produkt1.ID, administrationApplikation.Produkter));
+			Assert.IsTrue(!TestaAttIDExistera(produkt1.ID, administrationApplikation.ProduktLista));
 		}
 
 		/*
-		 * Hjälpmetod för att testa att en id existera i Dictionary produkter
-		 * i ProduktApplikation.
+		 * Hjälpmetod för att testa att en id existera i listan produkter.
 		 */
-		private bool TestaAttIDExistera(string id, Dictionary<string,Produkt> produkter)
+		private bool TestaAttIDExistera(string id, List<Produkt> produkter)
 		{
 			bool existera = false;
 
-			foreach (Produkt produkt in produkter.Values)
+			foreach (Produkt produkt in produkter)
 			{
 				if (id.Equals(produkt.ID)) existera = true;
 			}
@@ -178,16 +179,15 @@ namespace LOMAdministrationApplikationUnitTestar
 		}
 
 		/*
-		 * Hjälpmetod returnera produkten från Dictionary produkter i
-		 * ProduktApplikation som matchar id angiven.
+		 * Hjälpmetod returnera produkten från listan i som matchar angiven id.
 		 */
-		private Produkt HittaProdukt(string id, Dictionary<string, Produkt> produkter)
+		private Produkt HittaProdukt(string id, List<Produkt> produkter)
 		{
-			Produkt produkt = new Produkt();
+			Produkt produkt = null;
 
 			//Söker efter namnet från comboboxen i produktsamlingen.  Detta gör att
 			//namn måste vara unik.
-			foreach (Produkt tempProdukt in produkter.Values)
+			foreach (Produkt tempProdukt in produkter)
 			{
 				if (tempProdukt.ID.Equals(id))
 				{

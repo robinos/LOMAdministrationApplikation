@@ -62,7 +62,9 @@
 			this.panelFunktion.AccessibleDescription = "Funktionpanel";
 			this.panelFunktion.AccessibleName = "Funktionpanel";
 			this.panelFunktion.AccessibleRole = System.Windows.Forms.AccessibleRole.Pane;
-			this.panelFunktion.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.panelFunktion.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.panelFunktion.AutoSize = true;
+			this.panelFunktion.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.panelFunktion.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.panelFunktion.Controls.Add(this.btnFörsta);
 			this.panelFunktion.Controls.Add(this.btnSista);
@@ -73,9 +75,10 @@
 			this.panelFunktion.Controls.Add(this.lblIndex);
 			this.panelFunktion.Controls.Add(this.btnTaBort);
 			this.panelFunktion.Controls.Add(this.btnNy);
-			this.panelFunktion.Location = new System.Drawing.Point(37, 30);
+			this.panelFunktion.Location = new System.Drawing.Point(3, 12);
+			this.panelFunktion.MinimumSize = new System.Drawing.Size(670, 31);
 			this.panelFunktion.Name = "panelFunktion";
-			this.panelFunktion.Size = new System.Drawing.Size(673, 27);
+			this.panelFunktion.Size = new System.Drawing.Size(670, 31);
 			this.panelFunktion.TabIndex = 6;
 			// 
 			// btnFörsta
@@ -193,6 +196,9 @@
 			this.panelInmatning.AccessibleDescription = "Inmatningspanel";
 			this.panelInmatning.AccessibleName = "Inmatning";
 			this.panelInmatning.AccessibleRole = System.Windows.Forms.AccessibleRole.Pane;
+			this.panelInmatning.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.panelInmatning.AutoSize = true;
+			this.panelInmatning.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.panelInmatning.Controls.Add(this.checkNyLösenord);
 			this.panelInmatning.Controls.Add(this.rbtnLåst);
 			this.panelInmatning.Controls.Add(this.rbtnUpplåst);
@@ -207,9 +213,10 @@
 			this.panelInmatning.Controls.Add(this.lblHash);
 			this.panelInmatning.Controls.Add(this.lblLösenord);
 			this.panelInmatning.Controls.Add(this.lblID);
-			this.panelInmatning.Location = new System.Drawing.Point(109, 111);
+			this.panelInmatning.Location = new System.Drawing.Point(123, 84);
+			this.panelInmatning.MinimumSize = new System.Drawing.Size(416, 240);
 			this.panelInmatning.Name = "panelInmatning";
-			this.panelInmatning.Size = new System.Drawing.Size(502, 255);
+			this.panelInmatning.Size = new System.Drawing.Size(416, 240);
 			this.panelInmatning.TabIndex = 8;
 			// 
 			// checkNyLösenord
@@ -390,15 +397,17 @@
 			this.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(784, 562);
+			this.ClientSize = new System.Drawing.Size(674, 362);
 			this.Controls.Add(this.panelInmatning);
 			this.Controls.Add(this.panelFunktion);
+			this.MinimumSize = new System.Drawing.Size(690, 400);
 			this.Name = "AnvändareForm";
 			this.Text = "Ljus och Miljö AB - Användare Hanterare";
 			this.panelFunktion.ResumeLayout(false);
 			this.panelInmatning.ResumeLayout(false);
 			this.panelInmatning.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -410,7 +419,15 @@
 		private System.Windows.Forms.Label lblIndex;
 		private System.Windows.Forms.Button btnTaBort;
 		private System.Windows.Forms.Button btnNy;
+		private System.Windows.Forms.Button btnFörsta;
+		private System.Windows.Forms.Button btnSista;
+		private System.Windows.Forms.Button btnNästa;
+		private System.Windows.Forms.Button btnTillbaka;
 		private System.Windows.Forms.Panel panelInmatning;
+		private System.Windows.Forms.CheckBox checkNyLösenord;
+		private System.Windows.Forms.RadioButton rbtnLåst;
+		private System.Windows.Forms.RadioButton rbtnUpplåst;
+		private System.Windows.Forms.RichTextBox txtRäknare;
 		private System.Windows.Forms.RichTextBox txtAnvändarnamn;
 		private System.Windows.Forms.Label lblAnvändarnamn;
 		private System.Windows.Forms.Label lblLåste;
@@ -421,14 +438,6 @@
 		private System.Windows.Forms.Label lblHash;
 		private System.Windows.Forms.Label lblLösenord;
 		private System.Windows.Forms.Label lblID;
-		private System.Windows.Forms.RichTextBox txtRäknare;
-		private System.Windows.Forms.RadioButton rbtnLåst;
-		private System.Windows.Forms.RadioButton rbtnUpplåst;
-		private System.Windows.Forms.Button btnFörsta;
-		private System.Windows.Forms.Button btnSista;
-		private System.Windows.Forms.Button btnNästa;
-		private System.Windows.Forms.Button btnTillbaka;
-		private System.Windows.Forms.CheckBox checkNyLösenord;
 
 	}
 }
