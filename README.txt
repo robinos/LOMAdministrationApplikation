@@ -15,6 +15,8 @@ Studio.
 
 4) Kör.
 
+5) nicho
+
 
 
 Lösningsinformation
