@@ -41,14 +41,23 @@ namespace LOMAdministrationApplikation.Views
 	/// TestaAttSammaNamnExistera - Testar om samma namn redan existerar för någon
 	///		annan produkt i listan över alla produkter / databas
 	///	RengörInput - städa input från användaren för lite säkerhet
-	/// initiatiseraComboBox - initialisera comboboxen för att visa nuvarande sidan
+	///	initiatiseraKategoriComboBox - initialisera kategori comboboxen med alla
+	///		kategorier
+	/// initiatiseraProduktComboBox - initialisera comboboxen för att visa nuvarande
+	///		sidan
 	/// btnFörsta_Click - Visar första sidan (x antal produkter) i comboboxen
 	/// btnSista_Click - Visar sista sidan (x antal produkter) i comboboxen
 	/// btnTillbaka_Click - Visar föregående sida (x antal produkter) i comboboxen
 	/// btnNästa_Click - Visar nästa sida (x antal produkter) i comboboxen
+	/// cboxKategori_SelectedIndexChanged - sätter valdKategori till valet
+	///		från comboboxen och filterar och hämtar produktlistan
+	/// txtSök_KeyPress - filtrerar produktlistan efter varje bokstav
+	/// HanteraProdukter - filtrerar produktlistan, hämtar listan för nuvarande
+	///		sidan och fyller comboboxen
+	/// TotallaResultatSidor - räknar ut hur många sidor den filtrerade listan är
 	/// 
-	/// Version: 0.3
-	/// 2014-11-28
+	/// Version: 0.4
+	/// 2014-12-01
 	/// Grupp 2
 	/// </summary>
 	public partial class ProduktForm : Form
@@ -56,11 +65,17 @@ namespace LOMAdministrationApplikation.Views
 		//instansvariabler
 		//Referens till ProduktApplikationen (kontroller)
 		private AdministrationApplikation administrationApplikation;
-		//Den produkt som är aktiv i produkt comboboxen
+		//Produkten som är aktiv i produkt comboboxen
 		private string valdProduktnamn = "";
+		//Kategorin som är aktiv i kategori comboxen
+		private string valdKategori = "";
+		//Filtersträngen som används just nu
+		private string filterSträng = "";
 		//nuvarande sida (börjar på sidan 1)
 		private int sida = 1;
-		//produktlistan för nuvarande sida
+		//totall produktlistan efter filtrering (utan sidor)
+		private List<Produkt> produktFiltreradeLista;
+		//produktlistan för nuvarande sida och filtrering
 		private List<Produkt> produktSidaLista;
 
 		/// <summary>
@@ -79,11 +94,17 @@ namespace LOMAdministrationApplikation.Views
 			//Sätt referensen till AdministrationApplikation objektet
 			this.administrationApplikation = administrationApplikation;
 
-			//hämta första sidan
-			produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida);
+			//Från början är filtrerade listan samma som alla produkter
+			produktFiltreradeLista = administrationApplikation.ProduktLista;
 
-			//initialiser innehållet i comboboxen
-			initiatiseraComboBox();
+			//hämta första sidan
+			produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida, administrationApplikation.ProduktLista);
+
+			//initialiser innehållet i kategori comboboxen
+			initiatiseraKategoriComboBox();
+
+			//initialiser innehållet i produkt comboboxen
+			initiatiseraProduktComboBox();
 
 			//Om där finns fler än en sida aktiveras nästa knappen
 			if (administrationApplikation.TotallaSidorProdukter > 1)
@@ -124,8 +145,8 @@ namespace LOMAdministrationApplikation.Views
 				//bort från comboxen och tömma fälterna
 				if (administrationApplikation.TaBortProdukt(ID))
 				{
-					produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida);
-					initiatiseraComboBox();
+					produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida, administrationApplikation.ProduktLista);
+					initiatiseraProduktComboBox();
 					//cboxProduktBox.Items.Remove(namn);
 					Tömma();
 				}
@@ -208,8 +229,8 @@ namespace LOMAdministrationApplikation.Views
 			if (lyckades)
 			{
 				//hämta nuvarande sida och initialisera comboboxen med det
-				produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida);
-				initiatiseraComboBox();
+				produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida, administrationApplikation.ProduktLista);
+				initiatiseraProduktComboBox();
 				//Fälterna ändras vid behov
 				SättProdukt(produkt);
 			}
@@ -418,10 +439,10 @@ namespace LOMAdministrationApplikation.Views
 		}
 
 		/// <summary>
-		/// initiatiseraComboBox initialisera comboboxen för att visa 
-		/// nuvarande sidan. Från början sätt det till index 1 (inte ny).
+		/// initiatiseraProduktComboBox initialisera produkt comboboxen för att
+		/// visa nuvarande sidan. Från början sätt det till index 1 (inte ny).
 		/// </summary>
-		private void initiatiseraComboBox()
+		private void initiatiseraProduktComboBox()
 		{
 			//tömma comboboxen
 			cboxProduktBox.Items.Clear();
@@ -436,8 +457,36 @@ namespace LOMAdministrationApplikation.Views
 				cboxProduktBox.Items.Add(produkt.Namn);
 			}
 
+			//Sätt default produkten (vid laddning) till index 1 om den finns
+			if(cboxProduktBox.Items.Count > 1)
+				cboxProduktBox.SelectedIndex = 1;
+			else
+				cboxProduktBox.SelectedIndex = 0;
+		}
+
+		/// <summary>
+		/// initiatiseraKategoriComboBox initialisera kategori comboboxen 
+		/// med alla kategorier. Från början sätt det till "".
+		/// </summary>
+		private void initiatiseraKategoriComboBox()
+		{
+			//tömma comboboxen
+			cboxProduktBox.Items.Clear();
+
+			//Lägg till "Ny" för nya produkter
+			cboxKategori.Items.Add("");
+
+			List<string> typLista = administrationApplikation.HämtaProduktKategoriLista(administrationApplikation.ProduktLista);
+
+			//För varje produkt som finns i användarlistan för sidan
+			//lägg till namnet i produkt comboboxen
+			foreach (string kategori in typLista)
+			{
+				cboxKategori.Items.Add(kategori);
+			}
+
 			//Sätt default produkten (vid laddning) till index 1
-			cboxProduktBox.SelectedIndex = 1;
+			cboxKategori.SelectedIndex = 0;
 		}
 
 		/// <summary>
@@ -447,16 +496,18 @@ namespace LOMAdministrationApplikation.Views
 		/// <param name="e">argumenten till eventet</param>
 		private void btnFörsta_Click(object sender, EventArgs e)
 		{
+			int totallaSidor = TotallaResultatSidor();
+
 			//Sätt sidan till första sidan och hämtar produkter för den
 			sida = 1;
-			produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida);
+			HanteraProdukter();
 
 			//sätt comboboxen till det nya innehåll
-			initiatiseraComboBox();
+			initiatiseraProduktComboBox();
 
 			//Om det finns fler än 1 sida stäng av tillbaka knappen och sätt på
 			//nästa knappen
-			if(administrationApplikation.TotallaSidorProdukter > 1)
+			if (totallaSidor > 1)
 			{
 				btnNästa.Enabled = true;
 				btnTillbaka.Enabled = false;
@@ -470,16 +521,18 @@ namespace LOMAdministrationApplikation.Views
 		/// <param name="e">argumenten till eventet</param> 
 		private void btnSista_Click(object sender, EventArgs e)
 		{
+			int totallaSidor = TotallaResultatSidor();
+
 			//Sätt sidan till sista sidan och hämtar produkter för den
-			sida = administrationApplikation.TotallaSidorProdukter;
-			produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida);
+			sida = totallaSidor;
+			HanteraProdukter();
 
 			//sätt comboboxen till det nya innehåll
-			initiatiseraComboBox();
+			initiatiseraProduktComboBox();
 
 			//Om det finns fler än 1 sida stäng av nästa knappen och sätt på
 			//tillbaka knappen
-			if (administrationApplikation.TotallaSidorProdukter > 1)
+			if (totallaSidor > 1)
 			{
 				btnNästa.Enabled = false;
 				btnTillbaka.Enabled = true;
@@ -498,13 +551,13 @@ namespace LOMAdministrationApplikation.Views
 			if (sida > 1)
 			{
 				sida--;
-				produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida);
+				HanteraProdukter();
 
 				btnNästa.Enabled = true;
 			}
 
 			//sätt comboboxen till det nya innehåll
-			initiatiseraComboBox();
+			initiatiseraProduktComboBox();
 
 			//Om det är nu första sidan stäng av tillbaka knappen
 			if (sida == 1)
@@ -520,25 +573,107 @@ namespace LOMAdministrationApplikation.Views
 		/// <param name="e">argumenten till eventet</param> 
 		private void btnNästa_Click(object sender, EventArgs e)
 		{
+			int totallaSidor = TotallaResultatSidor();
+
 			//Om det är inte sista sidan öka sida med en och hämta produkter
 			//för den nya sian. Tillbaka knappen kan användas nu.
-			if (sida < administrationApplikation.TotallaSidorProdukter)
+			if (sida < totallaSidor)
 			{
 				sida++;
-				produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida);
+				HanteraProdukter();
 
 				btnTillbaka.Enabled = true;
 			}
 
 			//sätt comboboxen till det nya innehåll
-			initiatiseraComboBox();
+			initiatiseraProduktComboBox();
 
 			//Om det är nu sista sidan stäng av nästa knappen
-			if (sida == administrationApplikation.TotallaSidorProdukter)
+			if (sida == totallaSidor)
 			{
 				btnNästa.Enabled = false;
 			}
 		}
 
+		/// <summary>
+		/// cboxKategori_SelectedIndexChanged sätter valdKategori till valet
+		/// från comboboxen och filterar och hämtar produktlistan därefter.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (cboxKategori)</param>
+		/// <param name="e">argumenten till eventet</param> 
+		private void cboxKategori_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			valdKategori = cboxKategori.Items[cboxKategori.SelectedIndex].ToString();
+			sida = 1; //sätt sidan till 1
+			HanteraProdukter();
+		}
+
+		/// <summary>
+		/// txtSök_KeyPress filtrerar produktlistan efter varje bokstav
+		/// då användaren skriver in en sökSträng.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (txtSök)</param>
+		/// <param name="e">argumenten till eventet</param> 
+		private void txtSök_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			filterSträng = txtSök.Text;
+			sida = 1; //sätt sidan till 1
+			HanteraProdukter();
+		}
+
+		/// <summary>
+		/// HanteraProdukter filtrerar produktlistan, hämtar listan för
+		/// nuvarande sidan och fyller comboboxen.  Beroende på hur
+		/// många sidor den filtrerade listan är kan nästa och tillbaka
+		/// knapparna aktiveras.
+		/// </summary>
+		private void HanteraProdukter()
+		{
+			//Filtrera listan
+			produktFiltreradeLista = administrationApplikation.FiltreraProduktLista(administrationApplikation.ProduktLista, filterSträng, valdKategori);
+			//Hämta nuvarande sida av filtrerad listan
+			produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida, produktFiltreradeLista);
+			//Fyll produkt comboboxen
+			initiatiseraProduktComboBox();
+
+			//Får tillbaka hur många sidor filtrerade listan blev
+			int totallaSidor = TotallaResultatSidor();
+
+			//stäng av nästa och tillbaka knapparna som default
+			btnNästa.Enabled = false;
+			btnTillbaka.Enabled = false;
+
+			//Om det finns fler än en sida och man är inte på sista sidan
+			//tillåt nästa knappen att vara aktiverad
+			if (totallaSidor > 1 && sida < totallaSidor)
+			{
+				btnNästa.Enabled = true;
+			}
+
+			//Om det finns fler än en sida och man är inte på första sidan
+			//tillåt tillbaka knappen att vara aktiverad
+			if (totallaSidor > 1 && sida > 1)
+			{
+				btnTillbaka.Enabled = true;
+			}
+
+		}
+
+		/// <summary>
+		/// TotallaResultatSidor räknar ut hur många sidor den filtrerade
+		/// listan (filtrerade efter kategori och söksträng) är med hjälp
+		/// av ProdukterPerSida i AdministrationApplikation.
+		/// </summary>
+		/// <returns>en integer med hur många sidor filtrerade listan är på</returns>
+		private int TotallaResultatSidor()
+		{
+			int totallaSidor = produktFiltreradeLista.Count / administrationApplikation.ProdukterPerSida;
+
+			//Om där finns rester lägg till en sida
+			if (produktFiltreradeLista.Count % administrationApplikation.ProdukterPerSida > 0)
+				totallaSidor += 1;
+
+			return totallaSidor;
+		}
 	}
 }

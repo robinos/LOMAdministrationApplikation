@@ -19,7 +19,9 @@ namespace LOMAdministrationApplikation
 	/// -Egenskaper-
 	/// ProduktLista - get - lista av alla produkter i databasen
 	/// AnvändarLista - get - lista av alla användare i databasen
+	/// ProdukterPerSida - get - antal element (produkter) på en sida
 	/// TotallaSidorProdukter - get - antal sidor av element för produkter
+	/// ProdukterPerSida - get - antal element (användare) på en sida
 	/// TotallaSidorAnvändare - get - antal sidor av element för användare
 	/// HögstaAnvändareID - get - högsta id för alla användare i databasen/listan
 	/// 
@@ -35,6 +37,8 @@ namespace LOMAdministrationApplikation
 	///		klassen)
 	///	HämtaSidaProdukter - Hämtar en angiven sida av produkter (produkterPerSida
 	///		element)
+	///	HämtaProduktKategoriLista - hittar och returnera alla unika produktkategorier
+	///	FiltreraProduktLista - filtrera angiven produktlistan på söksträng och kategori
 	/// LäggTillProdukt - lägger till en produkt i databasen (använder
 	///		Databas klassen)
 	/// TaBortProdukt - ta bort en produkt från databasen (använder Databas
@@ -44,6 +48,7 @@ namespace LOMAdministrationApplikation
 	///	HämtaAnvändareMedID - hämtar en användare från användarLista med angiven id	
 	///	HämtaSidaAnvändare - Hämtar en angiven sida av användare (användarePerSida
 	///		element)
+	///	FiltreraAnvändareLista - filtrera angiven användarlistan på söksträng
 	/// LäggTillAnvändare - lägger till en användare i databasen (använder
 	///		Databas klassen)
 	/// TaBortAnvändare - ta bort en användare från databasen (använder
@@ -57,8 +62,8 @@ namespace LOMAdministrationApplikation
 	///		inloggad användare
 	/// 
 	/// 
-	/// Version: 0.3
-	/// 2014-11-28
+	/// Version: 0.4
+	/// 2014-12-01
 	/// Grupp 2
 	/// </summary>
 	public class AdministrationApplikation
@@ -95,7 +100,15 @@ namespace LOMAdministrationApplikation
 		}
 
 		/// <summary>
-		/// Get och Set egenskap för totalla sidor av produkter
+		/// Get egenskap för produkter per sida
+		/// </summary>
+		public int ProdukterPerSida
+		{
+			get { return produkterPerSida; }
+		}
+
+		/// <summary>
+		/// Get egenskap för totalla sidor av produkter
 		/// </summary>
 		public int TotallaSidorProdukter
 		{
@@ -103,7 +116,15 @@ namespace LOMAdministrationApplikation
 		}
 
 		/// <summary>
-		/// Get och Set egenskap för totalla sidor av användare
+		/// Get egenskap för användare per sida
+		/// </summary>
+		public int AnvändarePerSida
+		{
+			get { return användarePerSida; }
+		}
+
+		/// <summary>
+		/// Get egenskap för totalla sidor av användare
 		/// </summary>
 		public int TotallaSidorAnvändare
 		{
@@ -111,7 +132,7 @@ namespace LOMAdministrationApplikation
 		}
 
 		/// <summary>
-		/// Get och Set egenskap för högsta ID värde av en användare
+		/// Get egenskap för högsta ID värde av en användare
 		/// </summary>
 		public int HögstaAnvändareID
 		{
@@ -219,14 +240,14 @@ namespace LOMAdministrationApplikation
 		/// </summary>
 		/// <param name="sida">Sidan man ska hämta produkter för</param>
 		/// <returns>En Lista av Produkt objekt för en sida</returns>
-		public List<Produkt> HämtaSidaProdukter(int sida)
+		public List<Produkt> HämtaSidaProdukter(int sida, List<Produkt> produkter)
 		{
 			List<Produkt> tempProduktLista;
 
 			//Vill man titta på sida 1 tar man första antal produkter (enligt produkter per sida)
 			if (sida == 1)
 			{
-				tempProduktLista = new List<Produkt>((from m in produktLista select m).Take(produkterPerSida));
+				tempProduktLista = new List<Produkt>((from m in produkter select m).Take(produkterPerSida));
 				tempProduktLista.OrderBy(n => n.Namn);
 			}
 			//Annars söker man efter sida 2 eller högre
@@ -235,12 +256,60 @@ namespace LOMAdministrationApplikation
 				int tidigareSidorProdukter = (sida - 1) * produkterPerSida;
 
 				//Titta på topp antal produkter minus de som var på tidigare sidor
-				List<Produkt> excludeLista = new List<Produkt>((from z in produktLista select z).Take(tidigareSidorProdukter));
-				tempProduktLista = new List<Produkt>((produktLista.Except(excludeLista).Take(produkterPerSida)));
+				List<Produkt> excludeLista = new List<Produkt>((from z in produkter select z).Take(tidigareSidorProdukter));
+				tempProduktLista = new List<Produkt>((produkter.Except(excludeLista).Take(produkterPerSida)));
 				tempProduktLista.OrderBy(n => n.Namn);
 			}
 
 			return tempProduktLista;
+		}
+
+		/// <summary>
+		/// HämtaProduktKategoriLista hittar alla unika produktkategorier och
+		/// skickar tillbaka de som en lista av strängar.
+		/// </summary>
+		/// <param name="produkter">En lista av produkt objekt</param>
+		/// <returns>En lista av strängar (med alla unika kategorier)</returns> 
+		public List<string> HämtaProduktKategoriLista(List<Produkt> produkter)
+		{
+			List<string> kategoriLista = new List<string>();
+
+			//En fråga efter alla typer av produkter i typ ordning
+			var TypQry = from d in produkter
+						 orderby d.Typ
+						 select d.Typ;
+
+			//Listan fylls med alla unika typer som finns 
+			kategoriLista.AddRange(TypQry.Distinct());
+
+			return kategoriLista;
+		}
+
+		/// <summary>
+		/// FiltreraProduktLista filtrera angiven listan på söksträng om angiven söksträng
+		/// är inte tom eller null och på kategori om angiven kategoristräng är inte tom
+		/// eller null.
+		/// </summary>
+		/// <param name="produkter">En lista av produkt objekt</param>
+		/// <param name="sök">En sträng med möjligt sökord för filtrering av listan</param>
+		/// <param name="kategori">En sträng med möjligt kategori för filtrering av listan</param> 
+		/// <returns>En lista av produkt objekt (den filtrerade lista)</returns>
+		public List<Produkt> FiltreraProduktLista(List<Produkt> produkter, string sök, string kategori)
+		{
+			//Om där finns en söksträng, filtrera produkter efter namn som innehåller
+			//söksträngen
+			if (!String.IsNullOrEmpty(sök))
+			{
+				produkter = new List<Produkt>(produkter.Where(s => s.Namn.ToUpper().Contains(sök.ToUpper())));
+			}
+
+			//Om där finns en vald kategori filtreras produkter efter vald typ
+			if (!string.IsNullOrEmpty(kategori))
+			{
+				produkter = new List<Produkt>(produkter.Where(x => x.Typ == kategori));
+			}
+
+			return produkter;
 		}
 
 		/// <summary>
@@ -311,7 +380,7 @@ namespace LOMAdministrationApplikation
 		/// </summary>
 		/// <param name="sida">Sidan man ska hämta användare för</param>
 		/// <returns>En Lista av Användare objekt för en sida</returns>
-		public List<Användare> HämtaSidaAnvändare(int sida)
+		public List<Användare> HämtaSidaAnvändare(int sida, List<Användare> användare)
 		{
 			List<Användare> tempAnvändarLista;
 
@@ -319,7 +388,7 @@ namespace LOMAdministrationApplikation
 			//(enligt användare per sida)
 			if (sida == 1)
 			{
-				tempAnvändarLista = new List<Användare>((from m in användarLista select m).Take(användarePerSida));
+				tempAnvändarLista = new List<Användare>((from m in användare select m).Take(användarePerSida));
 				tempAnvändarLista.OrderBy(n => n.Användarnamn);
 			}
 			//Annars söker man efter sida 2 eller högre
@@ -328,12 +397,33 @@ namespace LOMAdministrationApplikation
 				int tidigareSidorAnvändare = (sida - 1) * användarePerSida;
 
 				//Titta på topp antal användare minus de som var på tidigare sidor
-				List<Användare> excludeLista = new List<Användare>((from z in användarLista select z).Take(tidigareSidorAnvändare));
-				tempAnvändarLista = new List<Användare>((användarLista.Except(excludeLista).Take(användarePerSida)));
+				List<Användare> excludeLista = new List<Användare>((from z in användare select z).Take(tidigareSidorAnvändare));
+				tempAnvändarLista = new List<Användare>((användare.Except(excludeLista).Take(användarePerSida)));
 				tempAnvändarLista.OrderBy(n => n.Användarnamn);
 			}
 
 			return tempAnvändarLista;
+		}
+
+		/// <summary>
+		/// FiltreraProduktLista filtrera angiven listan på söksträng om angiven söksträng
+		/// är inte tom eller null och på kategori om angiven kategoristräng är inte tom
+		/// eller null.
+		/// </summary>
+		/// <param name="produkter">En lista av produkt objekt</param>
+		/// <param name="sök">En sträng med möjligt sökord för filtrering av listan</param>
+		/// <param name="kategori">En sträng med möjligt kategori för filtrering av listan</param> 
+		/// <returns>En lista av produkt objekt (den filtrerade lista)</returns>
+		public List<Användare> FiltreraAnvändareLista(List<Användare> användare, string sök)
+		{
+			//Om där finns en söksträng, filtrera produkter efter namn som innehåller
+			//söksträngen
+			if (!String.IsNullOrEmpty(sök))
+			{
+				användare = new List<Användare>(användare.Where(s => s.Användarnamn.ToUpper().Contains(sök.ToUpper())));
+			}
+
+			return användare;
 		}
 
 		/// LaggTillAnvändare lägger till en användare till databasen med

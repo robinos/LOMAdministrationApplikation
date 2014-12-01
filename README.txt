@@ -1,4 +1,4 @@
-LOMAdministraitonApplikation - Version 0.3 - 2014-11-28
+LOMAdministraitonApplikation - Version 0.4 - 2014-12-01
 
 För att köra:
 
@@ -11,7 +11,7 @@ tilllåtelse att ändra i databasen.
 solution.  Visual Studio borde automatiskt hitta den då.
 
 3) Har man yttligare problem med databasen rekommenderas det att starta om Visual
-Studio.
+Studio eller öppna databasen i projektet LjusOchMiljoAB först.
 
 4) Kör.
 
@@ -22,7 +22,7 @@ Lösningsinformation
 JRINCCustomControls projektet innehåller currencyTextBox vilket används i
 LOMAdministrationApplikation projektet. Det är baserad på kod från
 http://www.codeproject.com/Articles/248989/A-Currency-Masked-TextBox-from-TextBox-Class,
-men ändrat för att få tre olika funktionaliteter.
+men ändrat totallt i koden för att få tre olika funktionaliteter.
 
 1.) Med decimaltecken (default ",") och ett obligatoriskt decimalvärde (som 2
 decimaler), accepterar textboxen nummer och decimaltecknen och ser till att den
@@ -46,10 +46,11 @@ solution.  Visual Studio borde automatiskt hitta den då.**
 
 
 LOMAdministrationApplikation projektet innehåller huvudprogrammet.
-Enlig MVC - Produkt är en modell (data), ProduktForm är vyn, och
-AdministrationApplikation är huvudkontroller (som hanterar kommunikation mellan
-data och vyn).  Databas är en kontroller som har hand om databasen och kommunicera
-med huvudkontroller.
+Enlig MVC (så nära som möjligt) - Produkt och Användare är modeller (data),
+ProduktForm, AnvändareForm och HuvudApplikationForm är vyar och
+AdministrationApplikation är huvudkontroller (som hanterar kommunikation
+mellan data och vyn och innehåller Main).  Databas är en kontroller som har
+hand om databasen och kommunicera med huvudkontroller.
 
 - Produkt.cs (Modell)
 Databehållaren för en produkt inläst från Produkt tabellen i databasen och för
@@ -92,6 +93,7 @@ insättning/borttagning/uppdatering.
 Se klassen för detaljer.
 
 - LOM_DB.mdf
+
 Produkt tabellen
 ID (char(5)), Namn (Varchar(30)), Pris (Decimal(10,2)), Typ (Varchar(30)),
 Farg (Varchar(30)), Bildfilnamn (Varchar(30)), Ritningsfilnamn (Varchar(30)),
@@ -116,4 +118,4 @@ Testar skapande, tilldelning, och Equals metod i Produkt klassen.
 
 - testar_AdministrationApplikation.cs
 Testar skapande, tilldelning, och metoder som kallar på Databas och ger
-ProduktForm svar.
+vyar svar.

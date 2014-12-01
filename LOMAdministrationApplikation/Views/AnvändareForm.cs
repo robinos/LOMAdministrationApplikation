@@ -46,9 +46,13 @@ namespace LOMAdministrationApplikation.Views
 	/// btnSista_Click - Visar sista sidan (x antal användare) i comboboxen
 	/// btnTillbaka_Click - Visar föregående sida (x antal användare) i comboboxen
 	/// btnNästa_Click - Visar nästa sida (x antal användare) i comboboxen
+	/// txtSök_KeyPress - filtrerar användarlistan efter varje bokstav
+	/// HanteraProdukter - filtrerar användarlistan, hämtar listan för nuvarande
+	///		sidan och fyller comboboxen
+	/// TotallaResultatSidor - räknar ut hur många sidor den filtrerade listan är
 	/// 
-	/// Version: 0.3
-	/// 2014-11-28
+	/// Version: 0.4
+	/// 2014-12-01
 	/// Grupp 2
 	/// </summary> 
 	public partial class AnvändareForm : Form
@@ -56,12 +60,18 @@ namespace LOMAdministrationApplikation.Views
 		//instansvariabler
 		//Referens till ProduktApplikationen (Kontroller)
 		private AdministrationApplikation administrationApplikation;
-		//Behållare för en samling av Produkt värdena (utan nycklar) från en Dictionary
-		private List<Användare> användarSidaLista;
 		//Den produkt som är aktiv i produkt comboboxen
 		private string valdAnvändarnamn = "";
+		//Filtersträngen som används just nu
+		private string filterSträng = "";
+		//högstaID av alla användare
 		private int högstaID = 0;
+		//nuvarande sida (börjar på sidan 1)
 		private int sida = 1;
+		//totall användarlistan efter filtrering (utan sidor)
+		private List<Användare> användareFiltreradeLista;
+		//användarlistan för nuvarande sida och filtrering 
+		private List<Användare> användarSidaLista;
 
 		/// <summary>
 		/// Konstruktör AnvändareForm tar emot en referens till
@@ -79,8 +89,11 @@ namespace LOMAdministrationApplikation.Views
 			//Sätt referensen till AdministrationApplikation objektet
 			this.administrationApplikation = administrationApplikation;
 
+			//Från början är filtrerade listan samma som alla användare
+			användareFiltreradeLista = administrationApplikation.AnvändarLista;
+
 			//hämta första sidan och sätt högsta användare ID för ID skapelse sedan
-			användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
+			användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida, administrationApplikation.AnvändarLista);
 			högstaID = administrationApplikation.HögstaAnvändareID;
 
 			//initialiser innehållet i comboboxen
@@ -125,7 +138,7 @@ namespace LOMAdministrationApplikation.Views
 				//bort från comboxen och tömma fälterna
 				if (administrationApplikation.TaBortAnvändare(ID))
 				{
-					användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
+					användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida, administrationApplikation.AnvändarLista);
 					initiatiseraComboBox();
 					Tömma();
 				}
@@ -238,7 +251,7 @@ namespace LOMAdministrationApplikation.Views
 			if (lyckades)
 			{
 				//hämta värden för sidan
-				användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
+				användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida, administrationApplikation.AnvändarLista);
 				//gör om innehållet i comboboxen
 				initiatiseraComboBox();
 				//Fälterna ändras vid behov
@@ -497,8 +510,11 @@ namespace LOMAdministrationApplikation.Views
 				cboxAnvändareBox.Items.Add(användare.Användarnamn);
 			}
 
-			//Sätt default användare (vid laddning) till index 0
-			cboxAnvändareBox.SelectedIndex = 1;
+			//Sätt default användare (vid laddning) till index 1 om den finns
+			if (cboxAnvändareBox.Items.Count > 1)
+				cboxAnvändareBox.SelectedIndex = 1;
+			else
+				cboxAnvändareBox.SelectedIndex = 0;
 		}
 
 		/// <summary>
@@ -508,16 +524,18 @@ namespace LOMAdministrationApplikation.Views
 		/// <param name="e">argumenten till eventet</param>
 		private void btnFörsta_Click(object sender, EventArgs e)
 		{
+			int totallaSidor = TotallaResultatSidor();
+
 			//Sätt sidan till första sidan och hämtar användare för den
 			sida = 1;
-			användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
+			HanteraAnvändare();
 
 			//sätt comboboxen till det nya innehåll
 			initiatiseraComboBox();
 
 			//Om det finns fler än 1 sida stäng av tillbaka knappen och sätt på
 			//nästa knappen
-			if (administrationApplikation.TotallaSidorAnvändare > 1)
+			if (totallaSidor > 1)
 			{
 				btnNästa.Enabled = true;
 				btnTillbaka.Enabled = false;
@@ -531,16 +549,18 @@ namespace LOMAdministrationApplikation.Views
 		/// <param name="e">argumenten till eventet</param> 
 		private void btnSista_Click(object sender, EventArgs e)
 		{
+			int totallaSidor = TotallaResultatSidor();
+
 			//Sätt sidan till sista sidan och hämtar produkter för den
-			sida = administrationApplikation.TotallaSidorAnvändare;
-			användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
+			sida = totallaSidor;
+			HanteraAnvändare();
 
 			//sätt comboboxen till det nya innehåll
 			initiatiseraComboBox();
 
 			//Om det finns fler än 1 sida stäng av nästa knappen och sätt på
 			//tillbaka knappen
-			if (administrationApplikation.TotallaSidorAnvändare > 1)
+			if (totallaSidor > 1)
 			{
 				btnNästa.Enabled = false;
 				btnTillbaka.Enabled = true;
@@ -559,7 +579,9 @@ namespace LOMAdministrationApplikation.Views
 			if (sida > 1)
 			{
 				sida--;
-				användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
+				HanteraAnvändare();
+
+				btnNästa.Enabled = true;
 			}
 
 			//sätt comboboxen till det nya innehåll
@@ -579,22 +601,25 @@ namespace LOMAdministrationApplikation.Views
 		/// <param name="e">argumenten till eventet</param>
 		private void btnNästa_Click(object sender, EventArgs e)
 		{
+			int totallaSidor = TotallaResultatSidor();
+
 			//Om det är inte sista sidan öka sida med en och hämta produkter
 			//för den nya sian. Tillbaka knappen kan användas nu.
-			if (sida < administrationApplikation.TotallaSidorAnvändare)
+			if (sida < totallaSidor)
 			{
 				sida++;
-				användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida);
+				HanteraAnvändare();
+
+				btnTillbaka.Enabled = true;
 			}
 
 			//sätt comboboxen till det nya innehåll
 			initiatiseraComboBox();
 
 			//Om det är nu sista sidan stäng av nästa knappen
-			if (sida == administrationApplikation.TotallaSidorAnvändare)
+			if (sida == totallaSidor)
 			{
 				btnNästa.Enabled = false;
-				btnTillbaka.Enabled = true;
 			}
 		}
 
@@ -621,6 +646,73 @@ namespace LOMAdministrationApplikation.Views
 				txtLösenord.Enabled = false;
 			}
 		}
-		
+
+		/// <summary>
+		/// txtSök_KeyPress filtrerar användarlistan efter varje bokstav
+		/// då användaren skriver in en sökSträng.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (txtSök)</param>
+		/// <param name="e">argumenten till eventet</param> 
+		private void txtSök_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			filterSträng = txtSök.Text;
+			sida = 1; //sätt sidan till 1
+			HanteraAnvändare();
+		}
+
+		/// <summary>
+		/// HanteraAnvändare filtrerar användarlistan, hämtar listan för
+		/// nuvarande sidan och fyller comboboxen.  Beroende på hur
+		/// många sidor den filtrerade listan är kan nästa och tillbaka
+		/// knapparna aktiveras.
+		/// </summary>
+		private void HanteraAnvändare()
+		{
+			//Filtrera listan
+			användareFiltreradeLista = administrationApplikation.FiltreraAnvändareLista(administrationApplikation.AnvändarLista, filterSträng);
+			//Hämta nuvarande sida av filtrerad listan
+			användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida, användareFiltreradeLista);
+			//Fyll produkt comboboxen
+			initiatiseraComboBox();
+
+			//Får tillbaka hur många sidor filtrerade listan blev
+			int totallaSidor = TotallaResultatSidor();
+
+			//stäng av nästa och tillbaka knapparna som default
+			btnNästa.Enabled = false;
+			btnTillbaka.Enabled = false;
+
+			//Om det finns fler än en sida och man är inte på sista sidan
+			//tillåt nästa knappen att vara aktiverad
+			if (totallaSidor > 1 && sida < totallaSidor)
+			{
+				btnNästa.Enabled = true;
+			}
+
+			//Om det finns fler än en sida och man är inte på första sidan
+			//tillåt tillbaka knappen att vara aktiverad
+			if (totallaSidor > 1 && sida > 1)
+			{
+				btnTillbaka.Enabled = true;
+			}
+
+		}
+
+		/// <summary>
+		/// TotallaResultatSidor räknar ut hur många sidor den filtrerade
+		/// listan (filtrerade efter kategori och söksträng) är med hjälp
+		/// av AnvändarePerSida i AdministrationApplikation.
+		/// </summary>
+		/// <returns>en integer med hur många sidor filtrerade listan är på</returns>
+		private int TotallaResultatSidor()
+		{
+			int totallaSidor = användareFiltreradeLista.Count / administrationApplikation.AnvändarePerSida;
+
+			//Om där finns rester lägg till en sida
+			if (användareFiltreradeLista.Count % administrationApplikation.AnvändarePerSida > 0)
+				totallaSidor += 1;
+
+			return totallaSidor;
+		}
 	}
 }

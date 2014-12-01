@@ -1,3 +1,12 @@
+LOMAdministrationApplikation - Version 0.4 - 2014-12-01
+- AnvändareForm och ProduktForm nu går att förändrar storlek på och omformar sig
+- På AnvändareForm kan man nu skriva in i sökfältet för att söka efter ett
+	användarnamn direkt
+- På ProduktForm kan man nu använder en combobox för att söka efter produktkategori
+	och/eller skriver i sökfältet efter ett produktnamn
+- Man kan ha flera sidor av filtrerad resultat
+- Om den finns visas första resultat för sidan i comboboxen (och annars "Ny")
+
 LOMAdministrationApplikation - Version 0.3 - 2014-11-28
 - Några stavningsfel rättades
 - En bugg i AnvändareForm har fixats så lösenordet inte skrivs över vid uppdatering

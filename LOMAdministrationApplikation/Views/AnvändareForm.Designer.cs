@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.panelFunktion = new System.Windows.Forms.Panel();
+			this.txtSök = new System.Windows.Forms.RichTextBox();
 			this.btnFörsta = new System.Windows.Forms.Button();
 			this.btnSista = new System.Windows.Forms.Button();
 			this.btnNästa = new System.Windows.Forms.Button();
@@ -66,6 +67,7 @@
 			this.panelFunktion.AutoSize = true;
 			this.panelFunktion.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.panelFunktion.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panelFunktion.Controls.Add(this.txtSök);
 			this.panelFunktion.Controls.Add(this.btnFörsta);
 			this.panelFunktion.Controls.Add(this.btnSista);
 			this.panelFunktion.Controls.Add(this.btnNästa);
@@ -76,10 +78,23 @@
 			this.panelFunktion.Controls.Add(this.btnTaBort);
 			this.panelFunktion.Controls.Add(this.btnNy);
 			this.panelFunktion.Location = new System.Drawing.Point(3, 12);
-			this.panelFunktion.MinimumSize = new System.Drawing.Size(670, 31);
+			this.panelFunktion.MinimumSize = new System.Drawing.Size(670, 60);
 			this.panelFunktion.Name = "panelFunktion";
-			this.panelFunktion.Size = new System.Drawing.Size(670, 31);
+			this.panelFunktion.Size = new System.Drawing.Size(670, 60);
 			this.panelFunktion.TabIndex = 6;
+			// 
+			// txtSök
+			// 
+			this.txtSök.AccessibleDescription = "Sökruta";
+			this.txtSök.AccessibleName = "Sökruta";
+			this.txtSök.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
+			this.txtSök.Location = new System.Drawing.Point(3, 30);
+			this.txtSök.MaxLength = 30;
+			this.txtSök.Name = "txtSök";
+			this.txtSök.Size = new System.Drawing.Size(127, 21);
+			this.txtSök.TabIndex = 16;
+			this.txtSök.Text = "";
+			this.txtSök.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSök_KeyPress);
 			// 
 			// btnFörsta
 			// 
@@ -142,6 +157,7 @@
 			this.cboxAnvändareBox.AccessibleDescription = "Användare Combobox";
 			this.cboxAnvändareBox.AccessibleName = "Användarlista";
 			this.cboxAnvändareBox.AccessibleRole = System.Windows.Forms.AccessibleRole.ComboBox;
+			this.cboxAnvändareBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboxAnvändareBox.FormattingEnabled = true;
 			this.cboxAnvändareBox.Location = new System.Drawing.Point(322, 2);
 			this.cboxAnvändareBox.Name = "cboxAnvändareBox";
@@ -438,6 +454,7 @@
 		private System.Windows.Forms.Label lblHash;
 		private System.Windows.Forms.Label lblLösenord;
 		private System.Windows.Forms.Label lblID;
+		private System.Windows.Forms.RichTextBox txtSök;
 
 	}
 }

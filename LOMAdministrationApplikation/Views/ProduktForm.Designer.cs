@@ -33,6 +33,8 @@
 			this.btnTaBort = new System.Windows.Forms.Button();
 			this.lblIndex = new System.Windows.Forms.Label();
 			this.panelFunktion = new System.Windows.Forms.Panel();
+			this.cboxKategori = new System.Windows.Forms.ComboBox();
+			this.txtSök = new System.Windows.Forms.RichTextBox();
 			this.btnFörsta = new System.Windows.Forms.Button();
 			this.btnSista = new System.Windows.Forms.Button();
 			this.btnNästa = new System.Windows.Forms.Button();
@@ -113,6 +115,8 @@
 			this.panelFunktion.AutoSize = true;
 			this.panelFunktion.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.panelFunktion.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panelFunktion.Controls.Add(this.cboxKategori);
+			this.panelFunktion.Controls.Add(this.txtSök);
 			this.panelFunktion.Controls.Add(this.btnFörsta);
 			this.panelFunktion.Controls.Add(this.btnSista);
 			this.panelFunktion.Controls.Add(this.btnNästa);
@@ -122,11 +126,40 @@
 			this.panelFunktion.Controls.Add(this.lblIndex);
 			this.panelFunktion.Controls.Add(this.btnTaBort);
 			this.panelFunktion.Controls.Add(this.btnNy);
-			this.panelFunktion.Location = new System.Drawing.Point(5, 12);
-			this.panelFunktion.MinimumSize = new System.Drawing.Size(719, 27);
+			this.panelFunktion.Location = new System.Drawing.Point(26, 12);
+			this.panelFunktion.MinimumSize = new System.Drawing.Size(719, 60);
 			this.panelFunktion.Name = "panelFunktion";
-			this.panelFunktion.Size = new System.Drawing.Size(720, 31);
+			this.panelFunktion.Size = new System.Drawing.Size(720, 60);
 			this.panelFunktion.TabIndex = 5;
+			// 
+			// cboxKategori
+			// 
+			this.cboxKategori.AccessibleDescription = "Kategori filter";
+			this.cboxKategori.AccessibleName = "Kategori filter";
+			this.cboxKategori.AccessibleRole = System.Windows.Forms.AccessibleRole.ComboBox;
+			this.cboxKategori.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+			this.cboxKategori.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.cboxKategori.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboxKategori.FormattingEnabled = true;
+			this.cboxKategori.Location = new System.Drawing.Point(3, 30);
+			this.cboxKategori.Name = "cboxKategori";
+			this.cboxKategori.Size = new System.Drawing.Size(136, 21);
+			this.cboxKategori.TabIndex = 11;
+			this.cboxKategori.SelectedIndexChanged += new System.EventHandler(this.cboxKategori_SelectedIndexChanged);
+			// 
+			// txtSök
+			// 
+			this.txtSök.AccessibleDescription = "Sökruta";
+			this.txtSök.AccessibleName = "Sökruta";
+			this.txtSök.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
+			this.txtSök.Location = new System.Drawing.Point(145, 30);
+			this.txtSök.MaxLength = 30;
+			this.txtSök.Multiline = false;
+			this.txtSök.Name = "txtSök";
+			this.txtSök.Size = new System.Drawing.Size(127, 21);
+			this.txtSök.TabIndex = 9;
+			this.txtSök.Text = "";
+			this.txtSök.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSök_KeyPress);
 			// 
 			// btnFörsta
 			// 
@@ -188,6 +221,9 @@
 			this.cboxProduktBox.AccessibleDescription = "Produkt Combobox";
 			this.cboxProduktBox.AccessibleName = "Produktlista";
 			this.cboxProduktBox.AccessibleRole = System.Windows.Forms.AccessibleRole.ComboBox;
+			this.cboxProduktBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+			this.cboxProduktBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.cboxProduktBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboxProduktBox.FormattingEnabled = true;
 			this.cboxProduktBox.Location = new System.Drawing.Point(372, 1);
 			this.cboxProduktBox.Name = "cboxProduktBox";
@@ -223,7 +259,7 @@
 			this.panelInmatning.Controls.Add(this.lblBeskrivning);
 			this.panelInmatning.Controls.Add(this.lblPris);
 			this.panelInmatning.Controls.Add(this.lblID);
-			this.panelInmatning.Location = new System.Drawing.Point(5, 68);
+			this.panelInmatning.Location = new System.Drawing.Point(26, 90);
 			this.panelInmatning.MinimumSize = new System.Drawing.Size(725, 361);
 			this.panelInmatning.Name = "panelInmatning";
 			this.panelInmatning.Size = new System.Drawing.Size(725, 361);
@@ -491,7 +527,7 @@
 			this.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(734, 432);
+			this.ClientSize = new System.Drawing.Size(776, 465);
 			this.Controls.Add(this.panelInmatning);
 			this.Controls.Add(this.panelFunktion);
 			this.MinimumSize = new System.Drawing.Size(750, 470);
@@ -539,6 +575,8 @@
 		private System.Windows.Forms.Label lblBeskrivning;
 		private System.Windows.Forms.Label lblPris;
 		private System.Windows.Forms.Label lblID;
+		private System.Windows.Forms.ComboBox cboxKategori;
+		private System.Windows.Forms.RichTextBox txtSök;
 	}
 }
 
