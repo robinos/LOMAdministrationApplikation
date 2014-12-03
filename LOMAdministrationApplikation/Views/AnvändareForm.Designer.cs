@@ -29,14 +29,20 @@
 		private void InitializeComponent()
 		{
 			this.panelFunktion = new System.Windows.Forms.Panel();
+			this.txtSök = new System.Windows.Forms.RichTextBox();
+			this.btnFörsta = new System.Windows.Forms.Button();
+			this.btnSista = new System.Windows.Forms.Button();
+			this.btnNästa = new System.Windows.Forms.Button();
+			this.btnTillbaka = new System.Windows.Forms.Button();
 			this.btnSpara = new System.Windows.Forms.Button();
 			this.cboxAnvändareBox = new System.Windows.Forms.ComboBox();
 			this.lblIndex = new System.Windows.Forms.Label();
 			this.btnTaBort = new System.Windows.Forms.Button();
 			this.btnNy = new System.Windows.Forms.Button();
 			this.panelInmatning = new System.Windows.Forms.Panel();
-			this.rbtnLåste = new System.Windows.Forms.RadioButton();
-			this.rbtnOlåste = new System.Windows.Forms.RadioButton();
+			this.checkNyLösenord = new System.Windows.Forms.CheckBox();
+			this.rbtnLåst = new System.Windows.Forms.RadioButton();
+			this.rbtnUpplåst = new System.Windows.Forms.RadioButton();
 			this.txtRäknare = new System.Windows.Forms.RichTextBox();
 			this.txtAnvändarnamn = new System.Windows.Forms.RichTextBox();
 			this.lblAnvändarnamn = new System.Windows.Forms.Label();
@@ -48,10 +54,6 @@
 			this.lblHash = new System.Windows.Forms.Label();
 			this.lblLösenord = new System.Windows.Forms.Label();
 			this.lblID = new System.Windows.Forms.Label();
-			this.btnFörsta = new System.Windows.Forms.Button();
-			this.btnSista = new System.Windows.Forms.Button();
-			this.btnNästa = new System.Windows.Forms.Button();
-			this.btnTillbaka = new System.Windows.Forms.Button();
 			this.panelFunktion.SuspendLayout();
 			this.panelInmatning.SuspendLayout();
 			this.SuspendLayout();
@@ -61,8 +63,11 @@
 			this.panelFunktion.AccessibleDescription = "Funktionpanel";
 			this.panelFunktion.AccessibleName = "Funktionpanel";
 			this.panelFunktion.AccessibleRole = System.Windows.Forms.AccessibleRole.Pane;
-			this.panelFunktion.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.panelFunktion.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.panelFunktion.AutoSize = true;
+			this.panelFunktion.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.panelFunktion.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panelFunktion.Controls.Add(this.txtSök);
 			this.panelFunktion.Controls.Add(this.btnFörsta);
 			this.panelFunktion.Controls.Add(this.btnSista);
 			this.panelFunktion.Controls.Add(this.btnNästa);
@@ -72,10 +77,66 @@
 			this.panelFunktion.Controls.Add(this.lblIndex);
 			this.panelFunktion.Controls.Add(this.btnTaBort);
 			this.panelFunktion.Controls.Add(this.btnNy);
-			this.panelFunktion.Location = new System.Drawing.Point(37, 30);
+			this.panelFunktion.Location = new System.Drawing.Point(3, 12);
+			this.panelFunktion.MinimumSize = new System.Drawing.Size(670, 60);
 			this.panelFunktion.Name = "panelFunktion";
-			this.panelFunktion.Size = new System.Drawing.Size(673, 27);
+			this.panelFunktion.Size = new System.Drawing.Size(670, 60);
 			this.panelFunktion.TabIndex = 6;
+			// 
+			// txtSök
+			// 
+			this.txtSök.AccessibleDescription = "Sökruta";
+			this.txtSök.AccessibleName = "Sökruta";
+			this.txtSök.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
+			this.txtSök.Location = new System.Drawing.Point(3, 30);
+			this.txtSök.MaxLength = 30;
+			this.txtSök.Name = "txtSök";
+			this.txtSök.Size = new System.Drawing.Size(127, 21);
+			this.txtSök.TabIndex = 16;
+			this.txtSök.Text = "";
+			this.txtSök.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSök_KeyPress);
+			// 
+			// btnFörsta
+			// 
+			this.btnFörsta.Location = new System.Drawing.Point(248, 1);
+			this.btnFörsta.Name = "btnFörsta";
+			this.btnFörsta.Size = new System.Drawing.Size(31, 23);
+			this.btnFörsta.TabIndex = 15;
+			this.btnFörsta.Text = "|<";
+			this.btnFörsta.UseVisualStyleBackColor = true;
+			this.btnFörsta.Click += new System.EventHandler(this.btnFörsta_Click);
+			// 
+			// btnSista
+			// 
+			this.btnSista.Location = new System.Drawing.Point(285, 1);
+			this.btnSista.Name = "btnSista";
+			this.btnSista.Size = new System.Drawing.Size(31, 23);
+			this.btnSista.TabIndex = 14;
+			this.btnSista.Text = ">|";
+			this.btnSista.UseVisualStyleBackColor = true;
+			this.btnSista.Click += new System.EventHandler(this.btnSista_Click);
+			// 
+			// btnNästa
+			// 
+			this.btnNästa.Enabled = false;
+			this.btnNästa.Location = new System.Drawing.Point(578, 1);
+			this.btnNästa.Name = "btnNästa";
+			this.btnNästa.Size = new System.Drawing.Size(85, 23);
+			this.btnNästa.TabIndex = 13;
+			this.btnNästa.Text = "Nästa 5 >>";
+			this.btnNästa.UseVisualStyleBackColor = true;
+			this.btnNästa.Click += new System.EventHandler(this.btnNästa_Click);
+			// 
+			// btnTillbaka
+			// 
+			this.btnTillbaka.Enabled = false;
+			this.btnTillbaka.Location = new System.Drawing.Point(487, 1);
+			this.btnTillbaka.Name = "btnTillbaka";
+			this.btnTillbaka.Size = new System.Drawing.Size(85, 23);
+			this.btnTillbaka.TabIndex = 12;
+			this.btnTillbaka.Text = "<< Tillbaka 5";
+			this.btnTillbaka.UseVisualStyleBackColor = true;
+			this.btnTillbaka.Click += new System.EventHandler(this.btnTillbaka_Click);
 			// 
 			// btnSpara
 			// 
@@ -96,6 +157,7 @@
 			this.cboxAnvändareBox.AccessibleDescription = "Användare Combobox";
 			this.cboxAnvändareBox.AccessibleName = "Användarlista";
 			this.cboxAnvändareBox.AccessibleRole = System.Windows.Forms.AccessibleRole.ComboBox;
+			this.cboxAnvändareBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboxAnvändareBox.FormattingEnabled = true;
 			this.cboxAnvändareBox.Location = new System.Drawing.Point(322, 2);
 			this.cboxAnvändareBox.Name = "cboxAnvändareBox";
@@ -150,8 +212,12 @@
 			this.panelInmatning.AccessibleDescription = "Inmatningspanel";
 			this.panelInmatning.AccessibleName = "Inmatning";
 			this.panelInmatning.AccessibleRole = System.Windows.Forms.AccessibleRole.Pane;
-			this.panelInmatning.Controls.Add(this.rbtnLåste);
-			this.panelInmatning.Controls.Add(this.rbtnOlåste);
+			this.panelInmatning.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.panelInmatning.AutoSize = true;
+			this.panelInmatning.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.panelInmatning.Controls.Add(this.checkNyLösenord);
+			this.panelInmatning.Controls.Add(this.rbtnLåst);
+			this.panelInmatning.Controls.Add(this.rbtnUpplåst);
 			this.panelInmatning.Controls.Add(this.txtRäknare);
 			this.panelInmatning.Controls.Add(this.txtAnvändarnamn);
 			this.panelInmatning.Controls.Add(this.lblAnvändarnamn);
@@ -163,32 +229,45 @@
 			this.panelInmatning.Controls.Add(this.lblHash);
 			this.panelInmatning.Controls.Add(this.lblLösenord);
 			this.panelInmatning.Controls.Add(this.lblID);
-			this.panelInmatning.Location = new System.Drawing.Point(157, 111);
+			this.panelInmatning.Location = new System.Drawing.Point(123, 84);
+			this.panelInmatning.MinimumSize = new System.Drawing.Size(416, 240);
 			this.panelInmatning.Name = "panelInmatning";
-			this.panelInmatning.Size = new System.Drawing.Size(411, 255);
+			this.panelInmatning.Size = new System.Drawing.Size(416, 240);
 			this.panelInmatning.TabIndex = 8;
 			// 
-			// rbtnLåste
+			// checkNyLösenord
 			// 
-			this.rbtnLåste.AutoSize = true;
-			this.rbtnLåste.Location = new System.Drawing.Point(267, 187);
-			this.rbtnLåste.Name = "rbtnLåste";
-			this.rbtnLåste.Size = new System.Drawing.Size(51, 17);
-			this.rbtnLåste.TabIndex = 33;
-			this.rbtnLåste.TabStop = true;
-			this.rbtnLåste.Text = "Låste";
-			this.rbtnLåste.UseVisualStyleBackColor = true;
+			this.checkNyLösenord.AutoSize = true;
+			this.checkNyLösenord.Enabled = false;
+			this.checkNyLösenord.Location = new System.Drawing.Point(364, 68);
+			this.checkNyLösenord.Name = "checkNyLösenord";
+			this.checkNyLösenord.Size = new System.Drawing.Size(39, 17);
+			this.checkNyLösenord.TabIndex = 34;
+			this.checkNyLösenord.Text = "Ny";
+			this.checkNyLösenord.UseVisualStyleBackColor = true;
+			this.checkNyLösenord.CheckedChanged += new System.EventHandler(this.checkNyLösenord_CheckedChanged);
 			// 
-			// rbtnOlåste
+			// rbtnLåst
 			// 
-			this.rbtnOlåste.AutoSize = true;
-			this.rbtnOlåste.Location = new System.Drawing.Point(176, 188);
-			this.rbtnOlåste.Name = "rbtnOlåste";
-			this.rbtnOlåste.Size = new System.Drawing.Size(55, 17);
-			this.rbtnOlåste.TabIndex = 32;
-			this.rbtnOlåste.TabStop = true;
-			this.rbtnOlåste.Text = "Olåste";
-			this.rbtnOlåste.UseVisualStyleBackColor = true;
+			this.rbtnLåst.AutoSize = true;
+			this.rbtnLåst.Location = new System.Drawing.Point(267, 187);
+			this.rbtnLåst.Name = "rbtnLåst";
+			this.rbtnLåst.Size = new System.Drawing.Size(45, 17);
+			this.rbtnLåst.TabIndex = 33;
+			this.rbtnLåst.TabStop = true;
+			this.rbtnLåst.Text = "Låst";
+			this.rbtnLåst.UseVisualStyleBackColor = true;
+			// 
+			// rbtnUpplåst
+			// 
+			this.rbtnUpplåst.AutoSize = true;
+			this.rbtnUpplåst.Location = new System.Drawing.Point(176, 188);
+			this.rbtnUpplåst.Name = "rbtnUpplåst";
+			this.rbtnUpplåst.Size = new System.Drawing.Size(61, 17);
+			this.rbtnUpplåst.TabIndex = 32;
+			this.rbtnUpplåst.TabStop = true;
+			this.rbtnUpplåst.Text = "Upplåst";
+			this.rbtnUpplåst.UseVisualStyleBackColor = true;
 			// 
 			// txtRäknare
 			// 
@@ -327,48 +406,6 @@
 			this.lblID.Text = "ID:";
 			this.lblID.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// btnFörsta
-			// 
-			this.btnFörsta.Location = new System.Drawing.Point(248, 1);
-			this.btnFörsta.Name = "btnFörsta";
-			this.btnFörsta.Size = new System.Drawing.Size(31, 23);
-			this.btnFörsta.TabIndex = 15;
-			this.btnFörsta.Text = "|<";
-			this.btnFörsta.UseVisualStyleBackColor = true;
-			this.btnFörsta.Click += new System.EventHandler(this.btnFörsta_Click);
-			// 
-			// btnSista
-			// 
-			this.btnSista.Location = new System.Drawing.Point(285, 1);
-			this.btnSista.Name = "btnSista";
-			this.btnSista.Size = new System.Drawing.Size(31, 23);
-			this.btnSista.TabIndex = 14;
-			this.btnSista.Text = ">|";
-			this.btnSista.UseVisualStyleBackColor = true;
-			this.btnSista.Click += new System.EventHandler(this.btnSista_Click);
-			// 
-			// btnNästa
-			// 
-			this.btnNästa.Enabled = false;
-			this.btnNästa.Location = new System.Drawing.Point(578, 1);
-			this.btnNästa.Name = "btnNästa";
-			this.btnNästa.Size = new System.Drawing.Size(85, 23);
-			this.btnNästa.TabIndex = 13;
-			this.btnNästa.Text = "Nästa 5 >>";
-			this.btnNästa.UseVisualStyleBackColor = true;
-			this.btnNästa.Click += new System.EventHandler(this.btnNästa_Click);
-			// 
-			// btnTillbaka
-			// 
-			this.btnTillbaka.Enabled = false;
-			this.btnTillbaka.Location = new System.Drawing.Point(487, 1);
-			this.btnTillbaka.Name = "btnTillbaka";
-			this.btnTillbaka.Size = new System.Drawing.Size(85, 23);
-			this.btnTillbaka.TabIndex = 12;
-			this.btnTillbaka.Text = "<< Tillbaka 5";
-			this.btnTillbaka.UseVisualStyleBackColor = true;
-			this.btnTillbaka.Click += new System.EventHandler(this.btnTillbaka_Click);
-			// 
 			// AnvändareForm
 			// 
 			this.AccessibleDescription = "Användare redigerare";
@@ -376,16 +413,17 @@
 			this.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(784, 562);
+			this.ClientSize = new System.Drawing.Size(674, 362);
 			this.Controls.Add(this.panelInmatning);
 			this.Controls.Add(this.panelFunktion);
+			this.MinimumSize = new System.Drawing.Size(690, 400);
 			this.Name = "AnvändareForm";
 			this.Text = "Ljus och Miljö AB - Användare Hanterare";
-			this.Load += new System.EventHandler(this.AnvändareForm_Load);
 			this.panelFunktion.ResumeLayout(false);
 			this.panelInmatning.ResumeLayout(false);
 			this.panelInmatning.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -397,7 +435,15 @@
 		private System.Windows.Forms.Label lblIndex;
 		private System.Windows.Forms.Button btnTaBort;
 		private System.Windows.Forms.Button btnNy;
+		private System.Windows.Forms.Button btnFörsta;
+		private System.Windows.Forms.Button btnSista;
+		private System.Windows.Forms.Button btnNästa;
+		private System.Windows.Forms.Button btnTillbaka;
 		private System.Windows.Forms.Panel panelInmatning;
+		private System.Windows.Forms.CheckBox checkNyLösenord;
+		private System.Windows.Forms.RadioButton rbtnLåst;
+		private System.Windows.Forms.RadioButton rbtnUpplåst;
+		private System.Windows.Forms.RichTextBox txtRäknare;
 		private System.Windows.Forms.RichTextBox txtAnvändarnamn;
 		private System.Windows.Forms.Label lblAnvändarnamn;
 		private System.Windows.Forms.Label lblLåste;
@@ -408,13 +454,7 @@
 		private System.Windows.Forms.Label lblHash;
 		private System.Windows.Forms.Label lblLösenord;
 		private System.Windows.Forms.Label lblID;
-		private System.Windows.Forms.RichTextBox txtRäknare;
-		private System.Windows.Forms.RadioButton rbtnLåste;
-		private System.Windows.Forms.RadioButton rbtnOlåste;
-		private System.Windows.Forms.Button btnFörsta;
-		private System.Windows.Forms.Button btnSista;
-		private System.Windows.Forms.Button btnNästa;
-		private System.Windows.Forms.Button btnTillbaka;
+		private System.Windows.Forms.RichTextBox txtSök;
 
 	}
 }
