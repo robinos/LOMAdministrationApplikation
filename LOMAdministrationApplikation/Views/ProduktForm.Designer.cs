@@ -33,6 +33,7 @@
 			this.btnTaBort = new System.Windows.Forms.Button();
 			this.lblIndex = new System.Windows.Forms.Label();
 			this.panelFunktion = new System.Windows.Forms.Panel();
+			this.btnAvsluta = new System.Windows.Forms.Button();
 			this.cboxKategori = new System.Windows.Forms.ComboBox();
 			this.txtSök = new System.Windows.Forms.RichTextBox();
 			this.btnFörsta = new System.Windows.Forms.Button();
@@ -72,7 +73,7 @@
 			this.btnNy.AccessibleDescription = "Ny knapp";
 			this.btnNy.AccessibleName = "Ny";
 			this.btnNy.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-			this.btnNy.Location = new System.Drawing.Point(62, -1);
+			this.btnNy.Location = new System.Drawing.Point(62, 3);
 			this.btnNy.Name = "btnNy";
 			this.btnNy.Size = new System.Drawing.Size(50, 25);
 			this.btnNy.TabIndex = 1;
@@ -85,7 +86,7 @@
 			this.btnTaBort.AccessibleDescription = "Ta bort knappen";
 			this.btnTaBort.AccessibleName = "Ta bort";
 			this.btnTaBort.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-			this.btnTaBort.Location = new System.Drawing.Point(118, -1);
+			this.btnTaBort.Location = new System.Drawing.Point(118, 3);
 			this.btnTaBort.Name = "btnTaBort";
 			this.btnTaBort.Size = new System.Drawing.Size(50, 25);
 			this.btnTaBort.TabIndex = 2;
@@ -99,7 +100,7 @@
 			this.lblIndex.AccessibleName = "Index";
 			this.lblIndex.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
 			this.lblIndex.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.lblIndex.Location = new System.Drawing.Point(3, 0);
+			this.lblIndex.Location = new System.Drawing.Point(3, 4);
 			this.lblIndex.Name = "lblIndex";
 			this.lblIndex.Size = new System.Drawing.Size(50, 23);
 			this.lblIndex.TabIndex = 0;
@@ -115,6 +116,7 @@
 			this.panelFunktion.AutoSize = true;
 			this.panelFunktion.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.panelFunktion.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panelFunktion.Controls.Add(this.btnAvsluta);
 			this.panelFunktion.Controls.Add(this.cboxKategori);
 			this.panelFunktion.Controls.Add(this.txtSök);
 			this.panelFunktion.Controls.Add(this.btnFörsta);
@@ -127,10 +129,24 @@
 			this.panelFunktion.Controls.Add(this.btnTaBort);
 			this.panelFunktion.Controls.Add(this.btnNy);
 			this.panelFunktion.Location = new System.Drawing.Point(26, 12);
-			this.panelFunktion.MinimumSize = new System.Drawing.Size(719, 60);
+			this.panelFunktion.MinimumSize = new System.Drawing.Size(720, 60);
 			this.panelFunktion.Name = "panelFunktion";
-			this.panelFunktion.Size = new System.Drawing.Size(720, 60);
+			this.panelFunktion.Size = new System.Drawing.Size(720, 61);
 			this.panelFunktion.TabIndex = 5;
+			// 
+			// btnAvsluta
+			// 
+			this.btnAvsluta.AccessibleDescription = "Avsluta knappen";
+			this.btnAvsluta.AccessibleName = "Avsluta";
+			this.btnAvsluta.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+			this.btnAvsluta.BackColor = System.Drawing.Color.LightCoral;
+			this.btnAvsluta.Location = new System.Drawing.Point(230, 3);
+			this.btnAvsluta.Name = "btnAvsluta";
+			this.btnAvsluta.Size = new System.Drawing.Size(62, 25);
+			this.btnAvsluta.TabIndex = 12;
+			this.btnAvsluta.Text = "Avsluta";
+			this.btnAvsluta.UseVisualStyleBackColor = false;
+			this.btnAvsluta.Click += new System.EventHandler(this.btnAvsluta_Click);
 			// 
 			// cboxKategori
 			// 
@@ -141,7 +157,7 @@
 			this.cboxKategori.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.cboxKategori.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboxKategori.FormattingEnabled = true;
-			this.cboxKategori.Location = new System.Drawing.Point(3, 30);
+			this.cboxKategori.Location = new System.Drawing.Point(3, 33);
 			this.cboxKategori.Name = "cboxKategori";
 			this.cboxKategori.Size = new System.Drawing.Size(136, 21);
 			this.cboxKategori.TabIndex = 11;
@@ -152,7 +168,7 @@
 			this.txtSök.AccessibleDescription = "Sökruta";
 			this.txtSök.AccessibleName = "Sökruta";
 			this.txtSök.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
-			this.txtSök.Location = new System.Drawing.Point(145, 30);
+			this.txtSök.Location = new System.Drawing.Point(145, 33);
 			this.txtSök.MaxLength = 30;
 			this.txtSök.Multiline = false;
 			this.txtSök.Name = "txtSök";
@@ -163,7 +179,7 @@
 			// 
 			// btnFörsta
 			// 
-			this.btnFörsta.Location = new System.Drawing.Point(298, -1);
+			this.btnFörsta.Location = new System.Drawing.Point(298, 3);
 			this.btnFörsta.Name = "btnFörsta";
 			this.btnFörsta.Size = new System.Drawing.Size(31, 23);
 			this.btnFörsta.TabIndex = 4;
@@ -173,7 +189,7 @@
 			// 
 			// btnSista
 			// 
-			this.btnSista.Location = new System.Drawing.Point(335, -1);
+			this.btnSista.Location = new System.Drawing.Point(335, 3);
 			this.btnSista.Name = "btnSista";
 			this.btnSista.Size = new System.Drawing.Size(31, 23);
 			this.btnSista.TabIndex = 5;
@@ -184,7 +200,7 @@
 			// btnNästa
 			// 
 			this.btnNästa.Enabled = false;
-			this.btnNästa.Location = new System.Drawing.Point(628, -1);
+			this.btnNästa.Location = new System.Drawing.Point(628, 3);
 			this.btnNästa.Name = "btnNästa";
 			this.btnNästa.Size = new System.Drawing.Size(85, 23);
 			this.btnNästa.TabIndex = 8;
@@ -195,7 +211,7 @@
 			// btnTillbaka
 			// 
 			this.btnTillbaka.Enabled = false;
-			this.btnTillbaka.Location = new System.Drawing.Point(537, -1);
+			this.btnTillbaka.Location = new System.Drawing.Point(537, 3);
 			this.btnTillbaka.Name = "btnTillbaka";
 			this.btnTillbaka.Size = new System.Drawing.Size(85, 23);
 			this.btnTillbaka.TabIndex = 7;
@@ -208,7 +224,7 @@
 			this.btnSpara.AccessibleDescription = "Spara knappen";
 			this.btnSpara.AccessibleName = "Spara";
 			this.btnSpara.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-			this.btnSpara.Location = new System.Drawing.Point(174, -1);
+			this.btnSpara.Location = new System.Drawing.Point(174, 3);
 			this.btnSpara.Name = "btnSpara";
 			this.btnSpara.Size = new System.Drawing.Size(50, 25);
 			this.btnSpara.TabIndex = 3;
@@ -225,7 +241,7 @@
 			this.cboxProduktBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.cboxProduktBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboxProduktBox.FormattingEnabled = true;
-			this.cboxProduktBox.Location = new System.Drawing.Point(372, 1);
+			this.cboxProduktBox.Location = new System.Drawing.Point(372, 5);
 			this.cboxProduktBox.Name = "cboxProduktBox";
 			this.cboxProduktBox.Size = new System.Drawing.Size(159, 21);
 			this.cboxProduktBox.TabIndex = 6;
@@ -533,6 +549,7 @@
 			this.MinimumSize = new System.Drawing.Size(750, 470);
 			this.Name = "ProduktForm";
 			this.Text = "Ljus och Miljö AB - Produkt Hanteraren";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProduktForm_FormClosing);
 			this.panelFunktion.ResumeLayout(false);
 			this.panelInmatning.ResumeLayout(false);
 			this.panelInmatning.PerformLayout();
@@ -577,6 +594,7 @@
 		private System.Windows.Forms.Label lblID;
 		private System.Windows.Forms.ComboBox cboxKategori;
 		private System.Windows.Forms.RichTextBox txtSök;
+		private System.Windows.Forms.Button btnAvsluta;
 	}
 }
 

@@ -55,9 +55,11 @@ namespace LOMAdministrationApplikation.Views
 	/// HanteraProdukter - filtrerar produktlistan, hämtar listan för nuvarande
 	///		sidan och fyller comboboxen
 	/// TotallaResultatSidor - räknar ut hur många sidor den filtrerade listan är
+	/// btnAvsluta_Click - stängar formen vid knapptryckning
+	/// AnvändareForm_FormClosing - när formen stängs visar huvudformen igen
 	/// 
-	/// Version: 0.4
-	/// 2014-12-01
+	/// Version: 0.5
+	/// 2014-12-07
 	/// Grupp 2
 	/// </summary>
 	public partial class ProduktForm : Form
@@ -65,6 +67,8 @@ namespace LOMAdministrationApplikation.Views
 		//instansvariabler
 		//Referens till ProduktApplikationen (kontroller)
 		private AdministrationApplikation administrationApplikation;
+		//Referens till HuvudApplikationenForm (vy)
+		private HuvudApplikationForm huvudApplikationForm;
 		//Produkten som är aktiv i produkt comboboxen
 		private string valdProduktnamn = "";
 		//Kategorin som är aktiv i kategori comboxen
@@ -86,13 +90,16 @@ namespace LOMAdministrationApplikation.Views
 		/// </summary>
 		/// <param name="administrationApplikation">referensen till
 		///		AdministrationApplikation kontrollern</param>
-		public ProduktForm(AdministrationApplikation administrationApplikation)
+		public ProduktForm(AdministrationApplikation administrationApplikation, HuvudApplikationForm huvudApplikationForm)
 		{
 			//Initialisera formen
 			InitializeComponent();
 
 			//Sätt referensen till AdministrationApplikation objektet
 			this.administrationApplikation = administrationApplikation;
+
+			//Sätt referensen till HuvudApplikationForm objektet
+			this.huvudApplikationForm = huvudApplikationForm;
 
 			//Från början är filtrerade listan samma som alla produkter
 			produktFiltreradeLista = administrationApplikation.ProduktLista;
@@ -143,8 +150,22 @@ namespace LOMAdministrationApplikation.Views
 			{
 				//Om det lyckas med att ta bort produkten, tar den även
 				//bort från comboxen och tömma fälterna
+				//AdministrationApplikation även räknar om totalla sidor
 				if (administrationApplikation.TaBortProdukt(ID))
 				{
+					btnNästa.Enabled = false;
+					btnTillbaka.Enabled = false;
+					//Om där finns fler än en sida aktiveras nästa knappen
+					if (administrationApplikation.TotallaSidorProdukter > 1)
+					{
+						btnNästa.Enabled = true;
+					}
+					else
+						sida = 1;
+
+					if(sida > 1)
+						btnTillbaka.Enabled = true;
+
 					produktSidaLista = administrationApplikation.HämtaSidaProdukter(sida, administrationApplikation.ProduktLista);
 					initiatiseraProduktComboBox();
 					//cboxProduktBox.Items.Remove(namn);
@@ -205,7 +226,27 @@ namespace LOMAdministrationApplikation.Views
 				{
 					//Om namnet inte redan existera, kör tillläggning
 					if (!TestaAttNamnExistera(Namn))
+					{
+						//AdministrationApplikation även räknar om nummer av
+						//sidor vid tilläggning
 						lyckades = administrationApplikation.LäggTillProdukt(produkt);
+						//tömma söktext fältet
+						txtSök.Text = "";
+						//tömma kategori combobox
+						cboxKategori.SelectedIndex = 0;
+						btnNästa.Enabled = false;
+						btnTillbaka.Enabled = false;
+						//Om där finns fler än en sida aktiveras nästa knappen
+						if (administrationApplikation.TotallaSidorProdukter > 1)
+						{
+							btnNästa.Enabled = true;
+						}
+						else
+							sida = 1;
+
+						if (sida > 1)
+							btnTillbaka.Enabled = true;
+					}
 					else
 						MessageBox.Show("Namn existerar redan!");
 				}
@@ -327,6 +368,7 @@ namespace LOMAdministrationApplikation.Views
 		{
 			lblIndex.Text = "*";
 			cboxProduktBox.SelectedIndex = 0; //Ny
+			cboxKategori.SelectedIndex = 0; //Tom
 			txtID.Text = "00000";
 			txtNamn.Text = "";
 			txtPris.Text = "0,00";
@@ -674,6 +716,26 @@ namespace LOMAdministrationApplikation.Views
 				totallaSidor += 1;
 
 			return totallaSidor;
+		}
+
+		/// <summary>
+		/// btnAvsluta_Click avslutar formen.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (btnAvsluta)</param>
+		/// <param name="e">argumenten till eventet</param>
+		private void btnAvsluta_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
+
+		/// <summary>
+		/// När formen stängs visar huvudapplikationsformen igen.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (AnvändareForm)</param>
+		/// <param name="e">argumenten till eventet</param>
+		private void ProduktForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			huvudApplikationForm.Show();
 		}
 	}
 }

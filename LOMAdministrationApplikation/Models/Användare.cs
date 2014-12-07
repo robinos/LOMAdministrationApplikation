@@ -32,8 +32,8 @@ namespace LOMAdministrationApplikation.Models
 	/// GetHashCode - Override på GetHashCode metoden där alla variabler
 	///		är viktiga (*måste finnas för ändringar på Equals metoden)
 	/// 
-	/// Version: 0.3
-	/// 2014-11-28
+	/// Version: 0.5
+	/// 2014-12-07
 	/// Grupp 2
 	/// </summary>
 	public class Användare

@@ -50,9 +50,11 @@ namespace LOMAdministrationApplikation.Views
 	/// HanteraProdukter - filtrerar användarlistan, hämtar listan för nuvarande
 	///		sidan och fyller comboboxen
 	/// TotallaResultatSidor - räknar ut hur många sidor den filtrerade listan är
+	/// btnAvsluta_Click - stängar formen vid knapptryckning
+	/// AnvändareForm_FormClosing - när formen stängs visar huvudformen igen
 	/// 
-	/// Version: 0.4
-	/// 2014-12-01
+	/// Version: 0.5
+	/// 2014-12-07
 	/// Grupp 2
 	/// </summary> 
 	public partial class AnvändareForm : Form
@@ -60,6 +62,8 @@ namespace LOMAdministrationApplikation.Views
 		//instansvariabler
 		//Referens till ProduktApplikationen (Kontroller)
 		private AdministrationApplikation administrationApplikation;
+		//Referens till HuvudApplikationenForm (vy)
+		private HuvudApplikationForm huvudApplikationForm;
 		//Den produkt som är aktiv i produkt comboboxen
 		private string valdAnvändarnamn = "";
 		//Filtersträngen som används just nu
@@ -81,13 +85,16 @@ namespace LOMAdministrationApplikation.Views
 		/// </summary>
 		/// <param name="administrationApplikation">referensen till
 		///		AdministrationApplikation kontrollern</param>
-		public AnvändareForm(AdministrationApplikation administrationApplikation)
+		public AnvändareForm(AdministrationApplikation administrationApplikation, HuvudApplikationForm huvudApplikationForm)
 		{
 			//Initialisera formen
 			InitializeComponent();
 
 			//Sätt referensen till AdministrationApplikation objektet
 			this.administrationApplikation = administrationApplikation;
+
+			//Sätt referensen till HuvudApplikationForm objektet
+			this.huvudApplikationForm = huvudApplikationForm;
 
 			//Från början är filtrerade listan samma som alla användare
 			användareFiltreradeLista = administrationApplikation.AnvändarLista;
@@ -136,8 +143,24 @@ namespace LOMAdministrationApplikation.Views
 			{
 				//Om det lyckas med att ta bort användaren, tar den även
 				//bort från comboxen och tömma fälterna
+				//AdministrationApplikation även räknar om nummer av sidor
+				//och högsta användare id
 				if (administrationApplikation.TaBortAnvändare(ID))
 				{
+					btnNästa.Enabled = false;
+					btnTillbaka.Enabled = false;
+					//Om där finns fler än en sida nu aktiveras nästa knappen
+					if (administrationApplikation.TotallaSidorAnvändare > 1)
+					{
+						btnNästa.Enabled = true;
+					}
+					else
+						sida = 1;
+
+					if (sida > 1)
+						btnTillbaka.Enabled = true;
+
+					högstaID = administrationApplikation.HögstaAnvändareID;
 					användarSidaLista = administrationApplikation.HämtaSidaAnvändare(sida, administrationApplikation.AnvändarLista);
 					initiatiseraComboBox();
 					Tömma();
@@ -216,7 +239,25 @@ namespace LOMAdministrationApplikation.Views
 					//Om namnet inte redan existera, kör tillläggning
 					if (!TestaOmNamnExistera(användarnamn))
 					{
+						//Nummer av sidor och högsta ID räknas om av
+						//AdministrationApplikation vid tilläggning
 						lyckades = administrationApplikation.LäggTillAnvändare(användare);
+						//tömma söktext fältet
+						txtSök.Text = "";
+						btnNästa.Enabled = false;
+						btnTillbaka.Enabled = false;
+						//Om där finns fler än en sida nu aktiveras nästa knappen
+						if (administrationApplikation.TotallaSidorAnvändare > 1)
+						{
+							btnNästa.Enabled = true;
+						}
+						else
+							sida = 1;
+
+						if (sida > 1)
+							btnTillbaka.Enabled = true;
+
+						högstaID = administrationApplikation.HögstaAnvändareID;
 					}
 					else
 						MessageBox.Show("Användarnamnet existerar redan!");
@@ -713,6 +754,26 @@ namespace LOMAdministrationApplikation.Views
 				totallaSidor += 1;
 
 			return totallaSidor;
+		}
+
+		/// <summary>
+		/// btnAvsluta_Click avslutar formen.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (btnAvsluta)</param>
+		/// <param name="e">argumenten till eventet</param>
+		private void btnAvsluta_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
+
+		/// <summary>
+		/// När formen stängs visar huvudapplikationsformen igen.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (AnvändareForm)</param>
+		/// <param name="e">argumenten till eventet</param>
+		private void AnvändareForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			huvudApplikationForm.Show();
 		}
 	}
 }

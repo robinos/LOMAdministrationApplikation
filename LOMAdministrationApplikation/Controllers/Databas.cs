@@ -56,8 +56,8 @@ namespace LOMAdministrationApplikation.Controllers
 	///	ExisterandeAnvändare - kollar om en användare redan existerar i databasen
 	///	HämtaAnvändareMedID - hämtar en användare från listan som har angiven id
 	/// 
-	/// Version: 0.3
-	/// 2014-11-28
+	/// Version: 0.5
+	/// 2014-12-07
 	/// Grupp 2
 	/// </summary>
 	public class Databas
@@ -447,6 +447,8 @@ namespace LOMAdministrationApplikation.Controllers
 				kommando.ExecuteNonQuery();
 			}
 
+			produktLista.OrderBy(n => n.Namn);
+
 			//Stäng databasen
 			StängKopplingen();
 
@@ -493,6 +495,7 @@ namespace LOMAdministrationApplikation.Controllers
 			{
 				//Läsa om för att sätta om listan (man kan inte vara säkert att
 				//det verkligen har tagits bort från databasen)
+				produktLista.Remove(HämtaProduktMedID(id));
 				lyckades = LäsaProdukter();
 			}
 
@@ -775,6 +778,7 @@ namespace LOMAdministrationApplikation.Controllers
 			{
 				//Läsa om för att sätta om listan (man kan inte vara säkert att
 				//det verkligen har tagits bort från databasen)
+				användarLista.Remove(HämtaAnvändareMedID(id));
 				lyckades = LäsaAnvändare();
 			}
 

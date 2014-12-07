@@ -1,4 +1,4 @@
-LOMAdministraitonApplikation - Version 0.4 - 2014-12-01
+LOMAdministraitonApplikation - Version 0.4 - 2014-12-07
 
 För att köra:
 

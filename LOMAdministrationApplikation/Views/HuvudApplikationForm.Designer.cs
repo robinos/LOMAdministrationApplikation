@@ -35,9 +35,12 @@
 			this.btnProdukter = new System.Windows.Forms.Button();
 			this.lblFråga = new System.Windows.Forms.Label();
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+			this.panelExit = new System.Windows.Forms.Panel();
+			this.btnAvsluta = new System.Windows.Forms.Button();
 			this.panelAnvändare.SuspendLayout();
 			this.panelProdukt.SuspendLayout();
 			this.flowLayoutPanel.SuspendLayout();
+			this.panelExit.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// lblInloggning
@@ -67,7 +70,7 @@
 			// 
 			this.btnAnvändare.BackColor = System.Drawing.Color.LightBlue;
 			this.btnAnvändare.Enabled = false;
-			this.btnAnvändare.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.btnAnvändare.FlatAppearance.BorderColor = System.Drawing.Color.White;
 			this.btnAnvändare.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
 			this.btnAnvändare.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
 			this.btnAnvändare.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -93,7 +96,7 @@
 			// 
 			this.btnProdukter.BackColor = System.Drawing.Color.DarkSalmon;
 			this.btnProdukter.Enabled = false;
-			this.btnProdukter.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.btnProdukter.FlatAppearance.BorderColor = System.Drawing.Color.White;
 			this.btnProdukter.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
 			this.btnProdukter.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LemonChiffon;
 			this.btnProdukter.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -130,20 +133,48 @@
 			this.flowLayoutPanel.Size = new System.Drawing.Size(575, 262);
 			this.flowLayoutPanel.TabIndex = 5;
 			// 
+			// panelExit
+			// 
+			this.panelExit.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.panelExit.AutoSize = true;
+			this.panelExit.Controls.Add(this.btnAvsluta);
+			this.panelExit.Location = new System.Drawing.Point(0, 414);
+			this.panelExit.MinimumSize = new System.Drawing.Size(584, 46);
+			this.panelExit.Name = "panelExit";
+			this.panelExit.Size = new System.Drawing.Size(584, 46);
+			this.panelExit.TabIndex = 6;
+			// 
+			// btnAvsluta
+			// 
+			this.btnAvsluta.BackColor = System.Drawing.Color.IndianRed;
+			this.btnAvsluta.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Red;
+			this.btnAvsluta.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightCoral;
+			this.btnAvsluta.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+			this.btnAvsluta.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btnAvsluta.Location = new System.Drawing.Point(221, 8);
+			this.btnAvsluta.Name = "btnAvsluta";
+			this.btnAvsluta.Size = new System.Drawing.Size(130, 28);
+			this.btnAvsluta.TabIndex = 0;
+			this.btnAvsluta.Text = "Avsluta";
+			this.btnAvsluta.UseVisualStyleBackColor = false;
+			this.btnAvsluta.Click += new System.EventHandler(this.btnAvsluta_Click);
+			// 
 			// HuvudApplikationForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(584, 428);
+			this.ClientSize = new System.Drawing.Size(584, 462);
+			this.Controls.Add(this.panelExit);
 			this.Controls.Add(this.lblFråga);
 			this.Controls.Add(this.lblInloggning);
 			this.Controls.Add(this.flowLayoutPanel);
-			this.MinimumSize = new System.Drawing.Size(600, 425);
+			this.MinimumSize = new System.Drawing.Size(600, 500);
 			this.Name = "HuvudApplikationForm";
 			this.Text = "Ljus och Miljö AB - Datahantering";
 			this.panelAnvändare.ResumeLayout(false);
 			this.panelProdukt.ResumeLayout(false);
 			this.flowLayoutPanel.ResumeLayout(false);
+			this.panelExit.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -158,5 +189,7 @@
 		private System.Windows.Forms.Button btnProdukter;
 		private System.Windows.Forms.Label lblFråga;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
+		private System.Windows.Forms.Panel panelExit;
+		private System.Windows.Forms.Button btnAvsluta;
 	}
 }

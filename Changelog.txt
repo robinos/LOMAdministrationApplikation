@@ -1,3 +1,13 @@
+LOMAdministrationApplikation - Version 0.5 - 2014-12-07
+- Avslut knappar nu finns på alla formar
+- Huvudapplikationsformen nu försvinner när en av de andra är aktiva och sedan
+visas igen när en av de andra stängs
+- buggfix för när man lägga till en produkt så det hamnar på en ny sida (det visas
+korrekt på en ny sida nu)
+- buggfix för att ta bort sista produkt på en sida (man nu hamnar på föregående sidan)
+- buggfix för att ordningen efter namn fungerade inte då linq användar IEnumerables
+och inte listor och det behövde konverteras mellan de två former för att fungerar
+
 LOMAdministrationApplikation - Version 0.4 - 2014-12-01
 - AnvändareForm och ProduktForm nu går att förändrar storlek på och omformar sig
 - På AnvändareForm kan man nu skriva in i sökfältet för att söka efter ett
