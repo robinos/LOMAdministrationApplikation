@@ -62,8 +62,8 @@ namespace LOMAdministrationApplikation
 	///		inloggad användare
 	/// 
 	/// 
-	/// Version: 0.4
-	/// 2014-12-01
+	/// Version: 0.5
+	/// 2014-12-07
 	/// Grupp 2
 	/// </summary>
 	public class AdministrationApplikation
@@ -242,13 +242,13 @@ namespace LOMAdministrationApplikation
 		/// <returns>En Lista av Produkt objekt för en sida</returns>
 		public List<Produkt> HämtaSidaProdukter(int sida, List<Produkt> produkter)
 		{
-			List<Produkt> tempProduktLista;
+			//Ordna listan av alla produkter innan man börjar 
+			List<Produkt> tempProduktLista = new List<Produkt>(produkter.OrderBy(n => n.Namn.ToUpper()));
 
 			//Vill man titta på sida 1 tar man första antal produkter (enligt produkter per sida)
 			if (sida == 1)
 			{
-				tempProduktLista = new List<Produkt>((from m in produkter select m).Take(produkterPerSida));
-				tempProduktLista.OrderBy(n => n.Namn);
+				tempProduktLista = new List<Produkt>((from m in tempProduktLista select m).Take(produkterPerSida));
 			}
 			//Annars söker man efter sida 2 eller högre
 			else
@@ -256,10 +256,12 @@ namespace LOMAdministrationApplikation
 				int tidigareSidorProdukter = (sida - 1) * produkterPerSida;
 
 				//Titta på topp antal produkter minus de som var på tidigare sidor
-				List<Produkt> excludeLista = new List<Produkt>((from z in produkter select z).Take(tidigareSidorProdukter));
-				tempProduktLista = new List<Produkt>((produkter.Except(excludeLista).Take(produkterPerSida)));
-				tempProduktLista.OrderBy(n => n.Namn);
+				List<Produkt> excludeLista = new List<Produkt>((from z in tempProduktLista select z).Take(tidigareSidorProdukter));
+				tempProduktLista = new List<Produkt>((tempProduktLista.Except(excludeLista).Take(produkterPerSida)));
 			}
+
+			//Ordna listan av sidans produkter innan man skickar tillbaka det 
+			//tempProduktLista = new List<Produkt>(tempProduktLista.OrderBy(n => n.Namn.ToUpper()));
 
 			return tempProduktLista;
 		}
@@ -281,6 +283,8 @@ namespace LOMAdministrationApplikation
 
 			//Listan fylls med alla unika typer som finns 
 			kategoriLista.AddRange(TypQry.Distinct());
+
+			kategoriLista = new List<string>(kategoriLista.OrderBy(n => n.ToUpper()));
 
 			return kategoriLista;
 		}
@@ -323,6 +327,9 @@ namespace LOMAdministrationApplikation
 			//InsättProdukt metoden i Databas returnerar sann eller falsk
 			bool lyckades = databas.InsättProdukt(produkt);
 
+			//Räknar hur många sidor av produkter det blir totallt
+			totallaSidorProdukter = RäknarTotallaSidor(produktLista.Count, produkterPerSida);
+
 			return lyckades;
 		}
 
@@ -336,6 +343,9 @@ namespace LOMAdministrationApplikation
 		{
 			//Delete metoden i Databas returnerar sann eller falsk
 			bool lyckades = databas.TaBortProdukt(id);
+
+			//Räknar hur många sidor av produkter det blir totallt
+			totallaSidorProdukter = RäknarTotallaSidor(produktLista.Count, produkterPerSida);
 
 			return lyckades;
 		}
@@ -382,14 +392,14 @@ namespace LOMAdministrationApplikation
 		/// <returns>En Lista av Användare objekt för en sida</returns>
 		public List<Användare> HämtaSidaAnvändare(int sida, List<Användare> användare)
 		{
-			List<Användare> tempAnvändarLista;
+			//Ordna listan av alla användare innan man börjar 
+			List<Användare> tempAnvändarLista = new List<Användare>(användare.OrderBy(n => n.Användarnamn.ToUpper()));
 
 			//Vill man titta på sida 1 tar man första antal användare
 			//(enligt användare per sida)
 			if (sida == 1)
 			{
-				tempAnvändarLista = new List<Användare>((from m in användare select m).Take(användarePerSida));
-				tempAnvändarLista.OrderBy(n => n.Användarnamn);
+				tempAnvändarLista = new List<Användare>((from m in tempAnvändarLista select m).Take(användarePerSida));
 			}
 			//Annars söker man efter sida 2 eller högre
 			else
@@ -397,10 +407,12 @@ namespace LOMAdministrationApplikation
 				int tidigareSidorAnvändare = (sida - 1) * användarePerSida;
 
 				//Titta på topp antal användare minus de som var på tidigare sidor
-				List<Användare> excludeLista = new List<Användare>((from z in användare select z).Take(tidigareSidorAnvändare));
-				tempAnvändarLista = new List<Användare>((användare.Except(excludeLista).Take(användarePerSida)));
-				tempAnvändarLista.OrderBy(n => n.Användarnamn);
+				List<Användare> excludeLista = new List<Användare>((from z in tempAnvändarLista select z).Take(tidigareSidorAnvändare));
+				tempAnvändarLista = new List<Användare>((tempAnvändarLista.Except(excludeLista).Take(användarePerSida)));
 			}
+
+			//Ordna listan av sidans användare innan man skickar tillbaka 
+			//tempAnvändarLista = new List<Användare>(tempAnvändarLista.OrderBy(n => n.Användarnamn.ToUpper()));
 
 			return tempAnvändarLista;
 		}
@@ -436,6 +448,11 @@ namespace LOMAdministrationApplikation
 			//InsättProdukt metoden i Databas returnerar sann eller falsk
 			bool lyckades = databas.InsättAnvändare(användare);
 
+			//Räknar hur många sidor av användare det blir totallt
+			totallaSidorAnvändare = RäknarTotallaSidor(användarLista.Count, användarePerSida);
+			//Få fram den högsta nuvarande användare ID
+			högstaAnvändareID = databas.HögstaAnvändareID;
+
 			return lyckades;
 		}
 
@@ -449,6 +466,11 @@ namespace LOMAdministrationApplikation
 		{
 			//Delete metoden i Databas returnerar sann eller falsk
 			bool lyckades = databas.TaBortAnvändare(id);
+
+			//Räknar hur många sidor av användare det blir totallt
+			totallaSidorAnvändare = RäknarTotallaSidor(användarLista.Count, användarePerSida);
+			//Få fram den högsta nuvarande användare ID
+			högstaAnvändareID = databas.HögstaAnvändareID;
 
 			return lyckades;
 		}

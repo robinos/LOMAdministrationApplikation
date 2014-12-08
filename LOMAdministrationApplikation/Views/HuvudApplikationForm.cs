@@ -26,9 +26,10 @@ namespace LOMAdministrationApplikation.Views
 	/// -Metoder-
 	/// btnAnvändare_Click - visar AnvändareForm
 	/// btnProdukter_Click - visar ProduktForm
+	/// btnAvsluta_Click - stängar formen
 	/// 
-	/// Version: 0.3
-	/// 2014-11-28
+	/// Version: 0.5
+	/// 2014-12-07
 	/// Grupp 2
 	/// </summary>
 	public partial class HuvudApplikationForm : Form
@@ -83,9 +84,11 @@ namespace LOMAdministrationApplikation.Views
 		/// <param name="e">argumenten till eventet</param> 
 		private void btnAnvändare_Click(object sender, EventArgs e)
 		{
-			//skickar vidare referensen till AdministrationApplikation controllern
-			användareForm = new AnvändareForm(administrationApplikation);
+			//Skickar vidare referensen till AdministrationApplikation controllern
+			//och referenser till HuvudApplikationForm för att visa den igen
+			användareForm = new AnvändareForm(administrationApplikation, this);
 			användareForm.Show();
+			this.Hide();
 		}
 
 		/// <summary>
@@ -95,9 +98,21 @@ namespace LOMAdministrationApplikation.Views
 		/// <param name="e">argumenten till eventet</param> 
 		private void btnProdukter_Click(object sender, EventArgs e)
 		{
-			//skickar vidare referensen till AdministrationApplikation controllern
-			produktForm = new ProduktForm(administrationApplikation);
+			//Skickar vidare referensen till AdministrationApplikation controllern
+			//och referenser till HuvudApplikationForm för att visa den igen
+			produktForm = new ProduktForm(administrationApplikation, this);
 			produktForm.Show();
+			this.Hide();
+		}
+
+		/// <summary>
+		/// btnAvsluta_Click stängar formen.
+		/// </summary>
+		/// <param name="sender">objekten som skickar eventet (btnAvsluta)</param>
+		/// <param name="e">argumenten till eventet</param> 
+		private void btnAvsluta_Click(object sender, EventArgs e)
+		{
+			this.Close();
 		}
 	}
 }
