@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LOMAdministrationApplikation.Models;
-using System.Text.RegularExpressions;
 using System.Web.Helpers; //För Crypto.HashPassword
 
 namespace LOMAdministrationApplikation.Views
@@ -34,13 +33,6 @@ namespace LOMAdministrationApplikation.Views
 	/// SättProdukt - Hjälpmetod för att sätta fälterna till en viss användares
 	///		information
 	/// Tömma - Tömmer alla fälterna (eller sätter till default värden) 
-	/// TestaAttIDExistera - Testar om en ID redan existerar i listan över alla
-	///		användare / databas
-	/// TestaAttNamnExistera - Testar om ett namn redan existerar i listan över
-	///		alla användare / databas
-	/// TestaAttSammaNamnExistera - Testar om samma namn redan existerar för någon
-	///		annan användare i listan över alla användare / databas
-	///	RengörInput - städa input från användaren för lite säkerhet
 	/// initiatiseraComboBox - initialisera comboboxen för att visa nuvarande sidan
 	/// btnFörsta_Click - Visar första sidan (x antal användare) i comboboxen
 	/// btnSista_Click - Visar sista sidan (x antal användare) i comboboxen
@@ -139,7 +131,7 @@ namespace LOMAdministrationApplikation.Views
 			int ID = int.Parse(lblIndex.Text);
 
 			//Om ID redan existerar
-			if (TestaAttIDExistera(ID))
+			if (administrationApplikation.TestaOmAnvändareIDExistera(ID))
 			{
 				//Om det lyckas med att ta bort användaren, tar den även
 				//bort från comboxen och tömma fälterna
@@ -212,12 +204,12 @@ namespace LOMAdministrationApplikation.Views
 
 			//RengörInput används för att ta bort kod som kan vara skadlig
 			//vid insättning till databasen
-			string användarnamn = RengörInput(txtAnvändarnamn.Text);
+			string användarnamn = administrationApplikation.RengörInput(txtAnvändarnamn.Text);
 
 			//fyller användare med informationen (med rengöring för strängar)
 			användare.ID = ID;
 			användare.Användarnamn = användarnamn;
-			användare.Roll = RengörInput(txtRoll.Text);
+			användare.Roll = administrationApplikation.RengörInput(txtRoll.Text);
 			användare.Räknare = int.Parse(txtRäknare.Text);
 			if (rbtnLåst.Checked)
 				användare.Låst = true;
@@ -231,13 +223,13 @@ namespace LOMAdministrationApplikation.Views
 			//Ny användare
 			if (cboxAnvändareBox.SelectedIndex == 0) 
 			{
-				användare.LösenordHash = Crypto.HashPassword(RengörInput(txtLösenord.Text));
+				användare.LösenordHash = Crypto.HashPassword(administrationApplikation.RengörInput(txtLösenord.Text));
 
 				//Om id inte redan existerar
-				if (!TestaAttIDExistera(användare.ID))
+				if (!administrationApplikation.TestaOmAnvändareIDExistera(användare.ID))
 				{
 					//Om namnet inte redan existera, kör tillläggning
-					if (!TestaOmNamnExistera(användarnamn))
+					if (!administrationApplikation.TestaOmAnvändareNamnExistera(användarnamn))
 					{
 						//Nummer av sidor och högsta ID räknas om av
 						//AdministrationApplikation vid tilläggning
@@ -270,16 +262,16 @@ namespace LOMAdministrationApplikation.Views
 			{
 				//Om ny lösenord är inbockade, använde det nya lösenordet
 				if(checkNyLösenord.Checked)
-					användare.LösenordHash = Crypto.HashPassword(RengörInput(txtLösenord.Text));
+					användare.LösenordHash = Crypto.HashPassword(administrationApplikation.RengörInput(txtLösenord.Text));
 				//Annars använd förre detta lösenordet
 				else 					
 					användare.LösenordHash = administrationApplikation.HämtaAnvändareMedID(användare.ID).LösenordHash;
 
 				//Om id redan existerar
-				if (TestaAttIDExistera(ID))
+				if (administrationApplikation.TestaOmAnvändareIDExistera(ID))
 				{
 					//Om namnet inte redan existera, kör updatering
-					if (!TestaOmSammaNamnExistera(ID, användarnamn))
+					if (!administrationApplikation.TestaOmSammaAnvändareNamnExistera(ID, användarnamn))
 						lyckades = administrationApplikation.UppdateraAnvändare(användare);
 					else
 						MessageBox.Show("Användarnamnet existerar redan!");
@@ -411,105 +403,6 @@ namespace LOMAdministrationApplikation.Views
 			txtLösenord.BackColor = Color.White;
 			txtLösenord.Enabled = true;
 			rbtnUpplåst.Checked = true;
-		}
-
-		/// <summary>
-		/// TestaAttIDExistera testar om någon användare har angiven id.
-		/// </summary>
-		/// <param name="id">id av en användare</param>
-		/// <returns>sann om id existerar och annars falsk</returns>
-		private bool TestaAttIDExistera(int id)
-		{
-			bool existera = false;
-
-			//Letar genom alla användare i användarlistan över alla användare
-			foreach (Användare användare in administrationApplikation.AnvändarLista)
-			{
-				//Om id redan finns, sätts existera till sann
-				if (id == användare.ID) existera = true;
-			}
-
-			return existera;
-		}
-
-		/// <summary>
-		/// TestaAttNamnExistera testar om någon användare har angiven namn.
-		/// </summary>
-		/// <param name="namn">namn av en användare</param>
-		/// <returns>sann om namnet existerar och annars falsk</returns>
-		private bool TestaOmNamnExistera(string namn)
-		{
-			bool existera = false;
-
-			//Letar genom alla användare i användarlistan över alla användare
-			foreach (Användare användare in administrationApplikation.AnvändarLista)
-			{
-				//Om namnet redan finns, sätts existera till sann
-				if (namn.Equals(användare.Användarnamn)) existera = true;
-			}
-
-			return existera;
-		}
-
-		/// <summary>
-		/// TestaOmSammaNamnExistera testar om en annan användare har samma
-		/// namn då alla namn ska vara unikt.
-		/// </summary>
-		/// <param name="id">id av en användare</param>
-		/// <param name="namn">namn av en användare</param>
-		/// <returns>sann om samma namn existerar och annars falsk</returns>
-		private bool TestaOmSammaNamnExistera(int id, string namn)
-		{
-			bool existera = false;
-
-			//Letar genom alla användare i användarlistan över alla användare
-			foreach (Användare användare in administrationApplikation.AnvändarLista)
-			{
-				//Om namnet hittas
-				if (namn.Equals(användare.Användarnamn))
-				{
-					//Om namnet är inte till första användare, finns det en
-					//annan som också har namnet.  Existera sätts till sann
-					if (!id.Equals(användare.ID))
-						existera = true;
-				}
-			}
-
-			return existera;
-		}
-
-		/// <summary>
-		/// RengörInput tar bort oönskade karaktärer från inmatningen så man inte
-		/// får en situation som Farg = "blå;Drop Table Produkter;" när man skickar
-		/// till databasen.  Inloggade anställda kommer att använda programmet så
-		/// säkerheten i administationsprogrammet behöver inte vara äverdriven men
-		/// det här är bara för minimal säkerhet.
-		/// *Ett bättre sätt skulle vara att encode datan innan det skrivs till
-		/// databasen. Om tiden tillåter skulle det vara en bra idé men skulle
-		/// kräver ändringar i webbsidan också.
-		/// </summary>
-		/// <param name="input">angiven sträng som ska rensas</param>
-		/// <returns>en rensad sträng</returns>
-		private string RengörInput(string input)
-		{
-			//Tar bort ogiltiga karaktärer 
-			//[^\w\-+*/=£$.,!?:%'½&()#@\\d] matchar vilket karaktär som helst som är
-			//inte en bokstav, ett nummer, ett matematiskt tecken, en pund eller dollar
-			//symbol, en punkt, en utrops tecken, en frågatecken, en colon,
-			//en procent symbol, en apostrof, en halv symbol, en och symbol, cirkel
-			//parenteser, en # symbol, en @ symbol, en \ symbol, eller blanksteg.
-			//(allt annat blir ogiltig)
-			try
-			{
-				return Regex.Replace(input, @"[^\w\-+*/=£$.!?:%'½&()#@\s+\\d]", "",
-									 RegexOptions.None, TimeSpan.FromSeconds(1.5));
-			}
-			//Ifall det tar för mycket tid har något gått fel.  Returnera en
-			//tom sträng istället.
-			catch (RegexMatchTimeoutException)
-			{
-				return String.Empty;
-			}
 		}
 
 		//Encode och Decode används inte.  Det är bara ett annat sätt vi kunde göra det

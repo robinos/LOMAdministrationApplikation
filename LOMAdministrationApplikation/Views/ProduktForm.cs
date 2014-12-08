@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LOMAdministrationApplikation.Models;
-using System.Text.RegularExpressions;
 using System.Globalization;
 
 namespace LOMAdministrationApplikation.Views
@@ -34,13 +33,6 @@ namespace LOMAdministrationApplikation.Views
 	/// SättProdukt - Hjälpmetod för att sätta fälterna till en viss produkts
 	///		information
 	/// Tömma - Tömmer alla fälterna (eller sätter till default värden) 
-	/// TestaAttIDExistera - Testar om en ID redan existerar i listan över alla
-	///		produkter / databas
-	/// TestaAttNamnExistera - Testar om ett namn redan existerar i listan över
-	///		alla produkter / databas
-	/// TestaAttSammaNamnExistera - Testar om samma namn redan existerar för någon
-	///		annan produkt i listan över alla produkter / databas
-	///	RengörInput - städa input från användaren för lite säkerhet
 	///	initiatiseraKategoriComboBox - initialisera kategori comboboxen med alla
 	///		kategorier
 	/// initiatiseraProduktComboBox - initialisera comboboxen för att visa nuvarande
@@ -142,11 +134,11 @@ namespace LOMAdministrationApplikation.Views
 		/// <param name="e">argumenten till eventet</param>
 		private void btnTaBort_Click(object sender, EventArgs e)
 		{
-			string namn = RengörInput(txtNamn.Text);
-			string ID = RengörInput(txtID.Text);
+			string namn = administrationApplikation.RengörInput(txtNamn.Text);
+			string ID = administrationApplikation.RengörInput(txtID.Text);
 
 			//Om ID redan existerar
-			if (TestaAttIDExistera(ID))
+			if (administrationApplikation.TestaOmProduktIDExistera(ID))
 			{
 				//Om det lyckas med att ta bort produkten, tar den även
 				//bort från comboxen och tömma fälterna
@@ -195,8 +187,8 @@ namespace LOMAdministrationApplikation.Views
 			//ID och Namn kommer att användas för flera testar
 			//RengörInput används för att ta bort kod som kan vara skadlig
 			//vid insättning till databasen
-			string ID = RengörInput(txtID.Text);
-			string Namn = RengörInput(txtNamn.Text);
+			string ID = administrationApplikation.RengörInput(txtID.Text);
+			string Namn = administrationApplikation.RengörInput(txtNamn.Text);
 
 			//Pris måste tar bort PreFix (kr), byta ',' mot '.', och tar bort tusantalstecknet
 			string pris = txtPris.Text.Replace((txtPris.PreFix != "") ? txtPris.PreFix : " ", String.Empty)
@@ -207,13 +199,13 @@ namespace LOMAdministrationApplikation.Views
 			produkt.ID = ID;
 			produkt.Namn = Namn;
 			produkt.Pris = Decimal.Parse(pris, CultureInfo.InvariantCulture);
-			produkt.Typ = RengörInput(txtTyp.Text);
-			produkt.Färg = RengörInput(txtFarg.Text);
-			produkt.Bildfilnamn = RengörInput(txtBildfil.Text);
-			produkt.Ritningsfilnamn = RengörInput(txtRitningsfil.Text);
-			produkt.RefID = RengörInput(txtRefID.Text);
-			produkt.Beskrivning = RengörInput(txtBeskrivning.Text);
-			produkt.Monteringsbeskrivning = RengörInput(txtMontering.Text);
+			produkt.Typ = administrationApplikation.RengörInput(txtTyp.Text);
+			produkt.Färg = administrationApplikation.RengörInput(txtFarg.Text);
+			produkt.Bildfilnamn = administrationApplikation.RengörInput(txtBildfil.Text);
+			produkt.Ritningsfilnamn = administrationApplikation.RengörInput(txtRitningsfil.Text);
+			produkt.RefID = administrationApplikation.RengörInput(txtRefID.Text);
+			produkt.Beskrivning = administrationApplikation.RengörInput(txtBeskrivning.Text);
+			produkt.Monteringsbeskrivning = administrationApplikation.RengörInput(txtMontering.Text);
 
 			//Lyckades är om operationen lyckades, och fås från Administration
 			//Applikation sedan
@@ -222,10 +214,10 @@ namespace LOMAdministrationApplikation.Views
 			if (cboxProduktBox.SelectedIndex == 0) //Ny produkt
 			{
 				//Om id inte redan existerar
-				if (!TestaAttIDExistera(ID))
+				if (!administrationApplikation.TestaOmProduktIDExistera(ID))
 				{
 					//Om namnet inte redan existera, kör tillläggning
-					if (!TestaAttNamnExistera(Namn))
+					if (!administrationApplikation.TestaOmProduktNamnExistera(Namn))
 					{
 						//AdministrationApplikation även räknar om nummer av
 						//sidor vid tilläggning
@@ -256,10 +248,10 @@ namespace LOMAdministrationApplikation.Views
 			else //Befintlig produkt
 			{
 				//Om id redan existerar
-				if (TestaAttIDExistera(ID))
+				if (administrationApplikation.TestaOmProduktIDExistera(ID))
 				{
 					//Om namnet inte redan existera, kör updatering
-					if (!TestaAttSammaNamnExistera(ID, Namn))
+					if (!administrationApplikation.TestaOmSammaProduktNamnExistera(ID, Namn))
 						lyckades = administrationApplikation.UppdateraProdukt(produkt);
 				}
 				else
@@ -379,105 +371,6 @@ namespace LOMAdministrationApplikation.Views
 			txtRefID.Text = "00000";
 			txtBeskrivning.Text = "";
 			txtMontering.Text = "";
-		}
-
-		/// <summary>
-		/// TestaAttIDExistera testar om någon produkt har angiven id.
-		/// </summary>
-		/// <param name="id">id av en produkt</param>
-		/// <returns>sann om id existerar och annars falsk</returns>
-		private bool TestaAttIDExistera(string id)
-		{
-			bool existera = false;
-
-			//Letar genom alla produkter från databasen
-			foreach (Produkt produkt in administrationApplikation.ProduktLista)
-			{
-				//Om id redan finns, sätts existera till sann
-				if (id.Equals(produkt.ID)) existera = true;
-			}
-
-			return existera;
-		}
-
-		/// <summary>
-		/// TestaAttNamnExistera testar om någon produkt har angiven namn.
-		/// </summary>
-		/// <param name="namn">namn av en produkt</param>
-		/// <returns>sann om namnet existerar och annars falsk</returns>
-		private bool TestaAttNamnExistera(string namn)
-		{
-			bool existera = false;
-
-			//Letar genom alla produkter från databasen
-			foreach (Produkt produkt in administrationApplikation.ProduktLista)
-			{
-				//Om namnet redan finns sätts existera till sann
-				if (namn.Equals(produkt.Namn)) existera = true;
-			}
-
-			return existera;
-		}
-
-		/// <summary>
-		/// TestaAttSammaNamnExistera testar om en annan produkt har samma
-		/// namn då alla namn ska vara unikt.
-		/// </summary>
-		/// <param name="id">id av en produkt</param>
-		/// <param name="namn">namn av en produkt</param>
-		/// <returns>sann om samma namn existerar och annars falsk</returns>
-		private bool TestaAttSammaNamnExistera(string id, string namn)
-		{
-			bool existera = false;
-
-			//Letar genom alla produkter från databasen
-			foreach (Produkt produkt in administrationApplikation.ProduktLista)
-			{
-				//Om namnet hittas
-				if (namn.Equals(produkt.Namn))
-				{
-					//Om namnet är inte till första produkten, finns det en
-					//annan som också har namnet.  Existera sätts till sann
-					if (!id.Equals(produkt.ID))
-						existera = true;
-				}
-			}
-
-			return existera;
-		}
-
-		/// <summary>
-		/// RengörInput tar bort oönskade karaktärer från inmatningen så man inte
-		/// får en situation som Farg = "blå;Drop Table Produkter;" när man skickar
-		/// till databasen.  Inloggade anställda kommer att använda programmet så
-		/// säkerheten i administationsprogrammet behöver inte vara äverdriven men
-		/// det här är bara för minimal säkerhet.
-		/// *Ett bättre sätt skulle vara att encode datan innan det skrivs till
-		/// databasen. Om tiden tillåter skulle det vara en bra idé men skulle
-		/// kräver ändringar i webbsidan också.
-		/// </summary>
-		/// <param name="input">angiven sträng som ska rensas</param>
-		/// <returns>en rensad sträng</returns>
-		private string RengörInput(string input)
-		{
-			//Tar bort ogiltiga karaktärer 
-			//[^\w\-+*/=£$.,!?:%'½&()#@\\d] matchar vilket karaktär som helst som är
-			//inte en bokstav, ett nummer, ett matematiskt tecken, en pund eller dollar
-			//symbol, en punkt, en utrops tecken, en frågatecken, en colon,
-			//en procent symbol, en apostrof, en halv symbol, en och symbol, cirkel
-			//parenteser, en # symbol, en @ symbol, en \ symbol, eller blanksteg.
-			//(allt annat blir ogiltig)
-			try
-			{
-				return Regex.Replace(input, @"[^\w\-+*/=£$.!?:%'½&()#@\s+\\d]", "",
-									 RegexOptions.None, TimeSpan.FromSeconds(1.5));
-			}
-			//Ifall det tar för mycket tid har något gått fel.  Returnera en
-			//tom sträng istället.
-			catch (RegexMatchTimeoutException)
-			{  
-				return String.Empty;
-			}
 		}
 
 		/// <summary>

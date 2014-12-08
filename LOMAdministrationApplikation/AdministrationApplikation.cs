@@ -7,6 +7,7 @@ using LOMAdministrationApplikation.Controllers;
 using LOMAdministrationApplikation.Models;
 using LOMAdministrationApplikation.Views;
 using System.Security.Principal;
+using System.Text.RegularExpressions;
 
 namespace LOMAdministrationApplikation
 {
@@ -45,6 +46,12 @@ namespace LOMAdministrationApplikation
 	///		klassen)
 	/// UppdateraProdukt - uppdatera en produkt i databasen (använder Databas
 	///		klassen)
+	/// TestaOmProduktIDExistera - Testar om en ID redan existerar i listan över
+	///		alla produkter / databas
+	/// TestaOmProduktNamnExistera - Testar om ett namn redan existerar i listan
+	///		över alla produkter / databas
+	/// TestaOmSammaProduktNamnExistera - Testar om samma namn redan existerar
+	///		för någon annan produkt i listan över alla produkter / databas
 	///	HämtaAnvändareMedID - hämtar en användare från användarLista med angiven id	
 	///	HämtaSidaAnvändare - Hämtar en angiven sida av användare (användarePerSida
 	///		element)
@@ -55,12 +62,18 @@ namespace LOMAdministrationApplikation
 	///		Databas klassen)
 	/// UppdateraAnvändare - uppdatera en användare i databasen (använder
 	///		Databas klassen)
+	/// TestaAttAnvändareIDExistera - Testar om en ID redan existerar i listan över
+	///		alla användare / databas
+	/// TestaOmAnvändareNamnExistera - Testar om ett namn redan existerar i listan
+	///		över alla användare / databas
+	/// TestaOmSammaAnvändareNamnExistera - Testar om samma namn redan existerar
+	///		för någon annan användare i listan över alla användare / databas
 	/// AnvändarenFinnsIRoll - Testar om användaren har en specifik roll
 	///		enligt Windows systemet
 	/// AnvändarenÄrAdministratör - Testar om användaren är en administratör
 	/// AnvändarenÄrVanligInloggadAnvändare - Testar om användaren är en vanlig
 	///		inloggad användare
-	/// 
+	///	RengörInput - städa input från användaren för lite säkerhet
 	/// 
 	/// Version: 0.5
 	/// 2014-12-07
@@ -365,6 +378,71 @@ namespace LOMAdministrationApplikation
 		}
 
 		/// <summary>
+		/// TestaOmProduktIDExistera testar om någon produkt har angiven id.
+		/// </summary>
+		/// <param name="id">id av en produkt</param>
+		/// <returns>sann om id existerar och annars falsk</returns>
+		public bool TestaOmProduktIDExistera(string id)
+		{
+			bool existera = false;
+
+			//Letar genom alla produkter från databasen
+			foreach (Produkt produkt in produktLista)
+			{
+				//Om id redan finns, sätts existera till sann
+				if (id.Equals(produkt.ID)) existera = true;
+			}
+
+			return existera;
+		}
+
+		/// <summary>
+		/// TestaOmProduktNamnExistera testar om någon produkt har angiven namn.
+		/// </summary>
+		/// <param name="namn">namn av en produkt</param>
+		/// <returns>sann om namnet existerar och annars falsk</returns>
+		public bool TestaOmProduktNamnExistera(string namn)
+		{
+			bool existera = false;
+
+			//Letar genom alla produkter från databasen
+			foreach (Produkt produkt in produktLista)
+			{
+				//Om namnet redan finns sätts existera till sann
+				if (namn.Equals(produkt.Namn)) existera = true;
+			}
+
+			return existera;
+		}
+
+		/// <summary>
+		/// TestaOmSammaProduktNamnExistera testar om en annan produkt har samma
+		/// namn då alla namn ska vara unikt.
+		/// </summary>
+		/// <param name="id">id av en produkt</param>
+		/// <param name="namn">namn av en produkt</param>
+		/// <returns>sann om samma namn existerar och annars falsk</returns>
+		public bool TestaOmSammaProduktNamnExistera(string id, string namn)
+		{
+			bool existera = false;
+
+			//Letar genom alla produkter från databasen
+			foreach (Produkt produkt in produktLista)
+			{
+				//Om namnet hittas
+				if (namn.Equals(produkt.Namn))
+				{
+					//Om namnet är inte till första produkten, finns det en
+					//annan som också har namnet.  Existera sätts till sann
+					if (!id.Equals(produkt.ID))
+						existera = true;
+				}
+			}
+
+			return existera;
+		}
+
+		/// <summary>
 		/// HämtaAnvändareMedID hämtar en användare från användarLista som
 		/// har samma id som angiven eller null vid ingen träff.
 		/// </summary>
@@ -490,6 +568,71 @@ namespace LOMAdministrationApplikation
 		}
 
 		/// <summary>
+		/// TestaOmAnvändareIDExistera testar om någon användare har angiven id.
+		/// </summary>
+		/// <param name="id">id av en användare</param>
+		/// <returns>sann om id existerar och annars falsk</returns>
+		public bool TestaOmAnvändareIDExistera(int id)
+		{
+			bool existera = false;
+
+			//Letar genom alla användare i användarlistan över alla användare
+			foreach (Användare användare in användarLista)
+			{
+				//Om id redan finns, sätts existera till sann
+				if (id == användare.ID) existera = true;
+			}
+
+			return existera;
+		}
+
+		/// <summary>
+		/// TestaOmAnvändareNamnExistera testar om någon användare har angiven namn.
+		/// </summary>
+		/// <param name="namn">namn av en användare</param>
+		/// <returns>sann om namnet existerar och annars falsk</returns>
+		public bool TestaOmAnvändareNamnExistera(string namn)
+		{
+			bool existera = false;
+
+			//Letar genom alla användare i användarlistan över alla användare
+			foreach (Användare användare in användarLista)
+			{
+				//Om namnet redan finns, sätts existera till sann
+				if (namn.Equals(användare.Användarnamn)) existera = true;
+			}
+
+			return existera;
+		}
+
+		/// <summary>
+		/// TestaOmSammaAnvändareNamnExistera testar om en annan användare har samma
+		/// namn då alla namn ska vara unikt.
+		/// </summary>
+		/// <param name="id">id av en användare</param>
+		/// <param name="namn">namn av en användare</param>
+		/// <returns>sann om samma namn existerar och annars falsk</returns>
+		public bool TestaOmSammaAnvändareNamnExistera(int id, string namn)
+		{
+			bool existera = false;
+
+			//Letar genom alla användare i användarlistan över alla användare
+			foreach (Användare användare in användarLista)
+			{
+				//Om namnet hittas
+				if (namn.Equals(användare.Användarnamn))
+				{
+					//Om namnet är inte till första användare, finns det en
+					//annan som också har namnet.  Existera sätts till sann
+					if (!id.Equals(användare.ID))
+						existera = true;
+				}
+			}
+
+			return existera;
+		}
+
+		/// <summary>
 		/// AnvändarenFinnsIRoll testar om användaren har en specifik roll
 		/// enligt Windows systemet. 
 		/// </summary>
@@ -522,6 +665,40 @@ namespace LOMAdministrationApplikation
 		public bool AnvändarenÄrVanligInloggadAnvändare()
 		{
 			return AnvändarenFinnsIRoll(WindowsBuiltInRole.User);
+		}
+
+		/// <summary>
+		/// RengörInput tar bort oönskade karaktärer från inmatningen så man inte
+		/// får en situation som Farg = "blå;Drop Table Produkter;" när man skickar
+		/// till databasen.  Inloggade anställda kommer att använda programmet så
+		/// säkerheten i administationsprogrammet behöver inte vara äverdriven men
+		/// det här är bara för minimal säkerhet.
+		/// *Ett bättre sätt skulle vara att encode datan innan det skrivs till
+		/// databasen. Om tiden tillåter skulle det vara en bra idé men skulle
+		/// kräver ändringar i webbsidan också.
+		/// </summary>
+		/// <param name="input">angiven sträng som ska rensas</param>
+		/// <returns>en rensad sträng</returns>
+		public string RengörInput(string input)
+		{
+			//Tar bort ogiltiga karaktärer 
+			//[^\w\-+*/=£$.,!?:%'½&()#@\\d] matchar vilket karaktär som helst som är
+			//inte en bokstav, ett nummer, ett matematiskt tecken, en pund eller dollar
+			//symbol, en punkt, en utrops tecken, en frågatecken, en colon,
+			//en procent symbol, en apostrof, en halv symbol, en och symbol, cirkel
+			//parenteser, en # symbol, en @ symbol, en \ symbol, eller blanksteg.
+			//(allt annat blir ogiltig)
+			try
+			{
+				return Regex.Replace(input, @"[^\w\-+*/=£$.!?:%'½&()#@\s+\\d]", "",
+									 RegexOptions.None, TimeSpan.FromSeconds(1.5));
+			}
+			//Ifall det tar för mycket tid har något gått fel.  Returnera en
+			//tom sträng istället.
+			catch (RegexMatchTimeoutException)
+			{
+				return String.Empty;
+			}
 		}
 	}
 }

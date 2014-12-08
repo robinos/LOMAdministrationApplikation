@@ -68,7 +68,7 @@ namespace LOMAdministrationApplikation.Models
 		}
 
 		/// <summary>
-		/// Get/Set egenskap för sträng lösenordh ash.  I Anvandare tabellen
+		/// Get/Set egenskap för sträng lösenordhash.  I Anvandare tabellen
 		/// blir den en maxlängd nvarchar som heter LosenordHash (utan ö).
 		/// Hashen görs med System.Web.Helpers biblioteket.
 		/// </summary>
