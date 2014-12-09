@@ -50,6 +50,8 @@
   <ItemGroup>
     <Compile Include="Controllers\Databas.cs" />
     <Compile Include="Models\Användare.cs" />
+    <Compile Include="Models\IDatabas.cs" />
+    <Compile Include="Controllers\MockDatabas.cs" />
     <Compile Include="Views\AnvändareForm.cs">
       <SubType>Form</SubType>
     </Compile>

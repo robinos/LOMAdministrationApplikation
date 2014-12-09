@@ -57,7 +57,7 @@
   <ItemGroup>
     <Compile Include="testar_Produkt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="testar_ProduktApplikation.cs" />
+    <Compile Include="testar_AdministrationApplikation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LOMAdministrationApplikation\LOMAdministrationApplikation.csproj">

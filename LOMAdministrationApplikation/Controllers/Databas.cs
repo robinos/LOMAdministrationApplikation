@@ -38,9 +38,9 @@ namespace LOMAdministrationApplikation.Controllers
 	/// LäsProdukter - läsar produkter från databasen till produktListan
 	/// InsättProdukt - skriver produkt till databasen och uppdatera
 	///		produktListan
-	/// UppdateraProdukt - tar bort en produkt från databasen och uppdatera
+	/// UppdateraProdukt -ändra en produkt i databasen och uppdatera
 	///		produktListan
-	///	TaBortProdukt - ändra en produkt från databasen och uppdatera
+	///	TaBortProdukt - tar bort produkt från databasen och uppdatera
 	///		produktListan
 	///	ExisterandeProdukt - kollar om en produkt redan existerar i databasen
 	///	HämtaProduktMedID - hämtar en produkt från listan som har angiven id
@@ -49,9 +49,9 @@ namespace LOMAdministrationApplikation.Controllers
 	/// LäsAnvändare - läsar användare från databasen till användarListan
 	/// InsättAnvändare - skriver användare till databasen och uppdatera
 	///		användarListan
-	/// UppdateraAnvändare - tar bort en användare från databasen och uppdatera
+	/// UppdateraAnvändare - änra en användare i databasen och uppdatera
 	///		användarListan
-	///	TaBortAnvändare - ändra en användare från databasen och uppdatera
+	///	TaBortAnvändare - tar bort en användare från databasen och uppdatera
 	///		användarListan
 	///	ExisterandeAnvändare - kollar om en användare redan existerar i databasen
 	///	HämtaAnvändareMedID - hämtar en användare från listan som har angiven id
@@ -60,12 +60,12 @@ namespace LOMAdministrationApplikation.Controllers
 	/// 2014-12-07
 	/// Grupp 2
 	/// </summary>
-	public class Databas
+	public class Databas : IDatabas
 	{
 		//instansvariabler
         //kopplingssträngen till databasen
-		private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\BIlbo\Source\Repos\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";		
-		//private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\Eliyat\Documents\Visual Studio 2013\Projects\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";	
+		//private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\BIlbo\Source\Repos\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";		
+		private string connectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=" + @"C:\Users\Eliyat\Documents\Visual Studio 2013\Projects\LjusOchMiljoAB\LjusOchMiljoAB\App_Data\LOM_DB.mdf;" + "Integrated Security=True;";	
 		//lista för att hålla alla produkter från Produkttabellen
 		private List<Produkt> produktLista;
 		//lista för att hålla alla användare från Användartabellen
@@ -236,11 +236,11 @@ namespace LOMAdministrationApplikation.Controllers
 		/// DefaultProdukt skapar en default produkt för Produkt
 		/// tabellen för om den är helt tom.
 		/// </summary>
+		/// <param name="id">id sträng för en produkt</param>
 		/// <returns>en Produkt med default värden</returns>
-		public Produkt DefaultProdukt()
+		public Produkt DefaultProdukt(string id)
 		{
 			Produkt produkt = new Produkt();
-			string id = "00000";
 
 			produkt.ID = id;
 			produkt.Namn = id;
@@ -300,7 +300,7 @@ namespace LOMAdministrationApplikation.Controllers
 			if (!TestaKolumnData(dataSet, kolumnID))
 			{
 				StängKopplingen();
-				InsättProdukt(DefaultProdukt());
+				InsättProdukt(DefaultProdukt("00000"));
 			}
 
 			//Temporär Produkt variabel
@@ -447,8 +447,6 @@ namespace LOMAdministrationApplikation.Controllers
 				kommando.ExecuteNonQuery();
 			}
 
-			produktLista.OrderBy(n => n.Namn);
-
 			//Stäng databasen
 			StängKopplingen();
 
@@ -545,11 +543,11 @@ namespace LOMAdministrationApplikation.Controllers
 		/// DefaultAnvändare skapar en default användare för Anvandare
 		/// tabellen för om den är helt tom.
 		/// </summary>
+		/// <param name="id">id integer för en användare</param>
 		/// <returns>en Användare med default värden</returns>
-		public Användare DefaultAnvändare()
+		public Användare DefaultAnvändare(int id)
 		{
 			Användare användare = new Användare();
-			int id = 0;
 
 			användare.ID = id;
 			användare.Användarnamn = "" + id;
@@ -605,7 +603,7 @@ namespace LOMAdministrationApplikation.Controllers
 			if (!TestaKolumnData(dataSet, kolumnID))
 			{
 				StängKopplingen();
-				InsättAnvändare(DefaultAnvändare());
+				InsättAnvändare(DefaultAnvändare(0));
 			}
 
 			//Temporär Produkt variabel
@@ -824,39 +822,5 @@ namespace LOMAdministrationApplikation.Controllers
 
 			return tempAnvändare;
 		}
-
-		/*
-		 * ExisterandeAnvändarnamn är en metod som testar om en produkt ID finns redan i
-		 * databasen.
-		 * Man kunde bara kolla i Dictionary produkter istället för att läsa om
-		 * databasen men det förutsätter att LäsaAnvändare har körts innan.
-		 * Som det är nu är det oberoende av det.
-		 * 
-		 * In - id (int)
-		 * Ut - sann eller falsk för om den existerar eller inte
-		 */
-		/*public bool ExisterandeAnvändare(int id)
-		{
-			string kommando = "SELECT * FROM Anvandare";
-			string tabellnamn = "Anvandare";
-
-			//Hämta dataset för produkter
-			//DataSet är en behållare/mellansteg för inläst databas-data (kan innehålla flera tabeller)
-			DataSet dataSet = HämtaDataSet(kommando, tabellnamn);
-
-			//Bool för att markera att någonting redan existerar i tabellen, från början false 
-			bool bExisterar = false;
-
-			//Loopa genom varje rad i Produkter tabellen (Tables[0] för att Produkter
-			//är den första och enda tabellen i DataSet ds)
-			foreach (DataRow dataRow in dataSet.Tables[0].Rows)
-			{
-				//Om field "ID" i en DataRow är lika med id så finns den redan 
-				if (int.Parse(dataRow["ID"].ToString()) == id)
-					bExisterar = true; //bExisterar true innebär att testId redan finns i tabellen
-			}
-
-			return bExisterar;
-		}*/
 	}
 }

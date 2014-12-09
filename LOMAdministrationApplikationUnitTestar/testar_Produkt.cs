@@ -6,9 +6,9 @@ using LOMAdministrationApplikation.Models;
 namespace LOMAdministrationApplikationUnitTestar
 {
 	/// <summary>
-	/// Unittestar för Produkt.  Skapelse, tilldelning, och Equals metoden (och
+	/// Enhetstestar för Produkt.  Skapelse, tilldelning, och Equals metoden (och
 	/// indirekt HashCode metoden) testas. Produkt gör inga testar på att värdena
-	/// ska vara giltiga, så det testas inte.  
+	/// ska vara giltiga, så det testas inte här.  
 	/// </summary>
 	[TestClass]
 	public class testar_Produkt

@@ -83,7 +83,7 @@ namespace LOMAdministrationApplikation
 	{
 		//instansvariabler
 		//Referens till Databas 
-		private Databas databas = null;
+		private IDatabas databas = null;
 		//Referens till produkt och användare listor
 		private List<Produkt> produktLista;
 		private List<Användare> användarLista;
@@ -157,10 +157,15 @@ namespace LOMAdministrationApplikation
 		/// objektet och initialisera produkt och användare listor till att
 		/// vara samma referens som de i databas klassen.
 		/// </summary>
-		public AdministrationApplikation()
+		public AdministrationApplikation() : this(new Databas()) {}
+
+		/// <summary>
+		/// Konstruktör för testning.
+		/// </summary>
+		public AdministrationApplikation(IDatabas databas)
 		{
 			//koppla referenser för databas och listor
-			databas = new Databas();
+			this.databas = databas;
 			produktLista = databas.ProduktLista;
 			användarLista = databas.AnvändarLista;
 		}
