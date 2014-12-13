@@ -3,7 +3,6 @@ using System.Collections.Generic; //Dictionary klass
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -358,17 +357,18 @@ namespace LOMAdministrationApplikation.Views
 		/// </summary>
 		private void Tömma()
 		{
-			lblIndex.Text = "*";
-			cboxProduktBox.SelectedIndex = 0; //Ny
 			cboxKategori.SelectedIndex = 0; //Tom
-			txtID.Text = "00000";
+			txtSök.Text = "";
+			cboxProduktBox.SelectedIndex = 0; //Ny
+			lblIndex.Text = "*";
+			txtID.Text = "0000000000";
 			txtNamn.Text = "";
 			txtPris.Text = "0,00";
 			txtTyp.Text = "";
 			txtFarg.Text = "";
 			txtBildfil.Text = "";
 			txtRitningsfil.Text = "";
-			txtRefID.Text = "00000";
+			txtRefID.Text = "0000000000";
 			txtBeskrivning.Text = "";
 			txtMontering.Text = "";
 		}

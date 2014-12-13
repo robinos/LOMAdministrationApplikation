@@ -120,7 +120,7 @@ namespace LOMAdministrationApplikation.Models
 			bool lyckades = true;
 
 			if (produktLista.Count <= 0)
-				produktLista.Add(DefaultProdukt("00000"));
+				produktLista.Add(DefaultProdukt("0000000000"));
 
 			return lyckades;
 		}

@@ -300,7 +300,7 @@ namespace LOMAdministrationApplikation.Controllers
 			if (!TestaKolumnData(dataSet, kolumnID))
 			{
 				StängKopplingen();
-				InsättProdukt(DefaultProdukt("00000"));
+				InsättProdukt(DefaultProdukt("0000000000"));
 			}
 
 			//Temporär Produkt variabel
@@ -608,6 +608,8 @@ namespace LOMAdministrationApplikation.Controllers
 
 			//Temporär Produkt variabel
 			Användare användareTemp;
+			//ställ om högsta id
+			högstaAnvändareID = 0;
 
 			//Loopa genom varje rad i Anvandare tabellen (Tables[0] för att Anvandare
 			//är den enda tabellen i DataSet ds)
@@ -620,7 +622,7 @@ namespace LOMAdministrationApplikation.Controllers
 				användareTemp.LösenordHash = dataRow["LosenordHash"].ToString();
 				användareTemp.Roll = dataRow["Roll"].ToString();
 				användareTemp.Räknare = int.Parse(dataRow["Raknare"].ToString());
-				användareTemp.Låst = bool.Parse(dataRow["Laste"].ToString());
+				användareTemp.Låst = bool.Parse(dataRow["Last"].ToString());
 
 				//Sätt Användare objekt i Lista användarLista
 				//(om en id redan finns i användarLista ersätt användaren)
@@ -662,7 +664,7 @@ namespace LOMAdministrationApplikation.Controllers
 			{
 				lyckades = true;
 				//SqlCommand föredra allt i en lång sträng
-				String sCommandString = "INSERT INTO Anvandare (ID, Anvandarnamn, LosenordHash, Roll, Raknare, Laste) VALUES ('" + användare.ID + "', '" + användare.Användarnamn + "', '" + användare.LösenordHash + "', '" + användare.Roll + "', '" + användare.Räknare + "', '" + användare.Låst + "')";
+				String sCommandString = "INSERT INTO Anvandare (ID, Anvandarnamn, LosenordHash, Roll, Raknare, Last) VALUES ('" + användare.ID + "', '" + användare.Användarnamn + "', '" + användare.LösenordHash + "', '" + användare.Roll + "', '" + användare.Räknare + "', '" + användare.Låst + "')";
 				SqlCommand command = new SqlCommand(sCommandString, kopplingen);
 				command.ExecuteNonQuery();
 			}
@@ -725,7 +727,7 @@ namespace LOMAdministrationApplikation.Controllers
 				kommando.ExecuteNonQuery();
 
 				//uppdatera låste
-				sCommandString = "UPDATE Anvandare SET Laste='" + användare.Låst + "' WHERE ID='" + användare.ID + "'";
+				sCommandString = "UPDATE Anvandare SET Last='" + användare.Låst + "' WHERE ID='" + användare.ID + "'";
 				kommando = new SqlCommand(sCommandString, kopplingen);
 				kommando.ExecuteNonQuery();
 			}

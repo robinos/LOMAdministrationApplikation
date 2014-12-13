@@ -79,10 +79,10 @@
 			this.panelFunktion.Controls.Add(this.lblIndex);
 			this.panelFunktion.Controls.Add(this.btnTaBort);
 			this.panelFunktion.Controls.Add(this.btnNy);
-			this.panelFunktion.Location = new System.Drawing.Point(12, 12);
-			this.panelFunktion.MinimumSize = new System.Drawing.Size(720, 60);
+			this.panelFunktion.Location = new System.Drawing.Point(6, 12);
+			this.panelFunktion.MinimumSize = new System.Drawing.Size(745, 60);
 			this.panelFunktion.Name = "panelFunktion";
-			this.panelFunktion.Size = new System.Drawing.Size(720, 61);
+			this.panelFunktion.Size = new System.Drawing.Size(746, 61);
 			this.panelFunktion.TabIndex = 6;
 			// 
 			// btnAvsluta
@@ -91,7 +91,7 @@
 			this.btnAvsluta.AccessibleName = "Avsluta";
 			this.btnAvsluta.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
 			this.btnAvsluta.BackColor = System.Drawing.Color.LightCoral;
-			this.btnAvsluta.Location = new System.Drawing.Point(230, 2);
+			this.btnAvsluta.Location = new System.Drawing.Point(257, 3);
 			this.btnAvsluta.Name = "btnAvsluta";
 			this.btnAvsluta.Size = new System.Drawing.Size(62, 25);
 			this.btnAvsluta.TabIndex = 17;
@@ -115,7 +115,7 @@
 			// 
 			// btnFörsta
 			// 
-			this.btnFörsta.Location = new System.Drawing.Point(298, 1);
+			this.btnFörsta.Location = new System.Drawing.Point(324, 5);
 			this.btnFörsta.Name = "btnFörsta";
 			this.btnFörsta.Size = new System.Drawing.Size(31, 23);
 			this.btnFörsta.TabIndex = 15;
@@ -125,7 +125,7 @@
 			// 
 			// btnSista
 			// 
-			this.btnSista.Location = new System.Drawing.Point(335, 1);
+			this.btnSista.Location = new System.Drawing.Point(361, 5);
 			this.btnSista.Name = "btnSista";
 			this.btnSista.Size = new System.Drawing.Size(31, 23);
 			this.btnSista.TabIndex = 14;
@@ -136,7 +136,7 @@
 			// btnNästa
 			// 
 			this.btnNästa.Enabled = false;
-			this.btnNästa.Location = new System.Drawing.Point(628, 1);
+			this.btnNästa.Location = new System.Drawing.Point(654, 5);
 			this.btnNästa.Name = "btnNästa";
 			this.btnNästa.Size = new System.Drawing.Size(85, 23);
 			this.btnNästa.TabIndex = 13;
@@ -147,7 +147,7 @@
 			// btnTillbaka
 			// 
 			this.btnTillbaka.Enabled = false;
-			this.btnTillbaka.Location = new System.Drawing.Point(537, 1);
+			this.btnTillbaka.Location = new System.Drawing.Point(563, 5);
 			this.btnTillbaka.Name = "btnTillbaka";
 			this.btnTillbaka.Size = new System.Drawing.Size(85, 23);
 			this.btnTillbaka.TabIndex = 12;
@@ -161,7 +161,7 @@
 			this.btnSpara.AccessibleName = "Spara";
 			this.btnSpara.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
 			this.btnSpara.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-			this.btnSpara.Location = new System.Drawing.Point(174, 3);
+			this.btnSpara.Location = new System.Drawing.Point(201, 3);
 			this.btnSpara.Name = "btnSpara";
 			this.btnSpara.Size = new System.Drawing.Size(50, 25);
 			this.btnSpara.TabIndex = 7;
@@ -176,7 +176,7 @@
 			this.cboxAnvändareBox.AccessibleRole = System.Windows.Forms.AccessibleRole.ComboBox;
 			this.cboxAnvändareBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboxAnvändareBox.FormattingEnabled = true;
-			this.cboxAnvändareBox.Location = new System.Drawing.Point(372, 2);
+			this.cboxAnvändareBox.Location = new System.Drawing.Point(398, 6);
 			this.cboxAnvändareBox.Name = "cboxAnvändareBox";
 			this.cboxAnvändareBox.Size = new System.Drawing.Size(159, 21);
 			this.cboxAnvändareBox.TabIndex = 6;
@@ -189,9 +189,9 @@
 			this.lblIndex.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
 			this.lblIndex.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.lblIndex.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-			this.lblIndex.Location = new System.Drawing.Point(3, 4);
+			this.lblIndex.Location = new System.Drawing.Point(3, 5);
 			this.lblIndex.Name = "lblIndex";
-			this.lblIndex.Size = new System.Drawing.Size(50, 23);
+			this.lblIndex.Size = new System.Drawing.Size(80, 23);
 			this.lblIndex.TabIndex = 4;
 			this.lblIndex.Text = "0";
 			this.lblIndex.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -202,7 +202,7 @@
 			this.btnTaBort.AccessibleName = "Ta bort";
 			this.btnTaBort.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
 			this.btnTaBort.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-			this.btnTaBort.Location = new System.Drawing.Point(118, 3);
+			this.btnTaBort.Location = new System.Drawing.Point(145, 3);
 			this.btnTaBort.Name = "btnTaBort";
 			this.btnTaBort.Size = new System.Drawing.Size(50, 25);
 			this.btnTaBort.TabIndex = 3;
@@ -216,7 +216,7 @@
 			this.btnNy.AccessibleName = "Ny";
 			this.btnNy.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
 			this.btnNy.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-			this.btnNy.Location = new System.Drawing.Point(62, 3);
+			this.btnNy.Location = new System.Drawing.Point(89, 3);
 			this.btnNy.Name = "btnNy";
 			this.btnNy.Size = new System.Drawing.Size(50, 25);
 			this.btnNy.TabIndex = 0;
@@ -246,7 +246,7 @@
 			this.panelInmatning.Controls.Add(this.lblHash);
 			this.panelInmatning.Controls.Add(this.lblLösenord);
 			this.panelInmatning.Controls.Add(this.lblID);
-			this.panelInmatning.Location = new System.Drawing.Point(158, 84);
+			this.panelInmatning.Location = new System.Drawing.Point(168, 84);
 			this.panelInmatning.MinimumSize = new System.Drawing.Size(416, 240);
 			this.panelInmatning.Name = "panelInmatning";
 			this.panelInmatning.Size = new System.Drawing.Size(416, 240);
@@ -430,11 +430,11 @@
 			this.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(745, 362);
+			this.ClientSize = new System.Drawing.Size(764, 362);
 			this.Controls.Add(this.panelInmatning);
 			this.Controls.Add(this.panelFunktion);
 			this.KeyPreview = true;
-			this.MinimumSize = new System.Drawing.Size(690, 400);
+			this.MinimumSize = new System.Drawing.Size(780, 400);
 			this.Name = "AnvändareForm";
 			this.Text = "Ljus och Miljö AB - Användare Hanterare";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AnvändareForm_FormClosing);

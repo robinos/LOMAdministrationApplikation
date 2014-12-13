@@ -73,7 +73,7 @@
 			this.btnNy.AccessibleDescription = "Ny knapp";
 			this.btnNy.AccessibleName = "Ny";
 			this.btnNy.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-			this.btnNy.Location = new System.Drawing.Point(62, 3);
+			this.btnNy.Location = new System.Drawing.Point(100, 3);
 			this.btnNy.Name = "btnNy";
 			this.btnNy.Size = new System.Drawing.Size(50, 25);
 			this.btnNy.TabIndex = 1;
@@ -86,7 +86,7 @@
 			this.btnTaBort.AccessibleDescription = "Ta bort knappen";
 			this.btnTaBort.AccessibleName = "Ta bort";
 			this.btnTaBort.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-			this.btnTaBort.Location = new System.Drawing.Point(118, 3);
+			this.btnTaBort.Location = new System.Drawing.Point(156, 3);
 			this.btnTaBort.Name = "btnTaBort";
 			this.btnTaBort.Size = new System.Drawing.Size(50, 25);
 			this.btnTaBort.TabIndex = 2;
@@ -102,7 +102,7 @@
 			this.lblIndex.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.lblIndex.Location = new System.Drawing.Point(3, 4);
 			this.lblIndex.Name = "lblIndex";
-			this.lblIndex.Size = new System.Drawing.Size(50, 23);
+			this.lblIndex.Size = new System.Drawing.Size(91, 23);
 			this.lblIndex.TabIndex = 0;
 			this.lblIndex.Text = "0";
 			this.lblIndex.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -128,10 +128,10 @@
 			this.panelFunktion.Controls.Add(this.lblIndex);
 			this.panelFunktion.Controls.Add(this.btnTaBort);
 			this.panelFunktion.Controls.Add(this.btnNy);
-			this.panelFunktion.Location = new System.Drawing.Point(26, 12);
+			this.panelFunktion.Location = new System.Drawing.Point(12, 12);
 			this.panelFunktion.MinimumSize = new System.Drawing.Size(720, 60);
 			this.panelFunktion.Name = "panelFunktion";
-			this.panelFunktion.Size = new System.Drawing.Size(720, 61);
+			this.panelFunktion.Size = new System.Drawing.Size(758, 61);
 			this.panelFunktion.TabIndex = 5;
 			// 
 			// btnAvsluta
@@ -140,7 +140,7 @@
 			this.btnAvsluta.AccessibleName = "Avsluta";
 			this.btnAvsluta.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
 			this.btnAvsluta.BackColor = System.Drawing.Color.LightCoral;
-			this.btnAvsluta.Location = new System.Drawing.Point(230, 3);
+			this.btnAvsluta.Location = new System.Drawing.Point(268, 3);
 			this.btnAvsluta.Name = "btnAvsluta";
 			this.btnAvsluta.Size = new System.Drawing.Size(62, 25);
 			this.btnAvsluta.TabIndex = 12;
@@ -179,7 +179,7 @@
 			// 
 			// btnFörsta
 			// 
-			this.btnFörsta.Location = new System.Drawing.Point(298, 3);
+			this.btnFörsta.Location = new System.Drawing.Point(336, 3);
 			this.btnFörsta.Name = "btnFörsta";
 			this.btnFörsta.Size = new System.Drawing.Size(31, 23);
 			this.btnFörsta.TabIndex = 4;
@@ -189,7 +189,7 @@
 			// 
 			// btnSista
 			// 
-			this.btnSista.Location = new System.Drawing.Point(335, 3);
+			this.btnSista.Location = new System.Drawing.Point(373, 3);
 			this.btnSista.Name = "btnSista";
 			this.btnSista.Size = new System.Drawing.Size(31, 23);
 			this.btnSista.TabIndex = 5;
@@ -200,7 +200,7 @@
 			// btnNästa
 			// 
 			this.btnNästa.Enabled = false;
-			this.btnNästa.Location = new System.Drawing.Point(628, 3);
+			this.btnNästa.Location = new System.Drawing.Point(666, 3);
 			this.btnNästa.Name = "btnNästa";
 			this.btnNästa.Size = new System.Drawing.Size(85, 23);
 			this.btnNästa.TabIndex = 8;
@@ -211,7 +211,7 @@
 			// btnTillbaka
 			// 
 			this.btnTillbaka.Enabled = false;
-			this.btnTillbaka.Location = new System.Drawing.Point(537, 3);
+			this.btnTillbaka.Location = new System.Drawing.Point(575, 3);
 			this.btnTillbaka.Name = "btnTillbaka";
 			this.btnTillbaka.Size = new System.Drawing.Size(85, 23);
 			this.btnTillbaka.TabIndex = 7;
@@ -224,7 +224,7 @@
 			this.btnSpara.AccessibleDescription = "Spara knappen";
 			this.btnSpara.AccessibleName = "Spara";
 			this.btnSpara.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-			this.btnSpara.Location = new System.Drawing.Point(174, 3);
+			this.btnSpara.Location = new System.Drawing.Point(212, 3);
 			this.btnSpara.Name = "btnSpara";
 			this.btnSpara.Size = new System.Drawing.Size(50, 25);
 			this.btnSpara.TabIndex = 3;
@@ -241,7 +241,7 @@
 			this.cboxProduktBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.cboxProduktBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboxProduktBox.FormattingEnabled = true;
-			this.cboxProduktBox.Location = new System.Drawing.Point(372, 5);
+			this.cboxProduktBox.Location = new System.Drawing.Point(410, 5);
 			this.cboxProduktBox.Name = "cboxProduktBox";
 			this.cboxProduktBox.Size = new System.Drawing.Size(159, 21);
 			this.cboxProduktBox.TabIndex = 6;
@@ -275,7 +275,7 @@
 			this.panelInmatning.Controls.Add(this.lblBeskrivning);
 			this.panelInmatning.Controls.Add(this.lblPris);
 			this.panelInmatning.Controls.Add(this.lblID);
-			this.panelInmatning.Location = new System.Drawing.Point(26, 90);
+			this.panelInmatning.Location = new System.Drawing.Point(30, 90);
 			this.panelInmatning.MinimumSize = new System.Drawing.Size(725, 361);
 			this.panelInmatning.Name = "panelInmatning";
 			this.panelInmatning.Size = new System.Drawing.Size(725, 361);
@@ -286,17 +286,17 @@
 			this.txtRefID.AccessibleDescription = "Produkt referens ID";
 			this.txtRefID.AccessibleName = "RefID";
 			this.txtRefID.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
-			this.txtRefID.DecimalPlaces = 5;
+			this.txtRefID.DecimalPlaces = 10;
 			this.txtRefID.DecimalsSeparator = '\0';
 			this.txtRefID.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.txtRefID.Location = new System.Drawing.Point(528, 0);
-			this.txtRefID.MaxLength = 5;
+			this.txtRefID.MaxLength = 10;
 			this.txtRefID.Multiline = true;
 			this.txtRefID.Name = "txtRefID";
 			this.txtRefID.PreFix = "";
 			this.txtRefID.Size = new System.Drawing.Size(194, 30);
 			this.txtRefID.TabIndex = 33;
-			this.txtRefID.Text = "00000";
+			this.txtRefID.Text = "0000000000";
 			this.txtRefID.ThousandsSeparator = '\0';
 			// 
 			// txtID
@@ -304,17 +304,17 @@
 			this.txtID.AccessibleDescription = "Produkt ID";
 			this.txtID.AccessibleName = "ID";
 			this.txtID.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
-			this.txtID.DecimalPlaces = 5;
+			this.txtID.DecimalPlaces = 10;
 			this.txtID.DecimalsSeparator = '\0';
 			this.txtID.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.txtID.Location = new System.Drawing.Point(164, 0);
-			this.txtID.MaxLength = 5;
+			this.txtID.MaxLength = 10;
 			this.txtID.Multiline = true;
 			this.txtID.Name = "txtID";
 			this.txtID.PreFix = "";
 			this.txtID.Size = new System.Drawing.Size(194, 30);
 			this.txtID.TabIndex = 9;
-			this.txtID.Text = "00000";
+			this.txtID.Text = "0000000000";
 			this.txtID.ThousandsSeparator = '\0';
 			// 
 			// txtPris
@@ -543,10 +543,10 @@
 			this.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(776, 465);
+			this.ClientSize = new System.Drawing.Size(784, 462);
 			this.Controls.Add(this.panelInmatning);
 			this.Controls.Add(this.panelFunktion);
-			this.MinimumSize = new System.Drawing.Size(750, 470);
+			this.MinimumSize = new System.Drawing.Size(800, 500);
 			this.Name = "ProduktForm";
 			this.Text = "Ljus och Miljö AB - Produkt Hanteraren";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProduktForm_FormClosing);

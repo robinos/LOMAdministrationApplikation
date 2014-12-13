@@ -101,8 +101,7 @@ namespace LOMAdministrationApplikation.Models
 
 		/// <summary>
 		/// Get/Set egenskap för boolean låst.  I Anvandare tabellen
-		/// blir den en SQL bit som heter Laste (utan å och med en e
-		/// på slutet av misstag).
+		/// blir den en SQL bit som heter Last (utan å).
 		/// </summary>
 		public bool Låst
 		{

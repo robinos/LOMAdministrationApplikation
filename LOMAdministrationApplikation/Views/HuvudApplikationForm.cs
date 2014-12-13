@@ -27,7 +27,8 @@ namespace LOMAdministrationApplikation.Views
 	/// btnAnvändare_Click - visar AnvändareForm
 	/// btnProdukter_Click - visar ProduktForm
 	/// btnAvsluta_Click - stängar formen
-	/// AutentiseraAnvändaren - 
+	/// AutentiseraAnvändaren - testar om användaren är inloggad för att (o)aktivera
+	///		knapparna
 	/// 
 	/// Version: 0.5
 	/// 2014-12-07
