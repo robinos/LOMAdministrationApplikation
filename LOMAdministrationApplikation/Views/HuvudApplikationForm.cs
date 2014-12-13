@@ -19,7 +19,7 @@ namespace LOMAdministrationApplikation.Views
 	/// och tillåter autentiserade användare att öppna produkt och/eller användare
 	/// formen.
 	///
-	/// -Konstruktör-
+	/// -Konstruktor-
 	/// HuvudApplikationForm - sätter referensen till AdministrationApplikation
 	///		controllern och autentisera användaren
 	/// 
@@ -27,6 +27,7 @@ namespace LOMAdministrationApplikation.Views
 	/// btnAnvändare_Click - visar AnvändareForm
 	/// btnProdukter_Click - visar ProduktForm
 	/// btnAvsluta_Click - stängar formen
+	/// AutentiseraAnvändaren - 
 	/// 
 	/// Version: 0.5
 	/// 2014-12-07
@@ -55,26 +56,7 @@ namespace LOMAdministrationApplikation.Views
 
 			InitializeComponent();
 
-			//Om användaren är inloggad (anropar metoden i Administation Applikation)
-			//Välkomna användaren och ger tillgång till knapparna.
-			if (administrationApplikation.AnvändarenÄrVanligInloggadAnvändare())
-			{
-				lblInloggning.Text = "Välkommen!";
-				btnAnvändare.BackColor = Color.DarkSalmon;
-				btnProdukter.BackColor = Color.LightBlue;
-				btnAnvändare.Enabled = true;
-				btnProdukter.Enabled = true;
-			}
-			//Annars användaren är inte inloggad (är som guest eller liknande)
-			//Uppmana användaren att logga in och ger INTE tillgång till knapparna.
-			else
-			{
-				lblInloggning.Text = "Du är inte inloggad på din Windows konto.  Logga in på din konto och prova igen.";
-				btnAnvändare.BackColor = Color.Gray;
-				btnProdukter.BackColor = Color.Gray;				
-				btnAnvändare.Enabled = false;
-				btnProdukter.Enabled = false;
-			}
+			AutentiseraAnvändaren();
 		}
 
 		/// <summary>
@@ -113,6 +95,36 @@ namespace LOMAdministrationApplikation.Views
 		private void btnAvsluta_Click(object sender, EventArgs e)
 		{
 			this.Close();
+		}
+
+		/// <summary>
+		/// AutentiseraAnvändaren testar om användaren är inloggad.
+		/// Om användaren är inloggad kan den använder knapparna för att komma
+		/// vidare och annars kan användaren inte använda knapparna och blir
+		/// uppmanad att logga in till sin Windows konto.
+		/// </summary>
+		public void AutentiseraAnvändaren()
+		{
+			//Om användaren är inloggad (anropar metoden i Administation Applikation)
+			//Välkomna användaren och ger tillgång till knapparna.
+			if (administrationApplikation.AnvändarenÄrVanligInloggadAnvändare())
+			{
+				lblInloggning.Text = "Välkommen!";
+				btnAnvändare.BackColor = Color.DarkSalmon;
+				btnProdukter.BackColor = Color.LightBlue;
+				btnAnvändare.Enabled = true;
+				btnProdukter.Enabled = true;
+			}
+			//Annars användaren är inte inloggad (är som guest eller liknande)
+			//Uppmana användaren att logga in och ger INTE tillgång till knapparna.
+			else
+			{
+				lblInloggning.Text = "Du är inte inloggad på din Windows konto.  Logga in på din konto och prova igen.";
+				btnAnvändare.BackColor = Color.Gray;
+				btnProdukter.BackColor = Color.Gray;
+				btnAnvändare.Enabled = false;
+				btnProdukter.Enabled = false;
+			}
 		}
 	}
 }

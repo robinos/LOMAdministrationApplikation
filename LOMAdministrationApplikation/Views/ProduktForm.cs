@@ -628,6 +628,7 @@ namespace LOMAdministrationApplikation.Views
 		/// <param name="e">argumenten till eventet</param>
 		private void ProduktForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			huvudApplikationForm.AutentiseraAnvändaren();
 			huvudApplikationForm.Show();
 		}
 	}
