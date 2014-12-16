@@ -53,7 +53,7 @@
 			this.lblInloggning.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
 			this.lblInloggning.Size = new System.Drawing.Size(584, 92);
 			this.lblInloggning.TabIndex = 0;
-			this.lblInloggning.Text = "Du är inte inloggad på din Windows konto.  Logga in på din konto och prova igen.";
+			this.lblInloggning.Text = "Du är inte inloggad som administrator. Kör om programmet som administrator.";
 			this.lblInloggning.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// panelAnvändare

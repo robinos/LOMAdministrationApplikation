@@ -120,7 +120,7 @@ namespace LOMAdministrationApplikation.Views
 			//Uppmana användaren att logga in och ger INTE tillgång till knapparna.
 			else
 			{
-				lblInloggning.Text = "Du är inte inloggad som administrator.  Kör programmet med administrator rättigheter och prova igen.";
+				lblInloggning.Text = "Du är inte inloggad som administrator. Kör om programmet som administrator.";
 				btnAnvändare.BackColor = Color.Gray;
 				btnProdukter.BackColor = Color.Gray;
 				btnAnvändare.Enabled = false;
