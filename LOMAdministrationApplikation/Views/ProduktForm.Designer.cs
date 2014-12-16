@@ -326,7 +326,7 @@
 			this.txtPris.DecimalsSeparator = ',';
 			this.txtPris.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.txtPris.Location = new System.Drawing.Point(164, 60);
-			this.txtPris.MaxLength = 10;
+			this.txtPris.MaxLength = 8;
 			this.txtPris.Multiline = true;
 			this.txtPris.Name = "txtPris";
 			this.txtPris.PreFix = "kr";
@@ -486,7 +486,7 @@
 			this.txtBeskrivning.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
 			this.txtBeskrivning.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.txtBeskrivning.Location = new System.Drawing.Point(364, 60);
-			this.txtBeskrivning.MaxLength = 800;
+			this.txtBeskrivning.MaxLength = 600;
 			this.txtBeskrivning.Name = "txtBeskrivning";
 			this.txtBeskrivning.Size = new System.Drawing.Size(355, 298);
 			this.txtBeskrivning.TabIndex = 17;

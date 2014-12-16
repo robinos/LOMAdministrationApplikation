@@ -293,7 +293,7 @@
 			this.txtRäknare.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
 			this.txtRäknare.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.txtRäknare.Location = new System.Drawing.Point(164, 151);
-			this.txtRäknare.MaxLength = 30;
+			this.txtRäknare.MaxLength = 9;
 			this.txtRäknare.Name = "txtRäknare";
 			this.txtRäknare.Size = new System.Drawing.Size(194, 30);
 			this.txtRäknare.TabIndex = 31;
