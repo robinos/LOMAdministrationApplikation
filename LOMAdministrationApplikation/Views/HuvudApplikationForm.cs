@@ -108,7 +108,7 @@ namespace LOMAdministrationApplikation.Views
 		{
 			//Om användaren är inloggad (anropar metoden i Administation Applikation)
 			//Välkomna användaren och ger tillgång till knapparna.
-			if (administrationApplikation.AnvändarenÄrVanligInloggadAnvändare())
+			if (administrationApplikation.AnvändarenÄrAdministratör())
 			{
 				lblInloggning.Text = "Välkommen!";
 				btnAnvändare.BackColor = Color.DarkSalmon;
@@ -120,7 +120,7 @@ namespace LOMAdministrationApplikation.Views
 			//Uppmana användaren att logga in och ger INTE tillgång till knapparna.
 			else
 			{
-				lblInloggning.Text = "Du är inte inloggad på din Windows konto.  Logga in på din konto och prova igen.";
+				lblInloggning.Text = "Du är inte inloggad som administrator.  Kör programmet med administrator rättigheter och prova igen.";
 				btnAnvändare.BackColor = Color.Gray;
 				btnProdukter.BackColor = Color.Gray;
 				btnAnvändare.Enabled = false;
