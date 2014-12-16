@@ -53,7 +53,7 @@
 			this.lblInloggning.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
 			this.lblInloggning.Size = new System.Drawing.Size(584, 92);
 			this.lblInloggning.TabIndex = 0;
-			this.lblInloggning.Text = "Du är inte inloggad som administrator. Kör om programmet som administrator.";
+			this.lblInloggning.Text = "Du är inte inloggad som administratör. Kör om programmet som administratör.";
 			this.lblInloggning.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// panelAnvändare
@@ -170,7 +170,7 @@
 			this.Controls.Add(this.flowLayoutPanel);
 			this.MinimumSize = new System.Drawing.Size(600, 500);
 			this.Name = "HuvudApplikationForm";
-			this.Text = "Ljus och Miljö AB - Datahantering";
+			this.Text = "Ljus och Miljö AB - Huvudmeny";
 			this.panelAnvändare.ResumeLayout(false);
 			this.panelProdukt.ResumeLayout(false);
 			this.flowLayoutPanel.ResumeLayout(false);

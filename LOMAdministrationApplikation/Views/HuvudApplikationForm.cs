@@ -27,8 +27,8 @@ namespace LOMAdministrationApplikation.Views
 	/// btnAnvändare_Click - visar AnvändareForm
 	/// btnProdukter_Click - visar ProduktForm
 	/// btnAvsluta_Click - stängar formen
-	/// AutentiseraAnvändaren - testar om användaren är inloggad för att (o)aktivera
-	///		knapparna
+	/// AutentiseraAnvändaren - testar om användaren kör programmet som administratör
+	///		för att (av)aktivera knapparna
 	/// 
 	/// Version: 0.5
 	/// 2014-12-07
@@ -99,10 +99,10 @@ namespace LOMAdministrationApplikation.Views
 		}
 
 		/// <summary>
-		/// AutentiseraAnvändaren testar om användaren är inloggad.
-		/// Om användaren är inloggad kan den använder knapparna för att komma
-		/// vidare och annars kan användaren inte använda knapparna och blir
-		/// uppmanad att logga in till sin Windows konto.
+		/// AutentiseraAnvändaren testar om användaren är inloggad/kör programmet
+		/// som administratör. Om användaren kör programmet som administratör kan
+		/// den använder knapparna för att komma vidare och annars kan användaren
+		/// inte använda knapparna och blir uppmanad att kör som administratör.
 		/// </summary>
 		public void AutentiseraAnvändaren()
 		{
@@ -120,7 +120,7 @@ namespace LOMAdministrationApplikation.Views
 			//Uppmana användaren att logga in och ger INTE tillgång till knapparna.
 			else
 			{
-				lblInloggning.Text = "Du är inte inloggad som administrator. Kör om programmet som administrator.";
+				lblInloggning.Text = "Du är inte inloggad som administratör. Kör om programmet som administratör.";
 				btnAnvändare.BackColor = Color.Gray;
 				btnProdukter.BackColor = Color.Gray;
 				btnAnvändare.Enabled = false;

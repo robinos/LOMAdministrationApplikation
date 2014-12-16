@@ -425,8 +425,8 @@
 			// 
 			// AnvändareForm
 			// 
-			this.AccessibleDescription = "Användare redigerare";
-			this.AccessibleName = "Användare hanterare";
+			this.AccessibleDescription = "Användarredigering";
+			this.AccessibleName = "Användarredigering";
 			this.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -436,7 +436,7 @@
 			this.KeyPreview = true;
 			this.MinimumSize = new System.Drawing.Size(780, 400);
 			this.Name = "AnvändareForm";
-			this.Text = "Ljus och Miljö AB - Användare Hanterare";
+			this.Text = "Ljus och Miljö AB - Användarredigering";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AnvändareForm_FormClosing);
 			this.panelFunktion.ResumeLayout(false);
 			this.panelInmatning.ResumeLayout(false);

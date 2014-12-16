@@ -538,8 +538,8 @@
 			// 
 			// ProduktForm
 			// 
-			this.AccessibleDescription = "Produkt Redigerare";
-			this.AccessibleName = "Produkt Hanteraren";
+			this.AccessibleDescription = "Produktredigering";
+			this.AccessibleName = "Produktredigering";
 			this.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -548,7 +548,7 @@
 			this.Controls.Add(this.panelFunktion);
 			this.MinimumSize = new System.Drawing.Size(800, 500);
 			this.Name = "ProduktForm";
-			this.Text = "Ljus och Miljö AB - Produkt Hanteraren";
+			this.Text = "Ljus och Miljö AB - Produktredigering";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProduktForm_FormClosing);
 			this.panelFunktion.ResumeLayout(false);
 			this.panelInmatning.ResumeLayout(false);
